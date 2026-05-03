@@ -1,1 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8POOLCASH - Premium System</title>
+    <style>
+        :root {
+            --bg-color: #060a10;
+            --card-bg: #10161f;
+            --input-bg: #0b1016;
+            --primary-gold: linear-gradient(180deg, #ffce3a 0%, #fcc316 100%);
+            --border-color: #2a343f;
+            --text-main: #ffffff;
+            --text-muted: #808e9b;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at center, rgba(31, 48, 71, 0.4) 0%, rgba(6, 10, 16, 1) 70%);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;
+        }
+
+        .container { width: 100%; max-width: 480px; padding: 20px; text-align: center; }
+        
+        .logo-box { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 25px; }
+        .ball-8 { background: white; color: black; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 1.6rem; }
+        .logo-text { font-size: 2.5rem; font-weight: 900; font-style: italic; text-transform: uppercase; margin: 0; }
+        .logo-text span { color: #fcc316; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 28px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); }
+        
+        .tabs { display: flex; background: #080c12; border-radius: 14px; margin-bottom: 30px; padding: 5px; }
+        .tab { flex: 1; padding: 14px; border: none; background: none; color: var(--text-muted); font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.3s; }
+        .tab.active { background: var(--primary-gold); color: #000; border-radius: 12px; }
+
+        .form-content { display: none; text-align: right; }
+        .form-content.active { display: block; }
+        
+        .group { margin-bottom: 20px; }
+        input { 
+            width: 100%; padding: 16px; background: var(--input-bg); border: 1px solid var(--border-color); 
+            border-radius: 14px; color: white; box-sizing: border-box; font-size: 1rem; outline: none;
+        }
+        input:focus { border-color: #fcc316; }
+
+        /* شبكة الدول بناءً على الصورة */
+        .country-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            margin-bottom: 20px; 
+        }
+
+        .c-item { 
+            background: var(--input-bg); border: 1px solid var(--border-color); padding: 14px; border-radius: 12px; 
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s;
+        }
+        .c-item:hover { border-color: #555; }
+        .c-item.selected { border: 2px solid #fcc316; background: #121a24; }
+
+        .alert-box {
+            background: rgba(255, 94, 94, 0.15);
+            color: #ff5e5e;
+            border: 1px solid rgba(255, 94, 94, 0.3);
+            border-radius: 15px;
+            padding: 12px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn { 
+            width: 100%; padding: 18px; background: var(--primary-gold); border: none; 
+            border-radius: 16px; color: #000; font-weight: 800; font-size: 1.2rem; 
+            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;
+        }
+        .btn:disabled { opacity: 0.8; cursor: not-allowed; }
+
+        .loader {
+            width: 22px; height: 22px; border: 3px solid #000; border-bottom-color: transparent;
+            border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .footer-text { margin-top: 25px; color: #4d5d6d; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-box">
+        <div class="ball-8">8</div>
+        <h1 class="logo-text">8POOL<span>CASH</span></h1>
+    </div>
+
+    <div class="card">
+        <div class="tabs">
+            <button class="tab active" id="loginTab" onclick="showForm('login')">تسجيل الدخول</button>
+            <button class="tab" id="registerTab" onclick="showForm('register')">حساب جديد</button>
+        </div>
+
+        <div id="statusAlert" class="alert-box">
+            <span id="statusText"></span>
+            <span>⚠️</span>
+        </div>
+
+        <!-- تسجيل الدخول -->
+        <div id="loginForm" class="form-content active">
+            <div class="group"><input type="text" id="lUser" placeholder="اسم المستخدم"></div>
+            <div class="group"><input type="password" id="lPass" placeholder="كلمة المرور"></div>
+            <button class="btn" id="lBtn" onclick="handleLogin()">
+                <span id="lBtnText">دخول ⚡</span>
+            </button>
+        </div>
+
+        <!-- حساب جديد -->
+        <div id="registerForm" class="form-content">
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <input type="text" id="fName" placeholder="الاسم الأول" style="flex:1">
+                <input type="text" id="lName" placeholder="اسم العائلة" style="flex:1">
+            </div>
+            <div class="group"><input type="email" id="email" placeholder="البريد الإلكتروني (Gmail)"></div>
+            
+            <label style="display:block; margin-bottom:10px; font-size:0.9rem; color:var(--text-muted); text-align: right;">الدولة *</label>
+            <div class="country-grid">
+                <!-- الدول المحددة في الصورة فقط -->
+                <div class="c-item" onclick="selectCountry(this)"><span>المغرب</span><span>🇲🇦</span></div>
+                <div class="c-item" onclick="selectCountry(this)"><span>الجزائر</span><span>🇩🇿</span></div>
+                
+                <div class="c-item" onclick="selectCountry(this)"><span>تونس</span><span>🇹🇳</span></div>
+                <div class="c-item" onclick="selectCountry(this)"><span>الكويت</span><span>🇰🇼</span></div>
+
+                <div class="c-item" onclick="selectCountry(this)"><span>العراق</span><span>🇮🇶</span></div>
+                <div class="c-item" onclick="selectCountry(this)"><span>السعودية</span><span>🇸🇦</span></div>
+
+                <div class="c-item" onclick="selectCountry(this)"><span>الإمارات</span><span>🇦🇪</span></div>
+                <div class="c-item" onclick="selectCountry(this)"><span>الأردن</span><span>🇯🇴</span></div>
+
+                <div class="c-item" onclick="selectCountry(this)"><span>مصر</span><span>🇪🇬</span></div>
+                <div class="c-item" onclick="selectCountry(this)"><span>ليبيا</span><span>🇱🇾</span></div>
+            </div>
+
+            <div class="group"><input type="text" id="rUser" placeholder="اسم المستخدم"></div>
+            <div class="group"><input type="password" id="rPass" placeholder="كلمة المرور (6+ أحرف)"></div>
+            
+            <button class="btn" id="rBtn" onclick="handleRegister()">
+                <span id="rBtnText">إنشاء الحساب 🎱</span>
+            </button>
+        </div>
+    </div>
+    <div class="footer-text">بالتسجيل توافق على الشروط. العب بمسؤولية.</div>
+</div>
+
+<script>
+    function showForm(type) {
+        document.getElementById('statusAlert').style.display = 'none';
+        document.getElementById('loginForm').classList.toggle('active', type === 'login');
+        document.getElementById('registerForm').classList.toggle('active', type === 'register');
+        document.getElementById('loginTab').classList.toggle('active', type === 'login');
+        document.getElementById('registerTab').classList.toggle('active', type === 'register');
+    }
+
+    let selectedCountryName = "";
+    function selectCountry(el) {
+        document.querySelectorAll('.c-item').forEach(i => i.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedCountryName = el.querySelector('span').innerText;
+    }
+
+    function triggerAlert(msg) {
+        const box = document.getElementById('statusAlert');
+        document.getElementById('statusText').innerText = msg;
+        box.style.display = 'flex';
+    }
+
+    function handleRegister() {
+        const user = document.getElementById('rUser').value;
+        const pass = document.getElementById('rPass').value;
+        const mail = document.getElementById('email').value;
+        const btn = document.getElementById('rBtn');
+        const text = document.getElementById('rBtnText');
+
+        if (!user || !mail || pass.length < 6) {
+            triggerAlert('تأكد من إدخال جميع البيانات وكلمة مرور قوية');
+            return;
+        }
+
+        if (selectedCountryName === "") {
+            triggerAlert('الرجاء اختيار الدولة أولاً');
+            return;
+        }
+
+        btn.disabled = true;
+        text.innerHTML = '<span class="loader"></span> جاري الحساب...';
+
+        setTimeout(() => {
+            localStorage.setItem('u8', user);
+            localStorage.setItem('p8', pass);
+            window.location.href = "https://www.google.com"; 
+        }, 2000);
+    }
+
+    function handleLogin() {
+        const user = document.getElementById('lUser').value;
+        const pass = document.getElementById('lPass').value;
+        const savedU = localStorage.getItem('u8');
+        const savedP = localStorage.getItem('p8');
+        const btn = document.getElementById('lBtn');
+        const text = document.getElementById('lBtnText');
+
+        if (user === savedU && pass === savedP && user !== null) {
+            btn.disabled = true;
+            text.innerHTML = '<span class="loader"></span> جاري الدخول...';
+            setTimeout(() => { window.location.href = "https://www.google.com"; }, 1500);
+        } else {
+            triggerAlert('المعلومات غير صحيحة!');
+        }
+    }
+</script>
+
+</body>
+</html>
 
