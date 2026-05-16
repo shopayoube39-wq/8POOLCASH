@@ -202,7 +202,7 @@
         setTimeout(() => {
             localStorage.setItem('u8', user);
             localStorage.setItem('p8', pass);
-            window.location.href = "https://www.google.com"; 
+            window.location.href = "W/ar.html"; 
         }, 2000);
     }
 
@@ -217,7 +217,7 @@
         if (user === savedU && pass === savedP && user !== null) {
             btn.disabled = true;
             text.innerHTML = '<span class="loader"></span> جاري الدخول...';
-            setTimeout(() => { window.location.href = "https://www.google.com"; }, 1500);
+            setTimeout(() => { window.location.href = "https://W/ar.html"; }, 1500);
         } else {
             triggerAlert('المعلومات غير صحيحة!');
         }
