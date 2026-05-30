@@ -123,7 +123,7 @@
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                     <span class="text-xs text-gray-400 font-bold">الحساب الرسمي:</span>
-                    <span class="text-sm font-bold text-white tracking-wide">***ayo</span>
+                    <span id="userDisplay" class="text-sm font-bold text-white tracking-wide">***ayo</span>
                 </div>
                 <span class="text-[10px] bg-amber-400/10 text-amber-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-wider border border-amber-400/20">المستوى المعتمد 1</span>
             </div>
@@ -209,7 +209,7 @@
             </div>
 
             <div id="live-matches-container" class="space-y-2">
-                </div>
+            </div>
         </div>
 
         <div class="premium-card rounded-2xl p-5">
@@ -223,7 +223,7 @@
             </div>
 
             <div id="leaderboard-container" class="divide-y divide-white/5 text-xs">
-                </div>
+            </div>
         </div>
 
     </main>
@@ -231,7 +231,7 @@
     <div id="support-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm hidden">
         <div class="premium-card w-full max-w-sm rounded-2xl p-6 relative border border-white/10">
             <button onclick="closeSupportModal()" class="absolute top-4 left-4 text-gray-400 hover:text-white transition-all">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/xl">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
@@ -429,12 +429,22 @@
             }
         }
 
-        // تشغيل المنصة فوراً وتنشيط نظام التحديث التلقائي
+        // تشغيل المنصة فوراً وتنشيط نظام التحديث التلقائي وقراءة الـ LocalStorage
         document.addEventListener("DOMContentLoaded", () => {
             selectAmount(0);
             renderLiveMatches();
             renderLeaderboard();
             setInterval(updateSystemDynamics, 3500); // تحديث ديناميكي كل 3.5 ثوانٍ
+
+            // كود جلب وقراءة اسم المستخدم الحقيقي من المتصفح
+            try {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                if (currentUser && currentUser.username) {
+                    document.getElementById('userDisplay').innerText = currentUser.username;
+                }
+            } catch (error) {
+                console.error("Error loading user data:", error);
+            }
         });
     </script>
 
