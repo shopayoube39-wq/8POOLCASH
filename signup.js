@@ -1,4 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+Import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -19,11 +19,11 @@ if (signUpBtn) {
     signUpBtn.addEventListener('click', (e) => {
         e.preventDefault();
 
-        // 1. التعديل الأول: تأمين قراءة خانة الـ username حتى يلا ما كانتش الخانات لخرين موجودين
-        const email = document.getElementById('email')?.value.trim() || "";
-        const password = document.getElementById('password')?.value || "";
-        const usernameInput = document.getElementById('username');
-        const username = usernameInput ? usernameInput.value.trim() : "مستخدم_جديد";
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const username = document.getElementById('username').value.trim();
         
         const activeCountry = document.querySelector('.border-amber-500, .bg-amber-500\\/20'); 
         const country = activeCountry ? activeCountry.innerText.trim() : "غير محدد";
@@ -37,20 +37,17 @@ if (signUpBtn) {
             .then((userCredential) => {
                 const user = userCredential.user;
                 
-                // 2. التعديل الثاني: تسجيل الـ username بوحدو فـ key مستقل باش يسهل قراءته من الداشبورد
-                localStorage.setItem('username', username);
-                
                 localStorage.setItem('currentUser', JSON.stringify({
                     uid: user.uid,
+                    firstName: firstName,
+                    lastName: lastName,
                     username: username,
                     country: country,
                     email: email
                 }));
 
                 alert("تم إنشاء الحساب بنجاح!");
-                
-                // 3. التعديل الثالث: التوجيه للمجلد الصحيح W وصفحة ar.html
-                window.location.href = "W/ar.html"; 
+                window.location.href = "dashboard.html"; 
             })
             .catch((error) => {
                 if (error.code === 'auth/email-already-in-use') {
