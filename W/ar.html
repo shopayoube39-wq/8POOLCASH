@@ -216,7 +216,7 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
                     <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"></path>
                     </svg>
                     <span>قائمة متصدري الأسبوع</span>
                 </h3>
@@ -436,11 +436,28 @@
             renderLeaderboard();
             setInterval(updateSystemDynamics, 3500); // تحديث ديناميكي كل 3.5 ثوانٍ
 
-            // كود جلب وقراءة اسم المستخدم الحقيقي من المتصفح
+            // --- الكود الجديد المطور لجلب الاسم الحقيقي وإخفائه بالنجمات تلقائياً ---
             try {
-                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                if (currentUser && currentUser.username) {
-                    document.getElementById('userDisplay').innerText = currentUser.username;
+                // جلب الاسم سواء كان مخزناً مباشرة كنص أو داخل كائن currentUser
+                let rawUsername = localStorage.getItem('username');
+                
+                if (!rawUsername) {
+                    const currentUserObj = JSON.parse(localStorage.getItem('currentUser'));
+                    if (currentUserObj && currentUserObj.username) {
+                        rawUsername = currentUserObj.username;
+                    }
+                }
+
+                // إذا وجدنا اسم مستخدم مخزن، نقوم بتطبيق نظام النجمات الاحترافي عليه
+                if (rawUsername) {
+                    let formattedName = rawUsername.trim();
+                    if (formattedName.length > 3) {
+                        // يأخذ أول 3 أحرف ويضيف النجمات في النهاية ليتوافق مع التصميم المطلوبة (Ayo***)
+                        formattedName = formattedName.substring(0, 3) + "***";
+                    } else {
+                        formattedName = formattedName + "***";
+                    }
+                    document.getElementById('userDisplay').innerText = formattedName;
                 }
             } catch (error) {
                 console.error("Error loading user data:", error);
