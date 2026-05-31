@@ -123,7 +123,8 @@
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                     <span class="text-xs text-gray-400 font-bold">الحساب الرسمي:</span>
-                    <span id="userDisplay" class="text-sm font-bold text-white tracking-wide">***ayo</span>
+                    <!-- تم تعديل الاتجاه dir="ltr" لضمان ظهور النجمات على اليمين بنجاح -->
+                    <span id="userDisplay" dir="ltr" class="text-sm font-bold text-white tracking-wide">User***</span>
                 </div>
                 <span class="text-[10px] bg-amber-400/10 text-amber-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-wider border border-amber-400/20">المستوى المعتمد 1</span>
             </div>
@@ -268,7 +269,6 @@
             currentSelectedIndex = index;
             const currentAmount = amountValues[index];
             
-            // تحديث كلاسات الأزرار النشطة
             const tabs = document.querySelectorAll('.amount-tab');
             tabs.forEach((tab, i) => {
                 if(i === index) {
@@ -278,7 +278,6 @@
                 }
             });
 
-            // تحديث نص زر الإجراء الرئيسي
             const joinBtn = document.getElementById('join-table-btn');
             if(joinBtn) {
                 joinBtn.innerHTML = `
@@ -303,7 +302,6 @@
             }
         }
 
-        // دوال التحكم بواجهة الدعم الفنية
         function openSupportModal() {
             const modal = document.getElementById('support-modal');
             if(modal) {
@@ -320,7 +318,6 @@
             }
         }
 
-        // داتا حقيقية لأسماء مستخدمين مغاربة لإعطاء مصداقية تامة وبدون تكرار ممل
         const usernames = [
             "simohamed", "yassine_8p", "amineraja", "mehdi_casax", "kamal_pool", 
             "othmane_k", "hassan_pro", "tarek_88", "riad_cash", "anass_b", 
@@ -330,7 +327,6 @@
 
         const matchValues = [150, 200, 300, 500];
 
-        // توليد اسم عشوائي بنظام الإخفاء الاحترافي المعتمد بالمنصات الموثوقة
         function getRandomMaskedUser() {
             const name = usernames[Math.floor(Math.random() * usernames.length)];
             const value = matchValues[Math.floor(Math.random() * matchValues.length)];
@@ -341,7 +337,6 @@
             };
         }
 
-        // إعداد قائمة المتصدرين الموثوقة بمبالغ عشوائية منطقية ومحدثة باستمرار
         let leaderData = [
             { name: "ach***99", score: 24350 },
             { name: "wal***_k", score: 18100 },
@@ -362,7 +357,6 @@
             `).join('');
         }
 
-        // إدارة غرف المباريات الحية بشكل تفاعلي
         let liveMatches = [];
         for(let i=0; i<4; i++) {
             const p1 = getRandomMaskedUser();
@@ -399,16 +393,13 @@
             `).join('');
         }
 
-        // نظام المحاكاة الذكي لتحديث الأرقام بشكل مستمر وسلس (بين 5 و 230)
         let currentActive = 135;
         function updateSystemDynamics() {
-            // 1. تحديث العداد النشط
-            const shift = Math.floor(Math.random() * 7) - 3; // يتغير بـ -3 إلى +3
+            const shift = Math.floor(Math.random() * 7) - 3;
             currentActive = Math.max(5, Math.min(230, currentActive + shift));
             const countEl = document.getElementById('active-count');
             if(countEl) countEl.innerText = currentActive + " نشط";
 
-            // 2. تحديث عشوائي للمباريات الحية (حذف مباراة قديمة وإدخال مستخدمين دخلوا بفلوسهم حالاً)
             if(Math.random() > 0.4) {
                 liveMatches.pop();
                 const newP1 = getRandomMaskedUser();
@@ -420,7 +411,6 @@
                 });
                 renderLiveMatches();
 
-                // تحديث طفيف على قائمة المتصدرين لإثبات التفاعل
                 if(Math.random() > 0.7) {
                     leaderData[2].score += Math.floor(Math.random() * 3) * 50;
                     leaderData.sort((a,b) => b.score - a.score);
@@ -429,38 +419,38 @@
             }
         }
 
-        // تشغيل المنصة فوراً وتنشيط نظام التحديث التلقائي وقراءة الـ LocalStorage
+        // تشغيل وقراءة البيانات تلقائياً عند تحميل الصفحة لربطها بالشخص الحقيقي
         document.addEventListener("DOMContentLoaded", () => {
             selectAmount(0);
             renderLiveMatches();
             renderLeaderboard();
-            setInterval(updateSystemDynamics, 3500); // تحديث ديناميكي كل 3.5 ثوانٍ
+            setInterval(updateSystemDynamics, 3500);
 
-            // --- الكود الجديد المطور لجلب الاسم الحقيقي وإخفائه بالنجمات تلقائياً ---
+            // سيستم قراءة اسم الشخص الفعلي لي تسجل دابا من الـ LocalStorage
             try {
-                // جلب الاسم سواء كان مخزناً مباشرة كنص أو داخل كائن currentUser
-                let rawUsername = localStorage.getItem('username');
+                let savedUsername = localStorage.getItem('username');
                 
-                if (!rawUsername) {
+                // التأكد والتحقق من الطريقة التانية لحفظ البيانات الاحتياطية
+                if (!savedUsername) {
                     const currentUserObj = JSON.parse(localStorage.getItem('currentUser'));
                     if (currentUserObj && currentUserObj.username) {
-                        rawUsername = currentUserObj.username;
+                        savedUsername = currentUserObj.username;
                     }
                 }
 
-                // إذا وجدنا اسم مستخدم مخزن، نقوم بتطبيق نظام النجمات الاحترافي عليه
-                if (rawUsername) {
-                    let formattedName = rawUsername.trim();
-                    if (formattedName.length > 3) {
-                        // يأخذ أول 3 أحرف ويضيف النجمات في النهاية ليتوافق مع التصميم المطلوبة (Ayo***)
-                        formattedName = formattedName.substring(0, 3) + "***";
+                // تطبيق التعديل الذكي لإخفاء باقي الحروف والاحتفاظ باتجاه سليم للمتصفح
+                if (savedUsername) {
+                    let displayName = savedUsername.trim();
+                    if (displayName.length > 3) {
+                        displayName = displayName.substring(0, 3) + "***";
                     } else {
-                        formattedName = formattedName + "***";
+                        displayName = displayName + "***";
                     }
-                    document.getElementById('userDisplay').innerText = formattedName;
+                    // تحديث محتوى الواجهة فوراً بالاسم الجديد
+                    document.getElementById('userDisplay').innerText = displayName;
                 }
             } catch (error) {
-                console.error("Error loading user data:", error);
+                console.error("Error formatting authenticated username:", error);
             }
         });
     </script>
