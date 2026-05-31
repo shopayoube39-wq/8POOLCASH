@@ -123,7 +123,6 @@
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                     <span class="text-xs text-gray-400 font-bold">الحساب الرسمي:</span>
-                    <!-- تم تعديل الاتجاه dir="ltr" لضمان ظهور النجمات على اليمين بنجاح -->
                     <span id="userDisplay" dir="ltr" class="text-sm font-bold text-white tracking-wide">User***</span>
                 </div>
                 <span class="text-[10px] bg-amber-400/10 text-amber-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-wider border border-amber-400/20">المستوى المعتمد 1</span>
@@ -217,7 +216,7 @@
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
                     <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 00.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138z"></path>
                     </svg>
                     <span>قائمة متصدري الأسبوع</span>
                 </h3>
@@ -419,39 +418,66 @@
             }
         }
 
-        // تشغيل وقراءة البيانات تلقائياً عند تحميل الصفحة لربطها بالشخص الحقيقي
+        // السيستم الذكي والمطور للربط الفوري والتلقائي مع الـ LocalStorage واكتشاف الجلسات
         document.addEventListener("DOMContentLoaded", () => {
             selectAmount(0);
             renderLiveMatches();
             renderLeaderboard();
             setInterval(updateSystemDynamics, 3500);
 
-            // سيستم قراءة اسم الشخص الفعلي لي تسجل دابا من الـ LocalStorage
-            try {
-                let savedUsername = localStorage.getItem('username');
-                
-                // التأكد والتحقق من الطريقة التانية لحفظ البيانات الاحتياطية
-                if (!savedUsername) {
-                    const currentUserObj = JSON.parse(localStorage.getItem('currentUser'));
-                    if (currentUserObj && currentUserObj.username) {
-                        savedUsername = currentUserObj.username;
-                    }
-                }
+            function syncLoggedUser() {
+                try {
+                    // 1. فحص كاع السوارت المباشرة المتوقعة لاسم المستخدم
+                    let activeUser = localStorage.getItem('username') || 
+                                     localStorage.getItem('user') || 
+                                     localStorage.getItem('name');
 
-                // تطبيق التعديل الذكي لإخفاء باقي الحروف والاحتفاظ باتجاه سليم للمتصفح
-                if (savedUsername) {
-                    let displayName = savedUsername.trim();
-                    if (displayName.length > 3) {
-                        displayName = displayName.substring(0, 3) + "***";
-                    } else {
-                        displayName = displayName + "***";
+                    // 2. فحص السوارت المركبة Object (بحال داتا الفايربيز أو currentUser)
+                    if (!activeUser) {
+                        const targetKeys = ['currentUser', 'user_info', 'auth', 'user_data'];
+                        for (let key of targetKeys) {
+                            const dataStr = localStorage.getItem(key);
+                            if (dataStr) {
+                                try {
+                                    const parsedObj = JSON.parse(dataStr);
+                                    activeUser = parsedObj.username || parsedObj.name || parsedObj.displayName || parsedObj.email;
+                                    if (activeUser) break;
+                                } catch(e) {}
+                            }
+                        }
                     }
-                    // تحديث محتوى الواجهة فوراً بالاسم الجديد
-                    document.getElementById('userDisplay').innerText = displayName;
+
+                    // 3. التعديل والإخفاء الاحترافي بالنجمات لتظهر توماتيكياً فالحساب الرسمي
+                    if (activeUser) {
+                        let finalName = activeUser.trim();
+                        // إذا كان المدخل بريد إلكتروني نقطعوه قبل الـ @
+                        if (finalName.includes('@')) {
+                            finalName = finalName.split('@')[0];
+                        }
+                        
+                        // تطبيق نظام النجمات الذكي
+                        if (finalName.length > 3) {
+                            finalName = finalName.substring(0, 3) + "***";
+                        } else {
+                            finalName = finalName + "***";
+                        }
+                        
+                        // إسقاط القيمة وتحديث نص خانة "الحساب الرسمي" فوراً
+                        const userDisplayEl = document.getElementById('userDisplay');
+                        if (userDisplayEl && userDisplayEl.innerText !== finalName) {
+                            userDisplayEl.innerText = finalName;
+                        }
+                    }
+                } catch (error) {
+                    console.error("Session sync failed:", error);
                 }
-            } catch (error) {
-                console.error("Error formatting authenticated username:", error);
             }
+
+            // تشغيل الفحص فور فتح وتحميل الصفحة
+            syncLoggedUser();
+
+            // فخ المراقبة المستمرة (كل ثانية) لضمان الربط الفوري عند حدوث الدخول
+            setInterval(syncLoggedUser, 1000);
         });
     </script>
 
