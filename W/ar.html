@@ -481,5 +481,26 @@
         });
     </script>
 
+    <!-- مكتبات Firebase الأساسية للربط متوافقة 100% -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+      // السوارت ديالك لي جبناهم من Firebase نيت
+      const firebaseConfig = {
+        apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
+        authDomain: "poolcash-6692c.firebaseapp.com",
+        databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
+        projectId: "poolcash-6692c",
+        storageBucket: "poolcash-6692c.firebasestorage.app",
+        messagingSenderId: "866544389541",
+        appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
+      };
+
+      // تفعيل Firebase فالموقع
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+    </script>
+
 </body>
 </html>
