@@ -123,6 +123,7 @@
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                     <span class="text-xs text-gray-400 font-bold">الحساب الرسمي:</span>
+                    <!-- هنا يظهر اسم المستخدم الجديد بالكامل -->
                     <span id="userDisplay" dir="ltr" class="text-sm font-bold text-white tracking-wide">User***</span>
                 </div>
                 <span class="text-[10px] bg-amber-400/10 text-amber-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-wider border border-amber-400/20">المستوى المعتمد 1</span>
@@ -418,7 +419,7 @@
             }
         }
 
-        // السيستم الذكي والمطور للربط الفوري والتلقائي مع الـ LocalStorage واكتشاف الجلسات
+        // السيستم الذكي والمطور للربط الفوري والتلقائي وعرض الاسم الحقيقي للمستخدم الجديد بالكامل
         document.addEventListener("DOMContentLoaded", () => {
             selectAmount(0);
             renderLiveMatches();
@@ -427,12 +428,18 @@
 
             function syncLoggedUser() {
                 try {
-                    // 1. فحص كاع السوارت المباشرة المتوقعة لاسم المستخدم
-                    let activeUser = localStorage.getItem('username') || 
+                    // 1. فحص جميع المفاتيح المتوقعة لاسم المستخدم في الرابط أولاً (URL Query Params)
+                    const urlParams = new URLSearchParams(window.location.search);
+                    let activeUser = urlParams.get('username') || urlParams.get('user') || urlParams.get('name');
+
+                    // 2. إذا لم يكن بالرابط، يتم فحص السوارت المباشرة في الـ LocalStorage
+                    if (!activeUser) {
+                        activeUser = localStorage.getItem('username') || 
                                      localStorage.getItem('user') || 
                                      localStorage.getItem('name');
+                    }
 
-                    // 2. فحص السوارت المركبة Object (بحال داتا الفايربيز أو currentUser)
+                    // 3. فحص الـ Objects المركبة (مثل داتا الفايربيز أو currentUser)
                     if (!activeUser) {
                         const targetKeys = ['currentUser', 'user_info', 'auth', 'user_data'];
                         for (let key of targetKeys) {
@@ -447,22 +454,15 @@
                         }
                     }
 
-                    // 3. التعديل والإخفاء الاحترافي بالنجمات لتظهر توماتيكياً فالحساب الرسمي
+                    // 4. عرض اسم المستخدم الجديد بالكامل بدون إخفاء أو نجمات
                     if (activeUser) {
                         let finalName = activeUser.trim();
-                        // إذا كان المدخل بريد إلكتروني نقطعوه قبل الـ @
+                        // إذا كان المدخل بريد إلكتروني، نأخذ ما قبل الـ @ فقط لتنظيف الاسم
                         if (finalName.includes('@')) {
                             finalName = finalName.split('@')[0];
                         }
                         
-                        // تطبيق نظام النجمات الذكي
-                        if (finalName.length > 3) {
-                            finalName = finalName.substring(0, 3) + "***";
-                        } else {
-                            finalName = finalName + "***";
-                        }
-                        
-                        // إسقاط القيمة وتحديث نص خانة "الحساب الرسمي" فوراً
+                        // إسقاط القيمة وتحديث نص خانة "الحساب الرسمي" فوراً بالاسم الكامل
                         const userDisplayEl = document.getElementById('userDisplay');
                         if (userDisplayEl && userDisplayEl.innerText !== finalName) {
                             userDisplayEl.innerText = finalName;
@@ -476,7 +476,7 @@
             // تشغيل الفحص فور فتح وتحميل الصفحة
             syncLoggedUser();
 
-            // فخ المراقبة المستمرة (كل ثانية) لضمان الربط الفوري عند حدوث الدخول
+            // مراقبة مستمرة (كل ثانية) لضمان التحديث التلقائي الفوري للمستخدم الجديد عند تسجيل الدخول
             setInterval(syncLoggedUser, 1000);
         });
     </script>
@@ -486,7 +486,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <script>
-      // السوارت ديالك لي جبناهم من Firebase نيت
+      // إعدادات الـ Firebase الخاصة بك
       const firebaseConfig = {
         apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
         authDomain: "poolcash-6692c.firebaseapp.com",
