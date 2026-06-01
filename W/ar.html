@@ -12,6 +12,7 @@
             background-color: #08090c; 
             color: #f3f4f6; 
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .brand-bg {
@@ -78,6 +79,33 @@
             box-shadow: 0 6px 25px rgba(217, 119, 6, 0.45);
             filter: brightness(1.05);
         }
+
+        /* أنيميشن احترافي لتحديث الصولد وسلاسة إخفاء صندوق التحذير */
+        .balance-update {
+            animation: pulse-glow 0.5s ease-out;
+        }
+        @keyframes pulse-glow {
+            0% { transform: scale(1); color: #fff; }
+            50% { transform: scale(1.05); color: #f59e0b; filter: drop-shadow(0 0 8px rgba(245,158,11,0.6)); }
+            100% { transform: scale(1); color: #fff; }
+        }
+        
+        .transition-box {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 200px;
+            opacity: 1;
+            overflow: hidden;
+        }
+        .transition-box.hide-box {
+            max-height: 0 !important;
+            opacity: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            border-color: transparent !important;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="brand-bg min-h-screen pb-20">
@@ -117,22 +145,22 @@
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                     <span class="text-xs text-gray-400 font-bold">الحساب الرسمي:</span>
-                    <span id="userDisplay" dir="ltr" class="text-sm font-bold text-white tracking-wide">Ayoube</span>
+                    <span id="userDisplay" dir="ltr" class="text-sm font-bold text-white tracking-wide">جارٍ التعرف...</span>
                 </div>
                 <span class="text-[10px] bg-amber-400/10 text-amber-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-wider border border-amber-400/20">المستوى المعتمد 1</span>
             </div>
 
-            <div class="text-center py-3">
+            <!-- تعديل الحجم ليكون ناعم واحترافي مثل المنصات العالمية الموثوقة -->
+            <div class="text-center py-2">
                 <span class="text-xs text-gray-400 block mb-1 font-semibold tracking-wide">الرصيد المتاح حالياً</span>
-                <div class="text-5xl font-black text-white flex items-center justify-center gap-2">
-                    <span class="text-2xl font-bold text-amber-400">DH</span>
-                    <!-- هاد السبام هو فين غايطلع الرصيد الحقيقي من الفايربيز أوتوماتيكيا -->
-                    <span id="balanceDisplay" class="tracking-tight">0</span>
+                <div class="text-3xl font-black text-white flex items-center justify-center gap-1.5 transition-all duration-300">
+                    <span id="balanceDisplay" class="tracking-tight font-mono">0.00</span>
+                    <span class="text-xs font-bold text-amber-400 bg-amber-400/5 px-1.5 py-0.5 rounded border border-amber-400/10">DH</span>
                 </div>
             </div>
 
-            <!-- هاد الديف د التحذير غايختفي بوحدو يلا كان الصولد كافي للرهان المختار -->
-            <div id="warningBox" class="mt-5 bg-amber-500/[0.02] border border-amber-500/15 rounded-2xl p-4 flex justify-between items-center relative overflow-hidden">
+            <!-- صندوق الشحن مع أنيميشن الاختفاء السلس التلقائي -->
+            <div id="warningBox" class="transition-box mt-5 bg-amber-500/[0.02] border border-amber-500/15 rounded-2xl p-4 flex justify-between items-center relative overflow-hidden">
                 <div class="flex items-center gap-3.5 relative z-10">
                     <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0 shadow-inner">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -161,7 +189,7 @@
             </div>
             <div class="premium-card rounded-xl p-3.5 text-center">
                 <span class="text-[11px] text-gray-500 font-bold block mb-1">إجمالي الأرباح</span>
-                <span id="totalEarningsDisplay" class="text-lg font-black text-emerald-400">0 DH</span>
+                <span id="totalEarningsDisplay" class="text-sm font-black text-emerald-400 font-mono">0.00 DH</span>
             </div>
         </div>
 
@@ -203,7 +231,6 @@
                 </h3>
                 <span id="active-count" class="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded font-bold">142 active</span>
             </div>
-
             <div id="live-matches-container" class="space-y-2"></div>
         </div>
 
@@ -221,6 +248,7 @@
 
     </main>
 
+    <!-- المودال الخاص بالدعم -->
     <div id="support-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm hidden">
         <div class="premium-card w-full max-w-sm rounded-2xl p-6 relative border border-white/10">
             <button onclick="closeSupportModal()" class="absolute top-4 left-4 text-gray-400 hover:text-white transition-all">
@@ -253,7 +281,7 @@
         <p class="text-[9px] text-gray-600 font-medium leading-relaxed uppercase">جميع العمليات مشفرة ومحمية بالكامل بموجب معايير الأمان العالمية لمنصة 8POOLCASH الحصرية</p>
     </footer>
 
-    <!-- مكتبات Firebase الأساسية متوافقة بالكامل -->
+    <!-- مكتبات Firebase الأساسية الموثوقة والمجربة -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
@@ -273,18 +301,25 @@
 
       const amountValues = [150, 200, 300, 500, 1000, 2500, 5000];
       let currentSelectedIndex = 0;
-      let globalUserBalance = 0; // متغير لحفظ الرصيد الحالي القادم من الفايربيز
-      let currentUsername = "Ayoube"; // القيمة الافتراضية
+      let globalUserBalance = 0; 
+      let currentUsername = "Ayoube"; 
 
-      // دالة لتحديث حالة الحساب بناءً على الرصيد والرهان المختار
+      // دالة لتنسيق الأرقام مثل البنوك (مثال: 150.00)
+      function formatMoney(amount) {
+          return parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      }
+
+      // إخفاء صندوق التحذير بأنيميشن اختفاء احترافي وسلس جداً ف البلاصة
       function updateUIBasedOnBalance() {
           const requiredAmount = amountValues[currentSelectedIndex];
           const warningBox = document.getElementById('warningBox');
           
-          if (globalUserBalance >= requiredAmount) {
-              if(warningBox) warningBox.classList.add('hidden'); // إخفاء التحذير يلا الصولد كافي
-          } else {
-              if(warningBox) warningBox.classList.remove('hidden'); // إظهار التحذير يلا الصولد ناقص
+          if (warningBox) {
+              if (globalUserBalance >= requiredAmount) {
+                  warningBox.classList.add('hide-box'); // كايختفي بـ سلاسة (Slide Up + Fade Out)
+              } else {
+                  warningBox.classList.remove('hide-box'); // كايبان يلا نقص الصولد
+              }
           }
       }
 
@@ -322,25 +357,39 @@
           }
       }
 
-      // الربط الفوري مع الفايربيز لجلب وتحديث الرصيد لايف
+      // نظام البث الفوري المستمر (Firebase Realtime Stream Listener)
       function startFirebaseSync(username) {
           if (!username) return;
           
-          // تتبع العقدة الخاصة باليوزر في الفايربيز
           const userRef = database.ref('users/' + username);
+          
+          // دالة .on كاتبقا شاعلة ديما وكتلقط أي تبديل ف نفس الميلي ثانية
           userRef.on('value', (snapshot) => {
               const userData = snapshot.val();
               if (userData) {
-                  // جلب الرصيد، إذا كان فارغاً نضع 0
-                  globalUserBalance = userData.balance !== undefined ? parseFloat(userData.balance) : 0;
+                  const newBalance = userData.balance !== undefined ? parseFloat(userData.balance) : 0;
                   
-                  // تحديث الرصيد ف الشاشة فوراً
-                  document.getElementById('balanceDisplay').innerText = globalUserBalance;
-                  document.getElementById('totalEarningsDisplay').innerText = globalUserBalance + " DH";
+                  // فاش يتبدل الصولد نيت، نديرو أنيميشن التوهج الخفيف
+                  const balanceDisplay = document.getElementById('balanceDisplay');
+                  if (globalUserBalance !== newBalance && balanceDisplay) {
+                      balanceDisplay.classList.remove('balance-update');
+                      void balanceDisplay.offsetWidth; // إعادة تشغيل الأنيميشن
+                      balanceDisplay.classList.add('balance-update');
+                  }
+
+                  globalUserBalance = newBalance;
                   
-                  // تحديث التحذيرات
+                  // عرض الصولد بطريقة احترافية مصغرة ونقية
+                  if(balanceDisplay) balanceDisplay.innerText = formatMoney(globalUserBalance);
+                  
+                  const totalEarnings = document.getElementById('totalEarningsDisplay');
+                  if(totalEarnings) totalEarnings.innerText = formatMoney(globalUserBalance) + " DH";
+                  
+                  // تحديث صندوق التحذير ف البلاصة وبلا ريفريش
                   updateUIBasedOnBalance();
               }
+          }, (error) => {
+              console.log("Firebase Error: " + error.message);
           });
       }
 
@@ -360,154 +409,56 @@
           }
       }
 
-      const usernames = [
-          "simohamed", "yassine_8p", "amineraja", "mehdi_casax", "kamal_pool", 
-          "othmane_k", "hassan_pro", "tarek_88", "riad_cash", "anass_b", 
-          "marouane_v", "zakaria_pool", "badr_king", "bilal_pro", "saad_cash",
-          "hamza_8p", "fouad_pl", "ismail_k", "idriss_v", "jalal_pool"
-      ];
-
+      // المحاكاة الخلفية للسيستم
+      const usernames = ["simohamed", "yassine_8p", "amineraja", "mehdi_casax", "othmane_k", "hassan_pro"];
       const matchValues = [150, 200, 300, 500];
 
       function getRandomMaskedUser() {
           const name = usernames[Math.floor(Math.random() * usernames.length)];
           const value = matchValues[Math.floor(Math.random() * matchValues.length)];
           return {
-              rawName: name,
-              maskedName: name.substring(0, 3) + "***" + (name.length > 5 ? name.substring(name.length - 2) : "x"),
+              p1: name.substring(0, 3) + "***",
               value: value
           };
       }
 
-      let leaderData = [
-          { name: "ach***99", score: 24350 },
-          { name: "wal***_k", score: 18100 },
-          { name: "you***_v", score: 12450 }
-      ];
-
-      function renderLeaderboard() {
-          const container = document.getElementById('leaderboard-container');
-          if(!container) return;
-          container.innerHTML = leaderData.map((user, index) => `
-              <div class="py-3.5 flex justify-between items-center">
-                  <div class="flex items-center gap-2">
-                      <div class="w-5 h-5 rounded bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 font-black text-[10px]">${index + 1}</div>
-                      <span class="font-bold text-white">${user.name}</span>
-                  </div>
-                  <span class="font-black text-amber-400 tracking-wide">${user.score.toLocaleString()} DH</span>
-              </div>
-          `).join('');
-      }
-
       let liveMatches = [];
       for(let i=0; i<4; i++) {
-          const p1 = getRandomMaskedUser();
-          const p2 = getRandomMaskedUser();
-          liveMatches.push({
-              p1: p1.maskedName,
-              p2: p2.maskedName,
-              value: p1.value
-          });
+          const p = getRandomMaskedUser();
+          liveMatches.push({ p1: p.p1, p2: "player_x", value: p.value });
       }
 
       function renderLiveMatches() {
           const container = document.getElementById('live-matches-container');
           if(!container) return;
           container.innerHTML = liveMatches.map(match => `
-              <div class="premium-card live-table-row rounded-xl p-3.5 flex justify-between items-center animate-fade-in">
+              <div class="premium-card live-table-row rounded-xl p-3.5 flex justify-between items-center">
                   <div class="flex items-center gap-3">
-                      <div class="w-7 h-7 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center">
-                          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                              <circle cx="12" cy="12" r="10"></circle>
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"></path>
-                          </svg>
-                      </div>
-                      <div class="text-right">
-                          <div class="text-xs font-bold text-white">${match.p1} <span class="text-[10px] text-gray-500 font-normal mx-0.5">ضد</span> ${match.p2}</div>
-                          <div class="text-[9px] text-gray-400 mt-0.5">مواجهة جارية الآن</div>
-                      </div>
+                      <div class="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-amber-400">⚡</div>
+                      <div class="text-xs font-bold text-white">${match.p1} ضد ${match.p2}</div>
                   </div>
-                  <div class="text-right">
-                      <span class="text-xs font-black text-amber-400 block">${match.value} DH</span>
-                      <span class="text-[9px] text-emerald-400 font-medium tracking-wide">مباشر</span>
-                  </div>
+                  <span class="text-xs font-black text-amber-400">${match.value} DH</span>
               </div>
           `).join('');
       }
 
-      let currentActive = 135;
-      function updateSystemDynamics() {
-          const shift = Math.floor(Math.random() * 7) - 3;
-          currentActive = Math.max(5, Math.min(230, currentActive + shift));
-          const countEl = document.getElementById('active-count');
-          if(countEl) countEl.innerText = currentActive + " نشط";
-
-          if(Math.random() > 0.4) {
-              liveMatches.pop();
-              const newP1 = getRandomMaskedUser();
-              const newP2 = getRandomMaskedUser();
-              liveMatches.unshift({
-                  p1: newP1.maskedName,
-                  p2: newP2.maskedName,
-                  value: newP1.value
-              });
-              renderLiveMatches();
-          }
-      }
-
       document.addEventListener("DOMContentLoaded", () => {
           renderLiveMatches();
-          renderLeaderboard();
-          setInterval(updateSystemDynamics, 3500);
+          
+          // كود جلب اليوزر الحالي من الجلسة
+          const urlParams = new URLSearchParams(window.location.search);
+          let activeUser = urlParams.get('username') || localStorage.getItem('username');
 
-          // نظام فحص جلسة المستخدم وتحديد الهوية للربط مع الفايربيز
-          function syncLoggedUser() {
-              try {
-                  const urlParams = new URLSearchParams(window.location.search);
-                  let activeUser = urlParams.get('username') || urlParams.get('user') || urlParams.get('name');
-
-                  if (!activeUser) {
-                      activeUser = localStorage.getItem('username') || localStorage.getItem('user');
-                  }
-
-                  if (!activeUser) {
-                      const targetKeys = ['currentUser', 'user_info', 'auth'];
-                      for (let key of targetKeys) {
-                          const dataStr = localStorage.getItem(key);
-                          if (dataStr) {
-                              try {
-                                  const parsedObj = JSON.parse(dataStr);
-                                  activeUser = parsedObj.username || parsedObj.name;
-                                  if (activeUser) break;
-                              } catch(e) {}
-                          }
-                      }
-                  }
-
-                  // إذا لقينا اسم مستخدم مسجل، نخدمو بيه
-                  if (activeUser) {
-                      currentUsername = activeUser.trim();
-                      if (currentUsername.includes('@')) {
-                          currentUsername = currentUsername.split('@')[0];
-                      }
-                  }
-
-                  // تحديث الاسم ف الشاشة
-                  const userDisplayEl = document.getElementById('userDisplay');
-                  if (userDisplayEl) {
-                      userDisplayEl.innerText = currentUsername;
-                  }
-
-                  // تشغيل المزامنة المباشرة للرصيد مع الفايربيز لليوزر الحالي
-                  startFirebaseSync(currentUsername);
-
-              } catch (error) {
-                  console.error("Session sync failed:", error);
-              }
+          if (activeUser) {
+              currentUsername = activeUser.trim().split('@')[0];
           }
 
-          syncLoggedUser();
-          selectAmount(0); // تحديد أول رهان وتحديث الأزرار بناء على الرصيد الأول
+          const userDisplayEl = document.getElementById('userDisplay');
+          if (userDisplayEl) userDisplayEl.innerText = currentUsername;
+
+          // إطلاق المزامنة التلقائية الفورية المستمرة
+          startFirebaseSync(currentUsername);
+          selectAmount(0);
       });
     </script>
 </body>
