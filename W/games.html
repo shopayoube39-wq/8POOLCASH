@@ -1,1 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>8POOLCASH | ساحة اللعب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body class="bg-[#08090c] text-white p-5 text-center">
 
+    <h1 class="text-2xl font-black mb-5">مرحباً بك في ساحة التحدي</h1>
+    <div class="bg-[#111520] p-6 rounded-xl border border-white/10">
+        <p class="text-gray-400">رصيدك الحالي:</p>
+        <h2 id="balance-display" class="text-4xl font-black text-amber-400">0 DH</h2>
+    </div>
+
+    <button onclick="playGame()" class="mt-8 bg-amber-500 hover:bg-amber-600 text-black font-black py-4 px-10 rounded-full text-xl transition-all">
+        العب الآن (رهان 50 DH)
+    </button>
+
+    <script>
+        const firebaseConfig = { /* حط هنا نفس الكونفيغ اللي عطيتك قبيلة */ };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        // جيب الـ ID ديال اليوزر من localStorage (خاصك تكون مخزنو فاش دار Login)
+        const userId = localStorage.getItem('userId'); 
+
+        // 1. عرض الصولد ديما
+        database.ref('users/' + userId + '/balance').on('value', (snapshot) => {
+            document.getElementById('balance-display').innerText = (snapshot.val() || 0) + " DH";
+        });
+
+        // 2. فانكشن اللعب والربح
+        function playGame() {
+            const bet = 50;
+            const balanceRef = database.ref('users/' + userId + '/balance');
+
+            balanceRef.transaction((currentBalance) => {
+                if (currentBalance < bet) {
+                    alert("رصيدك غير كافٍ!");
+                    return; // مايلعبش
+                }
+                
+                // هنا اللعبة كتحسب واش ربح ولا خسر (هنا درنا مثال ربح ديريكت)
+                const isWinner = true; 
+                if (isWinner) {
+                    alert("مبروك! ربحتي 100 DH");
+                    return currentBalance - bet + 100; // خصم الرهان + إضافة الربح
+                } else {
+                    return currentBalance - bet; // خصم الرهان
+                }
+            });
+        }
+    </script>
+</body>
+</html>
