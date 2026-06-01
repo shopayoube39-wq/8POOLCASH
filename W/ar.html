@@ -1,336 +1,323 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8POOLCASH - Premium System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8POOLCASH - Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #060a10;
+            --card-bg: #10161f;
+            --input-bg: #0b1016;
+            --primary-gold: linear-gradient(180deg, #ffce3a 0%, #fcc316 100%);
+            --border-color: #2a343f;
+            --text-main: #ffffff;
+            --text-muted: #808e9b;
+            --danger-color: #ff5e5e;
+        }
 
-<style>
-:root{
-    --bg-color:#060a10;
-    --card-bg:#10161f;
-    --input-bg:#0b1016;
-    --primary-gold:linear-gradient(180deg,#ffce3a 0%,#fcc316 100%);
-    --border-color:#2a343f;
-    --text-main:#ffffff;
-    --text-muted:#808e9b;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at center, rgba(31,48,71,.4) 0%, rgba(6,10,16,1) 70%);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-body{
-    background-color:var(--bg-color);
-    background-image:radial-gradient(circle at center, rgba(31,48,71,.4) 0%, rgba(6,10,16,1) 70%);
-    color:var(--text-main);
-    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    padding:20px;
-}
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
 
-.container{
-    width:100%;
-    max-width:480px;
-    text-align:center;
-}
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            padding: 15px 25px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
 
-.logo-box{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:15px;
-    margin-bottom:25px;
-}
+        .user-info h2 {
+            font-size: 1.2rem;
+            color: var(--text-main);
+        }
 
-.ball-8{
-    background:#fff;
-    color:#000;
-    width:50px;
-    height:50px;
-    border-radius:50%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-weight:900;
-    font-size:1.6rem;
-}
+        .user-info p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
 
-.logo-text{
-    font-size:2.5rem;
-    font-weight:900;
-    font-style:italic;
-}
+        .balance-box {
+            text-align: left;
+        }
 
-.logo-text span{
-    color:#fcc316;
-}
+        .balance-amount {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fcc316;
+        }
 
-.card{
-    background:var(--card-bg);
-    border:1px solid var(--border-color);
-    border-radius:28px;
-    padding:30px;
-    box-shadow:0 20px 50px rgba(0,0,0,.7);
-}
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
 
-.tabs{
-    display:flex;
-    background:#080c12;
-    border-radius:14px;
-    margin-bottom:30px;
-    padding:5px;
-}
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 18px;
+            text-align: center;
+        }
 
-.tab{
-    flex:1;
-    padding:14px;
-    border:none;
-    background:none;
-    color:var(--text-muted);
-    font-weight:bold;
-    cursor:pointer;
-    font-size:1rem;
-    transition:.3s;
-}
+        .stat-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
 
-.tab.active{
-    background:var(--primary-gold);
-    color:#000;
-    border-radius:12px;
-}
+        .stat-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
 
-.form-content{
-    display:none;
-    text-align:right;
-}
+        .warning-box {
+            background: rgba(255, 94, 94, 0.1);
+            border: 1px solid rgba(255, 94, 94, 0.25);
+            color: var(--danger-color);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
 
-.form-content.active{
-    display:block;
-}
+        .section-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            text-align: right;
+        }
 
-.group{
-    margin-bottom:18px;
-}
+        .matches-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-input{
-    width:100%;
-    padding:16px;
-    background:var(--input-bg);
-    border:1px solid var(--border-color);
-    border-radius:14px;
-    color:white;
-    font-size:1rem;
-    outline:none;
-}
+        .match-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 18px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-input:focus{
-    border-color:#fcc316;
-}
+        .match-item:hover {
+            border-color: #fcc316;
+            background: #141c27;
+        }
 
-.country-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-    margin-bottom:20px;
-}
+        .match-info {
+            text-align: right;
+        }
 
-.c-item{
-    background:var(--input-bg);
-    border:1px solid var(--border-color);
-    padding:14px;
-    border-radius:12px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    cursor:pointer;
-    transition:.2s;
-}
+        .match-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
 
-.c-item:hover{
-    border-color:#555;
-}
+        .match-reward {
+            color: #ffce3a;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
 
-.c-item.selected{
-    border:2px solid #fcc316;
-    background:#121a24;
-}
+        .match-price {
+            background: var(--primary-gold);
+            color: #000;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1rem;
+        }
 
-.alert-box{
-    background:rgba(255,94,94,.15);
-    color:#ff5e5e;
-    border:1px solid rgba(255,94,94,.3);
-    border-radius:15px;
-    padding:12px;
-    font-size:.9rem;
-    margin-bottom:15px;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    gap:10px;
-}
+        /* ستايل نافذة التنبيه المودال الاحترافية */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
 
-.btn{
-    width:100%;
-    padding:18px;
-    background:var(--primary-gold);
-    border:none;
-    border-radius:16px;
-    color:#000;
-    font-weight:800;
-    font-size:1.1rem;
-    cursor:pointer;
-}
+        .modal-box {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
 
-.btn:disabled{
-    opacity:.8;
-    cursor:not-allowed;
-}
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
 
-.loader{
-    width:22px;
-    height:22px;
-    border:3px solid #000;
-    border-bottom-color:transparent;
-    border-radius:50%;
-    display:inline-block;
-    animation:rotation 1s linear infinite;
-}
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--danger-color);
+        }
 
-@keyframes rotation{
-    0%{transform:rotate(0deg);}
-    100%{transform:rotate(360deg);}
-}
+        .modal-text {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
 
-.footer-text{
-    margin-top:25px;
-    color:#4d5d6d;
-    font-size:.85rem;
-}
-</style>
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-gold);
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+    </style>
 </head>
-
 <body>
 
 <div class="container">
 
-    <div class="logo-box">
-        <div class="ball-8">8</div>
-        <h1 class="logo-text">8POOL<span>CASH</span></h1>
+    <div class="header">
+        <div class="user-info">
+            <h2 id="userDisplayName">تحميل...</h2>
+            <p>مرحباً بك في حسابك</p>
+        </div>
+        <div class="balance-box">
+            <p style="color: var(--text-muted); font-size: 0.8rem; text-align: left;">الرصيد المتاح</p>
+            <div class="balance-amount"><span id="balanceDisplay">0</span> DH</div>
+        </div>
     </div>
 
-    <div class="card">
-
-        <div class="tabs">
-            <button class="tab active" id="loginTab" onclick="showForm('login')">
-                تسجيل الدخول
-            </button>
-
-            <button class="tab" id="registerTab" onclick="showForm('register')">
-                حساب جديد
-            </button>
-        </div>
-
-        <div id="statusAlert" class="alert-box">
-            <span id="statusText"></span>
-            <span>⚠️</span>
-        </div>
-
-        <!-- LOGIN FORM -->
-        <div id="loginForm" class="form-content active">
-            <div class="group">
-                <input type="text" id="lUser" placeholder="اسم المستخدم">
-            </div>
-
-            <div class="group">
-                <input type="password" id="lPass" placeholder="كلمة المرور">
-            </div>
-
-            <button class="btn" id="lBtn" onclick="handleLogin()">
-                <span id="lBtnText">دخول ⚡</span>
-            </button>
-        </div>
-
-        <!-- REGISTER FORM -->
-        <div id="registerForm" class="form-content">
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <input type="text" id="fName" placeholder="الاسم الأول" style="flex:1">
-                <input type="text" id="lName" placeholder="اسم العائلة" style="flex:1">
-            </div>
-
-            <div class="group">
-                <input type="email" id="email" placeholder="البريد الإلكتروني (Gmail)">
-            </div>
-
-            <label style="display:block; margin-bottom:10px; font-size:.9rem; color:var(--text-muted); text-align:right;">
-                الدولة *
-            </label>
-
-            <div class="country-grid">
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>المغرب</span><span>🇲🇦</span>
-                </div>
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>الجزائر</span><span>🇩🇿</span>
-                </div>
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>تونس</span><span>🇹🇳</span>
-                </div>
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>الكويت</span><span>🇰🇼</span>
-                </div>
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>العراق</span><span>🇮🇶</span>
-                </div>
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>السعودية</span><span>🇸🇦</span>
-                </div>
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>الإمارات</span><span>🇦🇪</span>
-                </div>
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>الأردن</span><span>🇯🇴</span>
-                </div>
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>مصر</span><span>🇪🇬</span>
-                </div>
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>ليبيا</span><span>🇱🇾</span>
-                </div>
-            </div>
-
-            <div class="group">
-                <input type="text" id="rUser" placeholder="اسم المستخدم">
-            </div>
-
-            <div class="group">
-                <input type="password" id="rPass" placeholder="كلمة المرور (6+ أحرف)">
-            </div>
-
-            <button class="btn" id="rBtn" onclick="handleRegister()">
-                <span id="rBtnText">إنشاء الحساب 🎱</span>
-            </button>
-        </div>
-
+    <div id="warningBox" class="warning-box">
+        <span>⚠️</span>
+        <span id="warningText">رصيدك الحالي غير كافي لتفعيل النظام، يرجى شحن حسابك.</span>
     </div>
 
-    <div class="footer-text">
-        بالتسجيل توافق على الشروط. العب بمسؤولية.
+    <div class="stats-grid">
+        <div class="stat-card">
+            <p>إجمالي الأرباح 💰</p>
+            <h3 id="totalEarningsDisplay">0 DH</h3>
+        </div>
+        <div class="stat-card">
+            <p>المباريات الملعوبة 🎮</p>
+            <h3 id="totalMatchesDisplay">0</h3>
+        </div>
+    </div>
+
+    <h3 class="section-title">اختر فئة المباراة للعب الفوري:</h3>
+    
+    <div class="matches-grid">
+        <div class="match-item" onclick="selectMatch(50)">
+            <div class="match-info">
+                <div class="match-title">مباراة التحدي البرونزية</div>
+                <div class="match-reward">الجائزة عند الفوز: 95 DH</div>
+            </div>
+            <div class="match-price">50 DH</div>
+        </div>
+
+        <div class="match-item" onclick="selectMatch(100)">
+            <div class="match-info">
+                <div class="match-title">مباراة التحدي الفضية</div>
+                <div class="match-reward">الجائزة عند الفوز: 190 DH</div>
+            </div>
+            <div class="match-price">100 DH</div>
+        </div>
+
+        <div class="match-item" onclick="selectMatch(150)">
+            <div class="match-info">
+                <div class="match-title">مباراة التحدي الذهبية</div>
+                <div class="match-reward">الجائزة عند الفوز: 285 DH</div>
+            </div>
+            <div class="match-price">150 DH</div>
+        </div>
+
+        <div class="match-item" onclick="selectMatch(200)">
+            <div class="match-info">
+                <div class="match-title">مباراة التحدي البلاتينية</div>
+                <div class="match-reward">الجائزة عند الفوز: 380 DH</div>
+            </div>
+            <div class="match-price">200 DH</div>
+        </div>
+
+        <div class="match-item" onclick="selectMatch(300)">
+            <div class="match-info">
+                <div class="match-title">مباراة التحدي الماسية</div>
+                <div class="match-reward">الجائزة عند الفوز: 570 DH</div>
+            </div>
+            <div class="match-price">300 DH</div>
+        </div>
     </div>
 
 </div>
 
-<!-- استدعاء حزم Firebase الرسمية لتنفيذ العمليات على السيرفر -->
+<div id="insufficientModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-icon">❌</div>
+        <div class="modal-title">رصيدك غير كافي!</div>
+        <div class="modal-text">
+            رصيدك الحالي أقل من تكلفة دخول هذه المباراة المحددة. <br>
+            يرجى التواصل مع الإدارة لشحن حسابك والمتابعة.
+        </div>
+        <button class="modal-btn" onclick="closeModal()">حسناً، فهمت</button>
+    </div>
+</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-  // إعدادات Firebase الخاصة بتطبيقك
+  // إعدادات Firebase الخاصة بك
   const firebaseConfig = {
     apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
     authDomain: "poolcash-6692c.firebaseapp.com",
@@ -341,165 +328,72 @@ input:focus{
     appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
   };
 
-  // تهيئة الاتصال
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  // دالة إنشاء الحساب والتحقق من البيانات وصيغة البريد الإلكتروني
-  window.handleRegister = async function() {
-      const firstName = document.getElementById('fName').value.trim();
-      const lastName = document.getElementById('lName').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const user = document.getElementById('rUser').value.trim();
-      const pass = document.getElementById('rPass').value;
+  // جلب اسم المستخدم من الـ LocalStorage لتأكيد الجلسة
+  const currentUsername = localStorage.getItem('username');
 
-      const btn = document.getElementById('rBtn');
-      const text = document.getElementById('rBtnText');
+  // متغير عالمي لحفظ الصولد الحالي للكليان وسط الكود
+  window.globalUserBalance = 0;
 
-      // 1. التحقق الفوري من تعبئة الحقول الأساسية
-      if(!firstName || !lastName || !email || !user || pass.length < 6){
-          triggerAlert('تأكد من إدخال جميع البيانات (كلمة المرور لا تقل عن 6 أحرف)');
-          return;
-      }
-
-      // 2. فحص صيغة الإيميل (تأكيد وجود الـ @ والـ دوت كوم والتركيبة الصحيحة)
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-          triggerAlert('يرجى إدخال بريد إلكتروني صحيح وصيغة معتمدة (مثال: email@gmail.com)');
-          return;
-      }
-
-      if(window.selectedCountryName === ""){
-          triggerAlert('اختر الدولة من فضلك');
-          return;
-      }
-
-      document.getElementById('statusAlert').style.display = 'none';
-      btn.disabled = true;
-      text.innerHTML = '<span class="loader"></span>';
-
-      try {
-          // التحقق من السيرفر إذا كان اسم المستخدم مستعملاً من قبل شخص آخر
-          const userRef = ref(db, 'users/' + user);
-          const snapshot = await get(userRef);
-
-          if (snapshot.exists()) {
-              triggerAlert('اسم المستخدم هذا محجوز بالفعل! اختر اسماً آخر.');
-              btn.disabled = false;
-              text.innerHTML = 'إنشاء الحساب 🎱';
-              return;
-          }
-
-          // حفظ البيانات كاملة في المسار المخصص باسم المستخدم الفريد
-          await set(userRef, {
-              firstName: firstName,
-              lastName: lastName,
-              email: email,
-              country: window.selectedCountryName,
-              username: user,
-              password: pass,
-              balance: 0,   // الصولد الأولي الافتراضي (الرصيد المتاح للشحن)
-              earnings: 0   // إجمالي الأرباح الافتراضي منفصل تماماً عن الشحن
-          });
-
-          // تخزين الهوية محلياً لتثبيت الجلسة
-          localStorage.setItem('username', user);
-
-          setTimeout(() => {
-              window.location.replace("ar.html");
-          }, 1500);
-
-      } catch (error) {
-          triggerAlert('خطأ أثناء عملية التسجيل: ' + error.message);
-          btn.disabled = false;
-          text.innerHTML = 'إنشاء الحساب 🎱';
-      }
+  if (currentUsername) {
+      document.getElementById('userDisplayName').innerText = "@" + currentUsername;
+      startFirebaseSync(currentUsername);
+  } else {
+      // إذا لم يكن مسجلاً يرجع لصفحة الدخول
+      window.location.replace("index.html");
   }
 
-  // دالة تسجيل الدخول والتحقق من صحة البيانات من السيرفر مباشرة
-  window.handleLogin = async function() {
-      const user = document.getElementById('lUser').value.trim();
-      const pass = document.getElementById('lPass').value;
-
-      const btn = document.getElementById('lBtn');
-      const text = document.getElementById('lBtnText');
-
-      if(!user || !pass) {
-          triggerAlert('أدخل اسم المستخدم وكلمة المرور');
-          return;
-      }
-
-      document.getElementById('statusAlert').style.display = 'none';
-      btn.disabled = true;
-      text.innerHTML = '<span class="loader"></span>';
-
-      try {
-          // جلب بيانات اسم المستخدم المكتوب من السيرفر للتحقق منها
-          const userRef = ref(db, 'users/' + user);
-          const snapshot = await get(userRef);
-
-          if (snapshot.exists()) {
-              const userData = snapshot.val();
+  // نظام المزامنة والربط الفوري والمستمر (Realtime Listener) لسرعة فائقة ف الشحن
+  function startFirebaseSync(username) {
+      const userRef = ref(db, 'users/' + username);
+      
+      onValue(userRef, (snapshot) => {
+          const userData = snapshot.val();
+          if (userData) {
+              // 1. جلب الصولد المتاح للشحن وتحديث الشاشة فوراً
+              window.globalUserBalance = userData.balance !== undefined ? parseFloat(userData.balance) : 0;
+              document.getElementById('balanceDisplay').innerText = window.globalUserBalance;
               
-              // مقارنة كلمة المرور المدخلة بتلك المخزنة على السيرفر
-              if (userData.password === pass) {
-                  localStorage.setItem('username', user);
+              // 2. جلب الأرباح الحقيقية بوحدها بلا تخلاط مع الشحن
+              let globalUserEarnings = userData.earnings !== undefined ? parseFloat(userData.earnings) : 0;
+              document.getElementById('totalEarningsDisplay').innerText = globalUserEarnings + " DH";
+              
+              // 3. جلب عدد الماتشات الملعوبة
+              let matchesPlayed = userData.matchesPlayed !== undefined ? userData.matchesPlayed : 0;
+              document.getElementById('totalMatchesDisplay').innerText = matchesPlayed;
 
-                  setTimeout(() => {
-                      window.location.replace("ar.html");
-                  }, 1200);
+              // 4. تطبيق المنطق الذكي رقم 1: إخفاء ميساج التحذير إذا كان الصولد أكبر من 0
+              const warningBox = document.getElementById('warningBox');
+              if (window.globalUserBalance > 0) {
+                  warningBox.style.display = 'none'; // يختفي تماماً
               } else {
-                  triggerAlert('المعلومات غير صحيحة! تأكد من كلمة المرور.');
-                  btn.disabled = false;
-                  text.innerHTML = 'دخول ⚡';
+                  warningBox.style.display = 'flex'; // يظهر إذا كان 0 نيشان
               }
-          } else {
-              triggerAlert('اسم المستخدم غير موجود، يرجى فتح حساب أولاً.');
-              btn.disabled = false;
-              text.innerHTML = 'دخول ⚡';
           }
+      }, (error) => {
+          console.error("Firebase Sync Error: ", error);
+      });
+  }
 
-      } catch (error) {
-          triggerAlert('خطأ في الاتصال بقاعدة البيانات: ' + error.message);
-          btn.disabled = false;
-          text.innerHTML = 'دخول ⚡';
+  // دالة فحص وتحديد الماتشات بناءً على ثمن كل مباراة (المنطق رقم 2)
+  window.selectMatch = function(matchPrice) {
+      // المقارنة: واش الصولد ديالو الحالي كافي لثمن هاد الماتش بالخصوص؟
+      if (window.globalUserBalance < matchPrice) {
+          // إذا كان ما كافيش، نطلعو التنبيه المخصص (Modal)
+          document.getElementById('insufficientModal').style.display = 'flex';
+      } else {
+          // إذا كان كافي، كيدوز يلعب عادي
+          alert('جاري الدخول للمباراة... حظاً موفقاً! 🎱');
+          // هنا يمكنك وضع السطر المخصص للتحويل لصفحة اللعب أو بدأ الجيم
       }
   }
-</script>
 
-<script>
-// وظائف تبديل الواجهات الجانبية
-function showForm(type){
-    document.getElementById('statusAlert').style.display = 'none';
-
-    if(type === 'login') {
-        document.getElementById('loginForm').classList.add('active');
-        document.getElementById('registerForm').classList.remove('active');
-        document.getElementById('loginTab').classList.add('active');
-        document.getElementById('registerTab').classList.remove('active');
-    } else {
-        document.getElementById('registerForm').classList.add('active');
-        document.getElementById('loginForm').classList.remove('active');
-        document.getElementById('registerTab').classList.add('active');
-        document.getElementById('loginTab').classList.remove('active');
-    }
-}
-
-window.selectedCountryName = "";
-
-function selectCountry(el){
-    document.querySelectorAll('.c-item').forEach(item=>{
-        item.classList.remove('selected');
-    });
-    el.classList.add('selected');
-    window.selectedCountryName = el.querySelector('span').innerText;
-}
-
-function triggerAlert(msg){
-    const box = document.getElementById('statusAlert');
-    document.getElementById('statusText').innerText = msg;
-    box.style.display = 'flex';
-}
+  // دالة إغلاق النافذة المنبثقة
+  window.closeModal = function() {
+      document.getElementById('insufficientModal').style.display = 'none';
+  }
 </script>
 
 </body>
