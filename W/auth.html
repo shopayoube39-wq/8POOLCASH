@@ -325,7 +325,141 @@ input:focus{
 
 </div>
 
+<!-- استدعاء حزم Firebase الرسمية لتنفيذ العمليات على السيرفر -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  // إعدادات Firebase الخاصة بتطبيقك
+  const firebaseConfig = {
+    apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
+    authDomain: "poolcash-6692c.firebaseapp.com",
+    databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
+    projectId: "poolcash-6692c",
+    storageBucket: "poolcash-6692c.firebasestorage.app",
+    messagingSenderId: "866544389541",
+    appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
+  };
+
+  // تهيئة الاتصال
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // دالة إنشاء الحساب والتحقق من عدم تكرار اسم المستخدم
+  window.handleRegister = async function() {
+      const firstName = document.getElementById('fName').value.trim();
+      const lastName = document.getElementById('lName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const user = document.getElementById('rUser').value.trim();
+      const pass = document.getElementById('rPass').value;
+
+      const btn = document.getElementById('rBtn');
+      const text = document.getElementById('rBtnText');
+
+      if(!firstName || !lastName || !email || !user || pass.length < 6){
+          triggerAlert('تأكد من إدخال جميع البيانات (كلمة المرور لا تقل عن 6 أحرف)');
+          return;
+      }
+
+      if(window.selectedCountryName === ""){
+          triggerAlert('اختر الدولة من فضلك');
+          return;
+      }
+
+      document.getElementById('statusAlert').style.display = 'none';
+      btn.disabled = true;
+      text.innerHTML = '<span class="loader"></span>';
+
+      try {
+          // التحقق من السيرفر إذا كان اسم المستخدم مستعملاً من قبل شخص آخر
+          const userRef = ref(db, 'users/' + user);
+          const snapshot = await get(userRef);
+
+          if (snapshot.exists()) {
+              triggerAlert('اسم المستخدم هذا محجوز بالفعل! اختر اسماً آخر.');
+              btn.disabled = false;
+              text.innerHTML = 'إنشاء الحساب 🎱';
+              return;
+          }
+
+          // حفظ البيانات كاملة في المسار المخصص باسم المستخدم الفريد مع رصيد أولي 0
+          await set(userRef, {
+              firstName: firstName,
+              lastName: lastName,
+              email: email,
+              country: window.selectedCountryName,
+              username: user,
+              password: pass,
+              balance: 0  // الصولد الأولي الافتراضي
+          });
+
+          // تخزين الهوية محلياً لتثبيت الجلسة
+          localStorage.setItem('username', user);
+
+          setTimeout(() => {
+              window.location.replace("ar.html");
+          }, 1500);
+
+      } catch (error) {
+          triggerAlert('خطأ أثناء عملية التسجيل: ' + error.message);
+          btn.disabled = false;
+          text.innerHTML = 'إنشاء الحساب 🎱';
+      }
+  }
+
+  // دالة تسجيل الدخول والتحقق من صحة البيانات من السيرفر مباشرة
+  window.handleLogin = async function() {
+      const user = document.getElementById('lUser').value.trim();
+      const pass = document.getElementById('lPass').value;
+
+      const btn = document.getElementById('lBtn');
+      const text = document.getElementById('lBtnText');
+
+      if(!user || !pass) {
+          triggerAlert('أدخل اسم المستخدم وكلمة المرور');
+          return;
+      }
+
+      document.getElementById('statusAlert').style.display = 'none';
+      btn.disabled = true;
+      text.innerHTML = '<span class="loader"></span>';
+
+      try {
+          // جلب بيانات اسم المستخدم المكتوب من السيرفر للتحقق منها
+          const userRef = ref(db, 'users/' + user);
+          const snapshot = await get(userRef);
+
+          if (snapshot.exists()) {
+              const userData = snapshot.val();
+              
+              // مقارنة كلمة المرور المدخلة بتلك المخزنة على السيرفر
+              if (userData.password === pass) {
+                  localStorage.setItem('username', user);
+
+                  setTimeout(() => {
+                      window.location.replace("ar.html");
+                  }, 1200);
+              } else {
+                  triggerAlert('المعلومات غير صحيحة! تأكد من كلمة المرور.');
+                  btn.disabled = false;
+                  text.innerHTML = 'دخول ⚡';
+              }
+          } else {
+              triggerAlert('اسم المستخدم غير موجود، يرجى فتح حساب أولاً.');
+              btn.disabled = false;
+              text.innerHTML = 'دخول ⚡';
+          }
+
+      } catch (error) {
+          triggerAlert('خطأ في الاتصال بقاعدة البيانات: ' + error.message);
+          btn.disabled = false;
+          text.innerHTML = 'دخول ⚡';
+      }
+  }
+</script>
+
 <script>
+// وظائف تبديل الواجهات الجانبية
 function showForm(type){
     document.getElementById('statusAlert').style.display = 'none';
 
@@ -342,84 +476,20 @@ function showForm(type){
     }
 }
 
-let selectedCountryName = "";
+window.selectedCountryName = "";
 
 function selectCountry(el){
     document.querySelectorAll('.c-item').forEach(item=>{
         item.classList.remove('selected');
     });
     el.classList.add('selected');
-    selectedCountryName = el.querySelector('span').innerText;
+    window.selectedCountryName = el.querySelector('span').innerText;
 }
 
 function triggerAlert(msg){
     const box = document.getElementById('statusAlert');
     document.getElementById('statusText').innerText = msg;
     box.style.display = 'flex';
-}
-
-function handleRegister(){
-    const user = document.getElementById('rUser').value.trim();
-    const pass = document.getElementById('rPass').value;
-    const mail = document.getElementById('email').value;
-
-    const btn = document.getElementById('rBtn');
-    const text = document.getElementById('rBtnText');
-
-    if(!user || !mail || pass.length < 6){
-        triggerAlert('تأكد من إدخال جميع البيانات');
-        return;
-    }
-
-    if(selectedCountryName === ""){
-        triggerAlert('اختر الدولة');
-        return;
-    }
-
-    // إخفاء أي تنبيه قديم لمنع التداخل
-    document.getElementById('statusAlert').style.display = 'none';
-    
-    btn.disabled = true;
-    text.innerHTML = '<span class="loader"></span>';
-
-    // الحفظ المباشر لضمان عدم ضياع الداتا
-    localStorage.setItem('u8', user);
-    localStorage.setItem('p8', pass);
-    localStorage.setItem('username', user);
-
-    setTimeout(()=>{
-        window.location.replace("ar.html");
-    }, 1800);
-}
-
-function handleLogin(){
-    const user = document.getElementById('lUser').value.trim();
-    const pass = document.getElementById('lPass').value;
-
-    const savedU = localStorage.getItem('u8');
-    const savedP = localStorage.getItem('p8');
-
-    const btn = document.getElementById('lBtn');
-    const text = document.getElementById('lBtnText');
-
-    if(!user || !pass) {
-        triggerAlert('أدخل اسم المستخدم وكلمة المرور');
-        return;
-    }
-
-    if(user === savedU && pass === savedP){
-        document.getElementById('statusAlert').style.display = 'none';
-        btn.disabled = true;
-        text.innerHTML = '<span class="loader"></span>';
-
-        localStorage.setItem('username', user);
-
-        setTimeout(()=>{
-            window.location.replace("ar.html");
-        }, 1200);
-    }else{
-        triggerAlert('المعلومات غير صحيحة!');
-    }
 }
 </script>
 
