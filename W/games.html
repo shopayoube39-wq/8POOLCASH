@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
+<title>Chapo Chicken - Cyber Neon Secure Edition</title>
+
+<style>
+:root {
+  --bg-dark: #020408;
+  --panel-bg: rgba(8, 14, 30, 0.85);
+  --accent-gold: #ffb703;
+  --neon-cyan: #00f0ff;
+  --neon-pink: #ff007f;
+  --success-neon: #39ff14;
+  --fever-purple: #9d4edd;
+  --text-main: #ffffff;
+  --text-muted: #4e6178;
+  --border-neon: rgba(0, 240, 255, 0.2);
+}
+
+* {
+  box-sizing: border-box; margin: 0; padding: 0;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-dark);
+  background-image: 
+    radial-gradient(circle at 0% 0%, rgba(0, 240, 255, 0.18) 0%, transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(255, 0, 127, 0.15) 0%, transparent 40%);
+  color: var(--text-main); min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
+  padding: 15px; overflow-x: hidden; transition: transform 0.1s ease;
+}
+
+body.rtl { text-align: right; }
+body.rtl .stat-box, body.rtl .shield-toggle-box, body.rtl .toast, body.rtl .ai-predictor-box { flex-direction: row-reverse; text-align: right; }
+
+@keyframes screenShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-8px, 5px) rotate(-1deg); }
+  40% { transform: translate(6px, -6px) rotate(1deg); }
+  60% { transform: translate(-5px, 2px) rotate(-0.5deg); }
+  80% { transform: translate(4px, 4px) rotate(0.5deg); }
+}
+body.shake { animation: screenShake 0.4s ease-in-out; }
+body.flash-danger { animation: flashRed 0.4s ease-out; }
+@keyframes flashRed { 0% { background-color: rgba(255, 0, 127, 0.4); } 100% { background-color: var(--bg-dark); } }
+
+body.fever-glow-active { animation: feverNeonPulse 1.5s infinite alternate; }
+@keyframes feverNeonPulse {
+  0% { box-shadow: inset 0 0 20px rgba(255, 0, 127, 0.2); }
+  100% { box-shadow: inset 0 0 50px rgba(157, 78, 221, 0.4); }
+}
+
+#toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
+.toast {
+  background: rgba(6, 11, 25, 0.9); border: 1px solid var(--neon-cyan); padding: 12px 20px; 
+  border-radius: 12px; color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 5px 15px rgba(0,240,255,0.2); animation: slideIn 0.3s ease forwards;
+}
+.toast.danger { border-color: var(--neon-pink); box-shadow: 0 5px 15px rgba(255,0,127,0.2); }
+.toast.success { border-color: var(--success-neon); box-shadow: 0 5px 15px rgba(57,255,20,0.2); }
+@keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+.top-global-bar {
+  width: 100%; max-width: 1280px; display: flex; justify-content: space-between; align-items: center;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+  padding: 12px 20px; border-radius: 16px; margin-bottom: 15px; backdrop-filter: blur(10px);
+}
+.vip-level-box { display: flex; align-items: center; gap: 10px; }
+.xp-bar-bg { width: 120px; height: 8px; background: #111827; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+.xp-bar-fill { width: 20%; height: 100%; background: linear-gradient(90deg, var(--neon-cyan), var(--success-neon)); transition: width 0.4s ease; }
+
+.dimo-anti-cheat-badge {
+  display: none;
+  background: linear-gradient(135deg, #ffb703, #ff007f);
+  color: #000;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  animation: dimoBlink 1s infinite alternate;
+  box-shadow: 0 0 15px var(--accent-gold);
+}
+@keyframes dimoBlink { 0% { opacity: 0.6; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1.05); } }
+
+.fever-gauge-box { display: flex; align-items: center; gap: 8px; }
+.fever-bar-bg { width: 150px; height: 12px; background: #000; border-radius: 6px; border: 1px solid rgba(255,0,127,0.2); overflow: hidden; position: relative;}
+.fever-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--neon-pink), var(--fever-purple)); transition: width 0.3s ease; }
+.fever-bar-fill.fever-maxed { animation: feverBarGlow 0.8s infinite alternate; }
+@keyframes feverBarGlow { 0% { box-shadow: 0 0 4px var(--neon-pink); } 100% { box-shadow: 0 0 15px var(--fever-purple); } }
+
+.lang-selector { display: flex; gap: 3px; background: #000; padding: 3px; border-radius: 8px; }
+.lang-btn { background: transparent; border: none; color: var(--text-muted); padding: 5px 10px; font-weight: 800; font-size: 11px; border-radius: 6px; cursor: pointer; }
+.lang-btn.active { background: var(--neon-cyan); color: #000; }
+
+.main-layout { display: flex; gap: 20px; max-width: 1280px; width: 100%; margin-bottom: 20px; }
+.game-core {
+  flex: 2; display: flex; flex-direction: row; gap: 20px; background: var(--panel-bg); backdrop-filter: blur(25px);
+  padding: 25px; border-radius: 28px; border: 1px solid var(--border-neon); box-shadow: 0 0 40px rgba(0, 240, 255, 0.05);
+}
+.control-panel, .side-panel { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 290px; }
+.side-panel { background: rgba(8, 14, 30, 0.6); padding: 20px; border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.02); }
+
+.brand-title { font-size: 24px; font-weight: 900; text-align: center; text-shadow: 0 0 10px var(--neon-cyan); text-transform: uppercase; }
+.brand-title span { color: var(--accent-gold); }
+
+.input-group { display: flex; flex-direction: column; gap: 5px; }
+.input-label { font-size: 11px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
+
+.toggle-group { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: rgba(0,0,0,0.5); padding: 4px; border-radius: 12px; }
+.toggle-btn { background: transparent; border: none; color: var(--text-muted); padding: 10px; font-weight: 800; font-size: 11px; border-radius: 8px; cursor: pointer; }
+.toggle-btn.active { color: #000; background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+.toggle-btn.active.danger-mode { color: #fff; background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
+
+.stat-box { background: rgba(0, 0, 0, 0.4); padding: 12px 16px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.01); }
+.stat-label { color: var(--text-muted); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+.stat-value { font-size: 18px; font-weight: 800; }
+#balance { color: var(--success-neon); text-shadow: 0 0 8px rgba(57, 255, 20, 0.2); }
+
+.ai-predictor-box {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.05), rgba(0, 0, 0, 0.6));
+  border: 1px solid rgba(0, 240, 255, 0.3); padding: 12px; border-radius: 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.ai-pulse-dot { width: 8px; height: 8px; background: var(--neon-cyan); border-radius: 50%; display: inline-block; animation: aiPulse 0.8s infinite alternate; }
+@keyframes aiPulse { 0% { opacity: 0.3; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px var(--neon-cyan); } }
+
+.bet-input-container { display: flex; flex-direction: column; gap: 6px; background: rgba(0,0,0,0.5); border-radius: 14px; padding: 6px; border: 1px solid rgba(255,255,255,0.05); }
+.bet-fields-wrapper { display: flex; align-items: center; width: 100%; }
+.bet-quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; width: 100%; }
+.bet-btn-sm { background: rgba(255,255,255,0.04); border: none; color: var(--neon-cyan); padding: 8px; font-weight: 800; font-size: 11px; border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: center; }
+.bet-btn-sm:hover { background: rgba(0, 240, 255, 0.15); color: #fff; }
+
+input[type="number"], select { width: 100%; background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 800; padding: 5px; outline: none; text-align: center; }
+select { color: var(--neon-cyan); cursor: pointer; -webkit-appearance: none; }
+
+.shield-toggle-box {
+  background: rgba(255, 0, 127, 0.03); border: 1px dashed rgba(255, 0, 127, 0.2);
+  padding: 10px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+}
+.shield-toggle-box.shield-on { border-color: var(--neon-pink); background: rgba(255, 0, 127, 0.15); box-shadow: 0 0 10px rgba(255, 0, 127, 0.1); }
+
+.main-btn {
+  width: 100%; padding: 15px; border-radius: 14px; border: none; font-size: 15px; font-weight: 800; cursor: pointer;
+  display: flex; justify-content: center; align-items: center; gap: 8px; text-transform: uppercase; transition: all 0.2s;
+}
+#btn-start { background: linear-gradient(135deg, #00f0ff, #0056b3); color: white; }
+#btn-start:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3); }
+#btn-cashout { background: linear-gradient(135deg, #39ff14, #104a10); color: #000; font-weight: 900; }
+#btn-cashout:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(57, 255, 20, 0.3); }
+button:disabled { opacity: 0.12; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+.game-field { flex: 1.4; background: rgba(0, 0, 0, 0.5); border-radius: 20px; padding: 20px; display: flex; gap: 15px; align-items: center; }
+.multiplier-ladder { display: flex; flex-direction: column-reverse; gap: 8px; justify-content: space-between; height: 100%; min-width: 65px; }
+.ladder-step { padding: 5px; border-radius: 8px; font-size: 11px; font-weight: 900; color: var(--text-muted); background: rgba(255,255,255,0.01); text-align: center; }
+.ladder-step.active { color: #000; background: var(--accent-gold); box-shadow: 0 0 12px var(--accent-gold); transform: scale(1.05); }
+
+.grid { flex: 1; display: flex; flex-direction: column-reverse; gap: 10px; transition: opacity 0.3s; }
+.grid.bot-lock { pointer-events: none; opacity: 0.7; }
+.row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 4px; border-radius: 14px; border: 1px solid transparent; transition: 0.2s; }
+.row.active-row { background: rgba(0, 240, 255, 0.02); border: 1px solid rgba(0, 240, 255, 0.2); }
+
+.cell {
+  height: 70px; background: #060912; border-radius: 12px; display: flex; justify-content: center; align-items: center;
+  font-size: 24px; cursor: pointer; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.01);
+}
+.row.active-row .cell:hover { transform: translateY(-2px); background: #111a2e; border-color: var(--neon-cyan); box-shadow: 0 4px 12px rgba(0, 240, 255, 0.2); }
+.row:not(.active-row) .cell { cursor: not-allowed; opacity: 0.2; }
+
+.cell.revealed-safe { background: linear-gradient(135deg, #39ff14, #052605) !important; border-color: var(--success-neon); animation: popOpen 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.cell.revealed-mine { background: linear-gradient(135deg, var(--neon-pink), #38021c) !important; border-color: var(--neon-pink); }
+.cell.revealed-mystery { background: linear-gradient(135deg, var(--accent-gold), #4a3200) !important; border-color: var(--accent-gold); animation: popOpen 0.2s forwards; }
+
+@keyframes popOpen { 0% { transform: scale(0.8); } 100% { transform: scale(1); } }
+
+.bottom-hub {
+  width: 100%; max-width: 1280px; background: var(--panel-bg); border: 1px solid var(--border-neon);
+  border-radius: 24px; padding: 20px; backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 10px;
+}
+.hub-tabs { display: flex; gap: 10px; border-bottom: 2px solid rgba(255,255,255,0.05); padding-bottom: 12px; margin-bottom: 15px; overflow-x: auto; }
+.hub-tab-btn {
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted);
+  padding: 10px 18px; border-radius: 10px; font-weight: 800; font-size: 12px; cursor: pointer; transition: 0.2s; white-space: nowrap;
+}
+.hub-tab-btn:hover { color: #fff; background: rgba(0, 240, 255, 0.1); }
+.hub-tab-btn.active { color: #000; background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); border-color: var(--neon-cyan); }
+.hub-tab-btn#tab-demo-indicator.demo-active { background: var(--accent-gold) !important; color: #000 !important; box-shadow: 0 0 10px var(--accent-gold); }
+
+.hub-content-panel { display: none; max-height: 300px; overflow-y: auto; }
+.hub-content-panel.active { display: block; }
+
+.stats-history-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.live-chart-box {
+  background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 15px;
+  display: flex; flex-direction: column; justify-content: space-between; min-height: 150px;
+}
+.chart-container { display: flex; align-items: flex-end; gap: 6px; height: 100px; padding-top: 10px; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+.chart-bar { flex: 1; background: var(--neon-cyan); border-radius: 4px 4px 0 0; min-height: 5px; transition: height 0.3s ease, background 0.3s; }
+.chart-bar.win { background: var(--success-neon); }
+.chart-bar.lose { background: var(--neon-pink); }
+
+.hub-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; }
+.hub-table th { color: var(--text-muted); font-weight: 800; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); text-transform: uppercase; font-size: 11px; }
+.hub-table td { padding: 12px 10px; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.02); }
+.status-win { color: var(--success-neon); font-weight: bold; }
+.status-lose { color: var(--neon-pink); font-weight: bold; }
+
+.wallet-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; padding: 10px 0; }
+.wallet-card { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); }
+.wallet-card h4 { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
+
+.lucky-wheel-container { display: flex; flex-direction: column; align-items: center; gap: 10px; background: rgba(0,0,0,0.5); padding: 12px; border-radius: 14px; border: 1px dashed var(--accent-gold); }
+.wheel-graphic { width: 100px; height: 100px; border-radius: 50%; border: 5px solid var(--accent-gold); background: conic-gradient(var(--neon-cyan) 0deg 90deg, var(--neon-pink) 90deg 180deg, var(--fever-purple) 180deg 270deg, var(--success-neon) 270deg 360deg); transition: transform 3s cubic-bezier(0.25, 1, 0.5, 1); }
+
+.mini-stat-card { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.02); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+.mini-stat-card p:first-child { font-size: 11px; color: var(--text-muted); font-weight: 800; }
+.mini-stat-card p:last-child { font-size: 14px; font-weight: 800; color: var(--accent-gold); }
+
+.particle { position: fixed; pointer-events: none; font-size: 20px; z-index: 9999; animation: fly 0.8s ease-out forwards; }
+@keyframes fly { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--mx), var(--my)) scale(0); opacity: 0; } }
+
+@media (max-width: 960px) {
+  .top-global-bar { flex-direction: column; gap: 10px; padding: 10px; }
+  .main-layout { flex-direction: column; gap: 15px; }
+  .game-core { flex-direction: column; padding: 15px; }
+  .game-field { flex-direction: column-reverse; }
+  .multiplier-ladder { flex-direction: row; width: 100%; overflow-x: auto; }
+  .ladder-step { min-width: 55px; }
+  .cell { height: 60px; }
+  .wallet-grid { grid-template-columns: 1fr; }
+  .stats-history-layout { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body onclick="initAudioOnInteraction()">
+
+<div id="toast-container"></div>
+
+<div class="top-global-bar">
+  <div class="vip-level-box">
+    <span style="font-size:11px; font-weight:900; color:var(--accent-gold)">🏆 CLUB VIP <span id="vip-lvl">LVL 1</span></span>
+    <div class="xp-bar-bg"><div class="xp-bar-fill" id="xp-fill"></div></div>
+  </div>
+
+  <div class="dimo-anti-cheat-badge" id="dimo-badge">⚠️ PLAYING IN DIMO MODE</div>
+
+  <div class="fever-gauge-box" id="fever-box">
+    <span style="font-size:11px; font-weight:900; color:var(--neon-pink)">🔥 FEVER COMBO</span>
+    <div class="fever-bar-bg"><div class="fever-bar-fill" id="fever-fill"></div></div>
+  </div>
+
+  <div class="lang-selector">
+    <button class="lang-btn active" onclick="changeLang('fr')">FR</button>
+    <button class="lang-btn" onclick="changeLang('en')">EN</button>
+    <button class="lang-btn" onclick="changeLang('ar')">AR</button>
+  </div>
+</div>
+
+<div class="main-layout" id="main-layout-dir">
+  
+  <div class="game-core">
+    <div class="control-panel">
+      <div class="brand-title" id="txt-logo">CHAPO CHICKEN <span>PRO</span></div>
+      
+      <div class="input-group">
+        <span class="input-label" id="txt-label-risk">Niveau de Risque</span>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="risk-1" onclick="setRisk(1)">1 MINE 💣</button>
+          <button class="toggle-btn" id="risk-2" onclick="setRisk(2)">2 MINES 💣💣</button>
+        </div>
+      </div>
+
+      <div class="ai-predictor-box">
+        <span class="input-label" style="color:var(--neon-cyan); margin:0;"><span class="ai-pulse-dot"></span> AI Hack Predictor:</span>
+        <span style="font-size:14px; font-weight:900; color:var(--success-neon);" id="ai-percentage">94%</span>
+      </div>
+
+      <div class="stat-box">
+        <span class="stat-label" id="txt-label-bal">Solde Vault</span>
+        <span class="stat-value" id="balance">0</span>
+      </div>
+      
+      <div class="stat-box">
+        <span class="stat-label" id="txt-label-mult">Multiplicateur</span>
+        <span class="stat-value" id="multiplier">X 1.00</span>
+      </div>
+
+      <div class="stat-box">
+        <span class="stat-label" id="txt-label-profit">Gain Estimé</span>
+        <span class="stat-value" id="next-profit">0</span>
+      </div>
+      
+      <div class="input-group">
+        <span class="input-label" id="txt-label-bet">Montant de Mise</span>
+        <div class="bet-input-container">
+          <div class="bet-fields-wrapper">
+            <button class="bet-btn-sm" style="padding: 5px 10px;" onclick="adjustBet('half')">½</button>
+            <input type="number" id="bet-amount" value="100" min="10">
+            <button class="bet-btn-sm" style="padding: 5px 10px;" onclick="adjustBet('double')">2X</button>
+          </div>
+          <div class="bet-quick-actions">
+            <button class="bet-btn-sm" onclick="adjustBet('min')">MIN</button>
+            <button class="bet-btn-sm" onclick="adjustBet('add50')">+50</button>
+            <button class="bet-btn-sm" onclick="adjustBet('add100')">+100</button>
+            <button class="bet-btn-sm" onclick="adjustBet('max')">MAX</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="shield-toggle-box" id="shield-box" onclick="toggleShield()">
+        <span style="font-size:11px; font-weight:800;" id="txt-shield-label">🛡️ ACTIVATION BOUCLIER (+25%)</span>
+        <span style="font-size:11px; font-weight:900; color:var(--neon-pink);" id="txt-shield-state">OFF</span>
+      </div>
+      
+      <button id="btn-start" class="main-btn">LANCER CYBER 🚀</button>
+      <button id="btn-cashout" class="main-btn" disabled>CASHOUT FOUDROYANT 💰</button>
+    </div>
+
+    <div class="game-field">
+      <div class="multiplier-ladder" id="ladder"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
+
+  <div class="side-panel">
+    <div class="brand-title" style="font-size:16px; text-shadow:0 0 5px var(--neon-pink)" id="txt-title-auto">🤖 CONFIG AUTO-BOT</div>
+    
+    <div class="input-group">
+      <span class="input-label" id="txt-label-tier">Palier de sortie automatique</span>
+      <div class="bet-input-container">
+        <select id="auto-cashout-tier">
+          <option value="1">Tier 1 (Safe)</option>
+          <option value="2">Tier 2 (Medium)</option>
+          <option value="3">Tier 3 (Risky)</option>
+          <option value="4">Tier 4 (Hardcore)</option>
+          <option value="5">Tier 5 (Legendary)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <span class="input-label" id="txt-label-rounds">Nombre de Sessions (Max 4)</span>
+      <div class="bet-input-container">
+        <input type="number" id="auto-rounds" value="4" min="1" max="4">
+      </div>
+    </div>
+
+    <button id="btn-auto-start" class="main-btn" style="background: linear-gradient(135deg, var(--neon-pink), #540226); color:#fff;">START ROBOT 🤖</button>
+
+    <div class="brand-title" style="font-size:13px; color:var(--accent-gold); margin-top:15px;" id="txt-title-stats">📊 VOS STATISTIQUES LIVE</div>
+    <div class="stats-dashboard">
+      <div class="mini-stat-card"><p id="lbl-st-1">TOTAL PROFIT</p><p id="stat-total-profit">0 🪙</p></div>
+      <div class="mini-stat-card"><p id="lbl-st-2">MAX MULTI</p><p id="stat-max-mult">X 0.00</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-hub">
+  <div class="hub-tabs">
+    <button class="hub-tab-btn active" id="tab-btn-live" onclick="switchTab('live')">🎮 Live Bets</button>
+    <button class="hub-tab-btn" id="tab-btn-history" onclick="switchTab('history')">📊 My Stats & Analytics</button>
+    <button class="hub-tab-btn" id="tab-btn-wallet" onclick="switchTab('wallet')">💰 Wallet & Lucky Wheel</button>
+    <button class="hub-tab-btn" id="tab-demo-indicator" onclick="toggleDemoMode()">💎 DIMO Mode: OFF</button>
+  </div>
+
+  <div class="hub-content-panel active" id="panel-live">
+    <table class="hub-table">
+      <thead>
+        <tr>
+          <th>Player ID</th>
+          <th>Name</th>
+          <th>Bet Size</th>
+          <th>Multiplier</th>
+          <th>Payout Profit</th>
+        </tr>
+      </thead>
+      <tbody id="live-players-rows"></tbody>
+    </table>
+  </div>
+
+  <div class="hub-content-panel" id="panel-history">
+    <div class="stats-history-layout">
+      <div style="overflow-y:auto;">
+        <table class="hub-table">
+          <thead>
+            <tr>
+              <th>Mode</th>
+              <th>Bet</th>
+              <th>Status</th>
+              <th>Payout</th>
+            </tr>
+          </thead>
+          <tbody id="my-history-rows">
+            <tr><td colspan="4" style="color:var(--text-muted); padding:20px;">Aucune donnée.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="live-chart-box">
+        <span class="input-label" style="color:var(--neon-cyan)">📈 Performance Visualizer (آخر 8 جولات)</span>
+        <div class="chart-container" id="chart-bars-wrapper"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hub-content-panel" id="panel-wallet">
+    <div class="wallet-grid">
+      <div class="wallet-card" style="display:flex; flex-direction:column; gap:10px;">
+        <div>
+          <h4 id="txt-w-deposit">📥 Effectuer un Dépôt (إيداع)</h4>
+          <div class="bet-input-container">
+            <input type="number" id="wallet-dep-amount" value="500">
+            <button class="bet-btn-sm" style="color:var(--success-neon)" onclick="executeTransaction('deposit')">OK</button>
+          </div>
+        </div>
+        <div>
+          <h4 id="txt-w-withdraw">💸 Demande de Retrait (سحب)</h4>
+          <div class="bet-input-container">
+            <input type="number" id="wallet-with-amount" value="200">
+            <button class="bet-btn-sm" style="color:var(--neon-pink)" onclick="executeTransaction('withdraw')">OK</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="lucky-wheel-container">
+        <span class="input-label" style="color:var(--accent-gold); font-weight:900;">🎡 CYBER LUCKY WHEEL</span>
+        <div class="wheel-graphic" id="wheel-element"></div>
+        <button class="bet-btn-sm" style="background:var(--accent-gold); color:#000; width:100%;" id="btn-spin-wheel" onclick="spinDailyWheel()">SPIN WHEEL 🎡</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let audioCtx = null;
+let ambientInterval = null;
+
+function initAudioOnInteraction() {
+    if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
+}
+
+function playSynthSound(freq, type, duration, vol=0.1) {
+    if (!audioCtx) return;
+    try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        let osc = audioCtx.createOscillator();
+        let gainNode = audioCtx.createGain();
+        osc.type = type; osc.frequency.value = freq;
+        gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+        osc.connect(gainNode); gainNode.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + duration);
+    } catch(e) {}
+}
+
+function startAmbientBeats() {
+    stopAmbientBeats();
+    let tempo = 600 - (currentLevel * 80);
+    ambientInterval = setInterval(() => { playSynthSound(75, "triangle", 0.08, 0.04); }, tempo);
+}
+function stopAmbientBeats() { if (ambientInterval) clearInterval(ambientInterval); }
+
+const locales = {
+    fr: {
+        logo: "CHAPO CHICKEN <span>PRO</span>", risk: "Niveau de Risque", bal: "Solde Vault", mult: "Multiplicateur",
+        profit: "Gain Estimé", bet: "Montant de Mise", shield: "🛡️ ACTIVATION BOUCLIER (+25%)",
+        btnStart: "LANCER CYBER 🚀", btnCashout: "CASHOUT FOUDROYANT 💰",
+        autoTitle: "🤖 CONFIG AUTO-BOT", tier: "Palier de sortie automatique", rounds: "Nombre de Sessions",
+        btnAuto: "START ROBOT 🤖", alert: "Fonds insuffisants!", titleStats: "📊 VOS STATISTIQUES LIVE", st1: "TOTAL PROFIT", st2: "MAX MULTI"
+    },
+    en: {
+        logo: "NEON CHICKEN <span>PRO</span>", risk: "Risk Factor Level", bal: "Vault Balance", mult: "Current Multiplier",
+        profit: "Estimated Profit", bet: "Bet Size Amount", shield: "🛡️ ACTIVATE SHIELD (+25%)",
+        btnStart: "LAUNCH CYBER 🚀", btnCashout: "INSTANT CASHOUT 💰",
+        autoTitle: "🤖 AUTO-BOT SETTINGS", tier: "Auto Take-Profit Tier", rounds: "Number of Sessions",
+        btnAuto: "START ROBOT 🤖", alert: "Insufficient funds!", titleStats: "📊 YOUR LIVE STATISTICS", st1: "TOTAL PROFIT", st2: "MAX MULTI"
+    },
+    ar: {
+        logo: "دجاجة الحظ <span>PRO</span>", risk: "مستوى الخطورة والمخاطرة", bal: "الرصيد الحالي", mult: "المضاعف الحالي",
+        profit: "الربح المتوقع الإجمالي", bet: "مبلغ الرهان المختار", shield: "🛡️ تفعيل درع الحماية الأوتوماتيكي (+25%)",
+        btnStart: "أطلق المغامرة 🚀", btnCashout: "سحب فوري للأرباح 💰",
+        autoTitle: "🤖 إعدادات البوت الآلي الذكي", tier: "مستوى الانسحاب التلقائي", rounds: "عدد الجولات المتتالية",
+        btnAuto: "تشغيل الروبوت 🤖", alert: "الرصيد غير كافٍ!", titleStats: "📊 إحصائياتك المباشرة الحالية", st1: "إجمالي الأرباح", st2: "أعلى مضاعف اليوم"
+    }
+};
+
+let currentLang = "fr";
+let balance = parseFloat(localStorage.getItem("elite_chicken_bal")) || 0; 
+let demoBalance = 0; 
+let isDemoMode = false;
+
+let xp = parseInt(localStorage.getItem("elite_chicken_xp")) || 0;
+let vipLevel = parseInt(localStorage.getItem("elite_chicken_vip")) || 1;
+
+let betAmount = 0;
+let currentLevel = 0; 
+let isGameActive = false;
+let isAutoMode = false;
+let isBotAwaitingNextRound = false; 
+let currentRiskCount = 1; 
+let isShieldActive = false;
+let isShieldCrushed = false;
+let minePositions = []; 
+let isProcessingStep = false; 
+
+let comboCount = 0;
+let isFeverMode = false;
+let streakCount = 0; 
+
+let totalProfitStat = 0;
+let maxMultiStat = 0;
+let historyChartData = []; 
+
+const riskMultipliers = {
+    1: [1.45, 2.18, 3.27, 4.90, 7.35],
+    2: [2.90, 8.70, 26.10, 78.30, 234.90]
+};
+
+const gridElement = document.getElementById("grid");
+const ladderElement = document.getElementById("ladder");
+const btnStart = document.getElementById("btn-start");
+const btnCashout = document.getElementById("btn-cashout");
+const betInput = document.getElementById("bet-amount");
+const btnAutoStart = document.getElementById("btn-auto-start");
+const autoTierSelect = document.getElementById("auto-cashout-tier");
+const autoRoundsInput = document.getElementById("auto-rounds");
+const shieldBox = document.getElementById("shield-box");
+
+function saveBalanceToStorage() {
+    if (!isDemoMode) {
+        localStorage.setItem("elite_chicken_bal", balance);
+    }
+}
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById("toast-container");
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+    toast.innerHTML = message;
+    container.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+function changeLang(lang) {
+    currentLang = lang;
+    document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
+    if (window.event && window.event.target) window.event.target.classList.add("active");
+    
+    const layout = document.getElementById("main-layout-dir");
+    if(lang === "ar") {
+        layout.style.flexDirection = "row-reverse"; document.body.dir = "rtl"; document.body.classList.add("rtl");
+    } else {
+        layout.style.flexDirection = "row"; document.body.dir = "ltr"; document.body.classList.remove("rtl");
+    }
+
+    const dict = locales[lang];
+    document.getElementById("txt-logo").innerHTML = dict.logo;
+    document.getElementById("txt-label-risk").innerText = dict.risk;
+    document.getElementById("txt-label-bal").innerText = isDemoMode ? "Solde DIMO 💎" : dict.bal;
+    document.getElementById("txt-label-mult").innerText = dict.mult;
+    document.getElementById("txt-label-profit").innerText = dict.profit;
+    document.getElementById("txt-label-bet").innerText = dict.bet;
+    document.getElementById("txt-shield-label").innerText = dict.shield;
+    btnStart.innerText = dict.btnStart; btnCashout.innerText = dict.btnCashout;
+    document.getElementById("txt-title-auto").innerText = dict.autoTitle;
+    document.getElementById("txt-label-tier").innerText = dict.tier;
+    document.getElementById("txt-label-rounds").innerText = dict.rounds;
+    btnAutoStart.innerText = dict.btnAuto; document.getElementById("txt-title-stats").innerText = dict.titleStats;
+    document.getElementById("lbl-st-1").innerText = dict.st1; document.getElementById("lbl-st-2").innerText = dict.st2;
+    renderLadder();
+}
+
+function switchTab(tabId) {
+    document.querySelectorAll(".hub-tab-btn").forEach(b => { if(b.id !== "tab-demo-indicator") b.classList.remove("active"); });
+    document.querySelectorAll(".hub-content-panel").forEach(p => p.classList.remove("active"));
+    document.getElementById(`tab-btn-${tabId}`).classList.add("active");
+    document.getElementById(`panel-${tabId}`).classList.add("active");
+    playSynthSound(400, "sine", 0.05, 0.05);
+}
+
+function toggleDemoMode() {
+    if (isGameActive || isAutoMode || isBotAwaitingNextRound) return;
+    isDemoMode = !isDemoMode;
+    const btn = document.getElementById("tab-demo-indicator");
+    const badge = document.getElementById("dimo-badge");
+    
+    if(isDemoMode) {
+        demoBalance = 1000; 
+        btn.classList.add("demo-active"); btn.innerText = "💎 DIMO Mode: ON";
+        badge.style.display = "block"; 
+        showToast("🔮 Mode DIMO activé ! +1000 💎 pour tester.", "info");
+    } else {
+        demoBalance = 0;
+        btn.classList.remove("demo-active"); btn.innerText = "💎 DIMO Mode: OFF";
+        badge.style.display = "none"; 
+        showToast("💰 Retour au Mode Réel. Solde synchronisé.", "info");
+    }
+    updateUI();
+}
+
+function spinDailyWheel() {
+    initAudioOnInteraction();
+    
+    const lastSpin = localStorage.getItem("last_wheel_spin_date");
+    const todayStr = new Date().toDateString();
+    
+    if (lastSpin === todayStr) {
+        showToast("❌ Vous avez déjà tourné la roue aujourd'hui !", "danger");
+        return;
+    }
+
+    const wheel = document.getElementById("wheel-element");
+    const btn = document.getElementById("btn-spin-wheel");
+    btn.disabled = true;
+    
+    localStorage.setItem("last_wheel_spin_date", todayStr);
+
+    let randomDegrees = Math.floor(1000 + Math.random() * 3000);
+    wheel.style.transform = `rotate(${randomDegrees}deg)`;
+    
+    let spinInterval = setInterval(() => { playSynthSound(300, "square", 0.03, 0.02); }, 150);
+
+    setTimeout(() => {
+        clearInterval(spinInterval);
+        const rewards = [100, 250, 500, 1000];
+        let luckyReward = rewards[Math.floor(Math.random() * rewards.length)];
+        if(isDemoMode) demoBalance += luckyReward; else balance += luckyReward;
+        showToast(`🎡 Roue de la Fortune: +${luckyReward} 🪙 !`, "success");
+        playSynthSound(880, "sine", 0.4, 0.1);
+        saveBalanceToStorage();
+        updateUI();
+    }, 3000);
+}
+
+function executeTransaction(type) {
+    if(isDemoMode) { showToast("❌ Impossible en mode Démo !", "danger"); return; }
+    if (type === 'deposit') {
+        let val = Math.floor(Math.abs(parseFloat(document.getElementById("wallet-dep-amount").value) || 0));
+        if(val > 0) { balance += val; showToast(`📥 Dépôt validé: +${val} 🪙`, "success"); playSynthSound(600, "sine", 0.2); }
+    } else {
+        let val = Math.floor(Math.abs(parseFloat(document.getElementById("wallet-with-amount").value) || 0));
+        if(val > 0 && val <= balance) { balance -= val; showToast(`💸 Retrait réussi: -${val} 🪙`, "success"); playSynthSound(300, "sine", 0.3); } 
+        else { showToast("❌ Solde insuffisant !", "danger"); }
+    }
+    saveBalanceToStorage();
+    updateUI();
+}
+
+function logToHistory(mode, bet, status, profit) {
+    const tbody = document.getElementById("my-history-rows");
+    if(tbody.children.length === 1 && tbody.children[0].cells.length === 1) tbody.innerHTML = "";
+    const row = document.createElement("tr");
+    const statusClass = status.includes("WIN") ? "status-win" : "status-lose";
+    row.innerHTML = `<td>${mode}</td><td>${bet}</td><td class="${statusClass}">${status}</td><td class="${statusClass}">${profit > 0 ? '+'+profit : profit}</td>`;
+    tbody.insertBefore(row, tbody.firstChild);
+
+    historyChartData.push({ status: status.includes("WIN") ? 'win' : 'lose', amount: Math.abs(profit) });
+    if(historyChartData.length > 8) historyChartData.shift();
+    updateChartUI();
+}
+
+function updateChartUI() {
+    const container = document.getElementById("chart-bars-wrapper"); container.innerHTML = "";
+    historyChartData.forEach(data => {
+        const bar = document.createElement("div"); bar.className = `chart-bar ${data.status}`;
+        let calculatedHeight = Math.min(100, Math.max(15, (data.amount / 200) * 100));
+        bar.style.height = `${calculatedHeight}%`; container.appendChild(bar);
+    });
+}
+
+function setRisk(count) {
+    if (isGameActive || isAutoMode || isBotAwaitingNextRound) return;
+    currentRiskCount = count;
+    document.getElementById("risk-1").classList.toggle("active", count === 1);
+    document.getElementById("risk-2").classList.toggle("active", count === 2);
+    document.getElementById("risk-2").classList.toggle("danger-mode", count === 2);
+    
+    let basePercent = count === 1 ? 88 : 45;
+    document.getElementById("ai-percentage").innerText = `${basePercent + Math.floor(Math.random() * 10)}%`;
+
+    renderLadder(); updateUI();
+}
+
+function toggleShield() {
+    if (isGameActive || isAutoMode || isBotAwaitingNextRound) return;
+    isShieldActive = !isShieldActive;
+    shieldBox.classList.toggle("shield-on", isShieldActive);
+    document.getElementById("txt-shield-state").innerText = isShieldActive ? "ON" : "OFF";
+    playSynthSound(520, "sine", 0.08);
+}
+
+function renderLadder() {
+    ladderElement.innerHTML = "";
+    riskMultipliers[currentRiskCount].forEach((mult, idx) => {
+        let finalMult = isFeverMode ? mult * 1.5 : mult; 
+        if(streakCount >= 3) finalMult += 0.5; 
+        const step = document.createElement("div"); step.className = "ladder-step";
+        step.id = `step-${idx}`; step.innerText = `X ${finalMult.toFixed(2)}`;
+        ladderElement.appendChild(step);
+    });
+}
+
+function addXP(amount) {
+    xp += amount;
+    if (xp >= 100) { xp = xp - 100; vipLevel++; showToast(`🎉 LEVEL UP! VIP Level ${vipLevel}!`, "success"); playSynthSound(700, "triangle", 0.5); }
+    localStorage.setItem("elite_chicken_xp", xp); localStorage.setItem("elite_chicken_vip", vipLevel);
+    document.getElementById("vip-lvl").innerText = `LVL ${vipLevel}`;
+    document.getElementById("xp-fill").style.width = `${xp}%`;
+}
+
+function updateUI() {
+    let currentActiveBal = isDemoMode ? demoBalance : balance;
+    document.getElementById("balance").innerText = Math.floor(currentActiveBal);
+    
+    let activeBet = isGameActive ? betAmount : Math.max(10, Math.floor(Math.abs(parseInt(betInput.value))) || 10);
+    let activeMults = riskMultipliers[currentRiskCount];
+
+    if (isGameActive && currentLevel > 0) {
+        let currentMult = activeMults[currentLevel - 1];
+        if (isFeverMode) currentMult *= 1.5;
+        if (streakCount >= 3) currentMult += 0.5;
+        document.getElementById("multiplier").innerText = `X ${currentMult.toFixed(2)}`;
+        document.getElementById("next-profit").innerText = Math.floor(activeBet * currentMult);
+    } else {
+        document.getElementById("multiplier").innerText = `X 0.00`;
+        let firstMult = isFeverMode ? activeMults[0] * 1.5 : activeMults[0];
+        document.getElementById("next-profit").innerText = Math.floor(activeBet * firstMult);
+    }
+
+    document.querySelectorAll(".ladder-step").forEach((st, idx) => {
+        st.classList.toggle("active", isGameActive && idx === currentLevel - 1);
+    });
+
+    document.getElementById("stat-total-profit").innerText = `${Math.floor(totalProfitStat)} 🪙`;
+    document.getElementById("stat-max-mult").innerText = `X ${maxMultiStat.toFixed(2)}`;
+}
+
+function adjustBet(type) {
+    if (isGameActive || isAutoMode || isBotAwaitingNextRound) return;
+    let currentBet = Math.floor(Math.abs(parseInt(betInput.value))) || 10;
+    let currentActiveBal = isDemoMode ? demoBalance : balance;
+    
+    if (type === 'half') betInput.value = Math.max(10, Math.floor(currentBet / 2));
+    else if (type === 'double') betInput.value = Math.min(currentActiveBal, currentBet * 2);
+    else if (type === 'min') betInput.value = 10;
+    else if (type === 'max') betInput.value = Math.max(10, Math.floor(currentActiveBal));
+    else if (type === 'add50') betInput.value = Math.min(currentActiveBal, currentBet + 50);
+    else if (type === 'add100') betInput.value = Math.min(currentActiveBal, currentBet + 100);
+    playSynthSound(350, "sine", 0.04);
+    updateUI();
+}
+
+function renderNewGrid() {
+    gridElement.innerHTML = ""; minePositions = [];
+    gridElement.classList.toggle("bot-lock", isAutoMode); 
+    
+    for (let i = 0; i < 5; i++) {
+        let rowMines = [];
+        if (currentRiskCount === 1) { rowMines.push(Math.floor(Math.random() * 3)); } 
+        else {
+            let safeIdx = Math.floor(Math.random() * 3);
+            for (let j = 0; j < 3; j++) { if (j !== safeIdx) rowMines.push(j); }
+        }
+        minePositions.push(rowMines);
+        const row = document.createElement("div"); row.className = "row"; row.dataset.rowIndex = i;
+        for (let j = 0; j < 3; j++) {
+            const cell = document.createElement("div"); cell.className = "cell"; cell.innerHTML = "📦";
+            cell.onclick = () => handleCellClick(i, j, cell); row.appendChild(cell);
+        }
+        gridElement.appendChild(row);
+    }
+    if (isGameActive) document.querySelectorAll(".row")[currentLevel].classList.add("active-row");
+}
+
+function handleCellClick(rowIndex, cellIndex, cellElement) {
+    if (!isGameActive || rowIndex !== currentLevel || isAutoMode || isProcessingStep) return;
+    isProcessingStep = true; 
+    processStep(cellIndex, cellElement);
+}
+
+function processStep(cellIndex, cellElement) {
+    let currentMines = minePositions[currentLevel];
+    
+    if (currentMines.includes(cellIndex)) {
+        if (isShieldActive && !isShieldCrushed) {
+            isShieldCrushed = true; cellElement.innerHTML = "🛡️💥"; 
+            showToast("🛡️ Le bouclier a absorbé l'explosion !", "info");
+            playSynthSound(180, "triangle", 0.3, 0.15); 
+            isProcessingStep = false; return; 
+        }
+        stopAmbientBeats();
+        document.body.classList.add("shake", "flash-danger");
+        cellElement.classList.add("revealed-mine"); cellElement.innerHTML = "💥";
+        playSynthSound(90, "sawtooth", 0.7, 0.3);
+        setTimeout(() => document.body.classList.remove("shake", "flash-danger"), 400);
+        
+        comboCount = 0; isFeverMode = false; streakCount = 0;
+        document.getElementById("fever-box").classList.remove("fever-active");
+        document.body.classList.remove("fever-glow-active");
+        
+        let fFill = document.getElementById("fever-fill");
+        fFill.style.width = "0%";
+        fFill.classList.remove("fever-maxed");
+        
+        renderLadder();
+
+        showToast(`💥 BOOM! Perdu -${betAmount} 🪙`, "danger");
+        logToHistory(isDemoMode ? "DIMO 💎":"REAL 🪙", betAmount, "LOSE 🔴", -betAmount);
+        
+        saveBalanceToStorage();
+        endGame(false);
+    } else {
+        playSynthSound(500 + (currentLevel * 80), "sine", 0.12, 0.15);
+        
+        let isMystery = Math.random() < 0.15;
+        if(isMystery) {
+            cellElement.classList.add("revealed-mystery"); cellElement.innerHTML = "🎁";
+            let bonusCash = Math.floor(betAmount * 0.2); 
+            if(isDemoMode) demoBalance += bonusCash; else balance += bonusCash;
+            showToast(`🎁 Bonus mystère trouvé: +${bonusCash} 🪙`, "success");
+            createParticles(cellElement, "👑");
+        } else {
+            cellElement.classList.add("revealed-safe"); cellElement.innerHTML = "🐔";
+            createParticles(cellElement, "🪙");
+        }
+
+        currentLevel++; comboCount++; streakCount++; addXP(15);
+        
+        let nextPrediction = Math.max(20, 95 - (currentLevel * 18));
+        document.getElementById("ai-percentage").innerText = `${nextPrediction}%`;
+
+        if (streakCount === 3) {
+            showToast("🔥 STREAK BURST! Bonus +0.50x Multiplier obtenu !", "success");
+            playSynthSound(850, "square", 0.3, 0.1);
+            renderLadder();
+        }
+
+        let feverProgress = Math.min(comboCount * 20, 100);
+        let fFill = document.getElementById("fever-fill");
+        fFill.style.width = `${feverProgress}%`;
+        
+        if (feverProgress >= 100) { fFill.classList.add("fever-maxed"); }
+        
+        if(comboCount >= 5 && !isFeverMode) {
+            isFeverMode = true; 
+            document.getElementById("fever-box").classList.add("fever-active"); 
+            document.body.classList.add("fever-glow-active");
+            showToast("🔥 FEVER MODE ACTIVE! Multiplicateurs X1.5!", "success"); 
+            renderLadder(); 
+        }
+
+        saveBalanceToStorage();
+
+        if (currentLevel >= 5) { endGame(true); } 
+        else {
+            document.querySelectorAll(".row").forEach((r, idx) => r.classList.toggle("active-row", idx === currentLevel));
+            updateUI();
+            startAmbientBeats();
+            isProcessingStep = false; 
+            if (isAutoMode) checkAutoPlayNext();
+        }
+    }
+}
+
+function endGame(isWin) {
+    let wasAuto = isAutoMode;
+    isGameActive = false; btnCashout.disabled = true;
+    stopAmbientBeats();
+    
+    if (!isAutoMode) { 
+        btnStart.disabled = false; 
+        betInput.disabled = false; 
+    } else {
+        isBotAwaitingNextRound = true; 
+    }
+    
+    document.querySelectorAll(".row").forEach((row, rIdx) => {
+        row.classList.remove("active-row");
+        const cells = row.querySelectorAll(".cell");
+        minePositions[rIdx].forEach(mIdx => {
+            if (!cells[mIdx].classList.contains("revealed-mine") && !cells[mIdx].classList.contains("revealed-safe")) {
+                cells[mIdx].innerHTML = "💣"; cells[mIdx].style.opacity = "0.3";
+            }
+        });
+    });
+
+    if (isWin) {
+        let finalMultiplier = riskMultipliers[currentRiskCount][currentLevel - 1];
+        if (isFeverMode) finalMultiplier *= 1.5;
+        if (streakCount >= 3) finalMultiplier += 0.5;
+        
+        let totalPrize = Math.floor(betAmount * finalMultiplier);
+        let netProfit = totalPrize - betAmount;
+        
+        if (wasAuto && netProfit > 0) {
+            let commission = Math.floor(netProfit * 0.15);
+            netProfit -= commission;
+            totalPrize = betAmount + netProfit;
+            showToast(`🤖 Commission Robot (-15%): ${commission} 🪙`, "info");
+        }
+
+        if(isDemoMode) demoBalance += totalPrize; else balance += totalPrize;
+        totalProfitStat += netProfit;
+        if(finalMultiplier > maxMultiStat) maxMultiStat = finalMultiplier;
+
+        showToast(`💰 CASHOUT! +${netProfit} 🪙 (X${finalMultiplier.toFixed(2)})`, "success");
+        
+        playSynthSound(600, "sine", 0.15, 0.15);
+        logToHistory(isDemoMode ? "DIMO 💎":"REAL 🪙", betAmount, "WIN 🟢", netProfit);
+        for(let i=0; i<15; i++) setTimeout(() => createParticles(document.body, "✨"), i * 40);
+    }
+    
+    currentLevel = 0; isShieldCrushed = false; isProcessingStep = false; 
+    saveBalanceToStorage();
+    updateUI();
+    
+    if (isAutoMode) {
+        setTimeout(() => {
+            isBotAwaitingNextRound = false;
+            startAutoRound();
+        }, 1000);
+    } else {
+        gridElement.classList.remove("bot-lock");
+    }
+}
+
+function startAutoRound() {
+    let checkedBet = Math.floor(Math.abs(parseInt(betInput.value))) || 10;
+    let rounds = Math.floor(Math.abs(parseInt(autoRoundsInput.value))) || 0;
+    let currentActiveBal = isDemoMode ? demoBalance : balance;
+    
+    if (rounds <= 0 || !isAutoMode || currentActiveBal < checkedBet || currentActiveBal <= 0) {
+        if(currentActiveBal < checkedBet) { showToast("❌ Solde insuffisant! Veuillez charger votre compte.", "danger"); }
+        isAutoMode = false; 
+        isBotAwaitingNextRound = false;
+        btnAutoStart.innerText = locales[currentLang].btnAuto;
+        btnStart.disabled = false; betInput.disabled = false; 
+        gridElement.classList.remove("bot-lock");
+        return;
+    }
+    
+    rounds--; autoRoundsInput.value = rounds;
+    betAmount = checkedBet;
+    let finalCost = isShieldActive ? Math.floor(betAmount * 1.25) : betAmount;
+    
+    if(isDemoMode) demoBalance -= finalCost; else balance -= finalCost;
+    currentLevel = 0; isGameActive = true;
+    saveBalanceToStorage();
+    renderNewGrid(); updateUI();
+    startAmbientBeats();
+    setTimeout(() => checkAutoPlayNext(), 500);
+}
+
+function checkAutoPlayNext() {
+    if (!isGameActive || !isAutoMode) return;
+    if (currentLevel === parseInt(autoTierSelect.value)) { endGame(true); return; }
+    let randomCellIdx = Math.floor(Math.random() * 3);
+    const currentRow = document.querySelectorAll(".row")[currentLevel];
+    processStep(randomCellIdx, currentRow.querySelectorAll(".cell")[randomCellIdx]);
+}
+
+btnAutoStart.onclick = () => {
+    initAudioOnInteraction();
+    let currentActiveBal = isDemoMode ? demoBalance : balance;
+    
+    if (isGameActive || isAutoMode || isBotAwaitingNextRound) { 
+        isAutoMode = false; 
+        isBotAwaitingNextRound = false;
+        btnAutoStart.innerText = locales[currentLang].btnAuto; 
+        btnStart.disabled = false; 
+        gridElement.classList.remove("bot-lock");
+        return; 
+    }
+    
+    let requestedRounds = Math.floor(Math.abs(parseInt(autoRoundsInput.value))) || 0;
+    if (requestedRounds > 4) {
+        showToast("⚠️ Le Robot est limité à 4 sessions maximum ! (حد أقصى 4)", "danger");
+        autoRoundsInput.value = 4;
+        return;
+    }
+
+    let checkedBet = Math.floor(Math.abs(parseInt(betInput.value))) || 10;
+    if (currentActiveBal < checkedBet || currentActiveBal <= 0) { 
+        showToast("❌ Impossible ! Solde insuffisant (0 🪙). Veuillez charger.", "danger"); 
+        return; 
+    }
+    
+    isAutoMode = true; btnAutoStart.innerText = "STOP 🛑"; btnStart.disabled = true; betInput.disabled = true;
+    startAutoRound();
+};
+
+function createParticles(element, char) {
+    const rect = element.getBoundingClientRect();
+    const spawnX = rect.left + rect.width / 2; const spawnY = rect.top + rect.height / 2;
+    for (let i = 0; i < 6; i++) {
+        const p = document.createElement("div"); p.className = "particle"; p.innerText = char;
+        p.style.left = spawnX + "px"; p.style.top = spawnY + "px";
+        const maxDist = 120; const angle = Math.random() * Math.PI * 2;
+        const mx = Math.cos(angle) * (Math.random() * maxDist); const my = Math.sin(angle) * (Math.random() * maxDist) - 15;
+        p.style.setProperty('--mx', `${mx}px`); p.style.setProperty('--my', `${my}px`);
+        document.body.appendChild(p); setTimeout(() => p.remove(), 800);
+    }
+}
+
+function simulateLiveFeed() {
+    const fakeNames = ["Player_X", "Anas_VIP", "Karim_Cyber", "Hamza_King", "Amine_Pro", "Chapo_Hunter", "Reda_Elite"];
+    const container = document.getElementById("live-players-rows");
+    
+    setInterval(() => {
+        const id = Math.floor(100000 + Math.random() * 900000);
+        const name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+        const bet = Math.floor(50 + Math.random() * 650);
+        const isWin = Math.random() > 0.35; 
+        const row = document.createElement("tr");
+        
+        if (isWin) {
+            const mult = riskMultipliers[Math.floor(Math.random() * 2) + 1][Math.floor(Math.random() * 3)];
+            const profit = Math.floor(bet * mult);
+            row.innerHTML = `<td style="color:var(--text-muted)">#${id}</td><td style="color:var(--neon-cyan)">${name}</td><td>${bet} 🪙</td><td style="color:var(--accent-gold)">X ${mult.toFixed(2)}</td><td class="status-win">+${profit} 🪙</td>`;
+        } else {
+            row.innerHTML = `<td style="color:var(--text-muted)">#${id}</td><td style="color:var(--neon-cyan)">${name}</td><td>${bet} 🪙</td><td style="color:var(--text-muted)">X 0.00</td><td class="status-lose">💥-${bet} 🪙</td>`;
+        }
+        container.insertBefore(row, container.firstChild);
+        if (container.children.length > 5) container.children[container.children.length - 1].remove();
+    }, 2800);
+}
+
+btnStart.onclick = () => {
+    initAudioOnInteraction();
+    if (isGameActive || isAutoMode || isBotAwaitingNextRound) return;
+    
+    let checkedBet = Math.floor(Math.abs(parseInt(betInput.value))) || 10;
+    let finalCost = isShieldActive ? Math.floor(checkedBet * 1.25) : checkedBet;
+    let currentActiveBal = isDemoMode ? demoBalance : balance;
+    
+    if (currentActiveBal < finalCost || currentActiveBal <= 0) { 
+        showToast("❌ Solde à 0 🪙 ! Veuillez recharger dans l'onglet Wallet.", "danger"); 
+        return; 
+    }
+    
+    if(isDemoMode) demoBalance -= finalCost; else balance -= finalCost;
+    
+    betAmount = checkedBet; 
+    currentLevel = 0; isGameActive = true; isProcessingStep = false;
+    btnStart.disabled = true; btnCashout.disabled = false; betInput.disabled = true;
+    
+    playSynthSound(420, "sine", 0.15, 0.15);
+    startAmbientBeats();
+    saveBalanceToStorage();
+    renderNewGrid(); updateUI();
+};
+
+btnCashout.onclick = () => { if (!isGameActive || currentLevel === 0 || isProcessingStep) return; endGame(true); };
+
+betInput.oninput = () => {
+    let currentActiveBal = isDemoMode ? demoBalance : balance;
+    let sanitizedVal = Math.floor(Math.abs(parseInt(betInput.value))) || 10;
+    if (sanitizedVal > currentActiveBal) betInput.value = Math.floor(currentActiveBal);
+    if (sanitizedVal < 10) betInput.value = 10;
+    updateUI();
+};
+
+autoRoundsInput.oninput = () => {
+    let r = parseInt(autoRoundsInput.value) || 1;
+    if(r > 4) { autoRoundsInput.value = 4; showToast("⚠️ Max 4 sessions !", "danger"); }
+    if(r < 1) autoRoundsInput.value = 1;
+};
+
+renderLadder(); renderNewGrid(); updateUI(); simulateLiveFeed(); updateChartUI();
+</script>
+
+</body>
+</html>
