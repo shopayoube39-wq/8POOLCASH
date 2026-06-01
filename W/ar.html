@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8POOLCASH - Premium System</title>
+<title>8POOLCASH - لوحة التحكم</title>
 
 <style>
 :root{
@@ -14,6 +14,7 @@
     --border-color:#2a343f;
     --text-main:#ffffff;
     --text-muted:#808e9b;
+    --success-green:#2ecc71;
 }
 
 *{
@@ -36,7 +37,7 @@ body{
 
 .container{
     width:100%;
-    max-width:480px;
+    max-width:500px;
     text-align:center;
 }
 
@@ -51,18 +52,18 @@ body{
 .ball-8{
     background:#fff;
     color:#000;
-    width:50px;
-    height:50px;
+    width:45px;
+    height:45px;
     border-radius:50%;
     display:flex;
     justify-content:center;
     align-items:center;
     font-weight:900;
-    font-size:1.6rem;
+    font-size:1.4rem;
 }
 
 .logo-text{
-    font-size:2.5rem;
+    font-size:2.2rem;
     font-weight:900;
     font-style:italic;
 }
@@ -75,142 +76,138 @@ body{
     background:var(--card-bg);
     border:1px solid var(--border-color);
     border-radius:28px;
-    padding:30px;
+    padding:25px;
     box-shadow:0 20px 50px rgba(0,0,0,.7);
-}
-
-.tabs{
-    display:flex;
-    background:#080c12;
-    border-radius:14px;
-    margin-bottom:30px;
-    padding:5px;
-}
-
-.tab{
-    flex:1;
-    padding:14px;
-    border:none;
-    background:none;
-    color:var(--text-muted);
-    font-weight:bold;
-    cursor:pointer;
-    font-size:1rem;
-    transition:.3s;
-}
-
-.tab.active{
-    background:var(--primary-gold);
-    color:#000;
-    border-radius:12px;
-}
-
-.form-content{
-    display:none;
     text-align:right;
 }
 
-.form-content.active{
-    display:block;
+.welcome-box {
+    background: #080c12;
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.group{
-    margin-bottom:18px;
+.avatar {
+    width: 55px;
+    height: 55px;
+    background: var(--primary-gold);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #000;
+    font-weight: bold;
 }
 
-input{
-    width:100%;
-    padding:16px;
-    background:var(--input-bg);
-    border:1px solid var(--border-color);
-    border-radius:14px;
-    color:white;
-    font-size:1rem;
-    outline:none;
+.user-info h3 {
+    font-size: 1.2rem;
+    color: var(--text-main);
+    margin-bottom: 4px;
 }
 
-input:focus{
-    border-color:#fcc316;
+/* هادا هو المكان المخصص للاسم الرسمي */
+#official-username {
+    color: #fcc316;
+    font-weight: 800;
 }
 
-.country-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-    margin-bottom:20px;
+.user-info p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
 }
 
-.c-item{
-    background:var(--input-bg);
-    border:1px solid var(--border-color);
-    padding:14px;
-    border-radius:12px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    cursor:pointer;
-    transition:.2s;
+.balance-card {
+    background: linear-gradient(135deg, #1e2732 0%, #111822 100%);
+    border: 1px solid rgba(252, 195, 22, 0.2);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 25px;
 }
 
-.c-item:hover{
-    border-color:#555;
+.balance-title {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
 }
 
-.c-item.selected{
-    border:2px solid #fcc316;
-    background:#121a24;
+.balance-amount {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--text-main);
 }
 
-.alert-box{
-    background:rgba(255,94,94,.15);
-    color:#ff5e5e;
-    border:1px solid rgba(255,94,94,.3);
-    border-radius:15px;
-    padding:12px;
-    font-size:.9rem;
-    margin-bottom:15px;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    gap:10px;
+.balance-amount span {
+    color: #fcc316;
+    font-size: 1.2rem;
+    margin-right: 5px;
 }
 
-.btn{
-    width:100%;
-    padding:18px;
-    background:var(--primary-gold);
-    border:none;
-    border-radius:16px;
-    color:#000;
-    font-weight:800;
-    font-size:1.1rem;
-    cursor:pointer;
+.section-title {
+    font-size: 1rem;
+    color: var(--text-main);
+    margin-bottom: 15px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.btn:disabled{
-    opacity:.8;
-    cursor:not-allowed;
+.services-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
 }
 
-.loader{
-    width:22px;
-    height:22px;
-    border:3px solid #000;
-    border-bottom-color:transparent;
-    border-radius:50%;
-    display:inline-block;
-    animation:rotation 1s linear infinite;
+.service-item {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-@keyframes rotation{
-    0%{transform:rotate(0deg);}
-    100%{transform:rotate(360deg);}
+.service-item:hover {
+    border-color: #fcc316;
+    transform: translateY(-3px);
 }
 
-.footer-text{
-    margin-top:25px;
-    color:#4d5d6d;
-    font-size:.85rem;
+.service-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.service-name {
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 15px;
+    background: rgba(255, 94, 94, 0.1);
+    border: 1px solid rgba(255, 94, 94, 0.2);
+    border-radius: 14px;
+    color: #ff5e5e;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+    text-align: center;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 94, 94, 0.2);
 }
 </style>
 </head>
@@ -226,204 +223,84 @@ input:focus{
 
     <div class="card">
 
-        <div class="tabs">
-            <button class="tab active" id="loginTab" onclick="showForm('login')">
-                تسجيل الدخول
-            </button>
-
-            <button class="tab" id="registerTab" onclick="showForm('register')">
-                حساب جديد
-            </button>
+        <!-- صندوق الترحيب وعرض الإسم الرسمي -->
+        <div class="welcome-box">
+            <div class="avatar" id="user-avatar">👤</div>
+            <div class="user-info">
+                <h3>مرحباً، <span id="official-username">جاري التحميل...</span></h3>
+                <p>نوع الحساب: <span style="color: var(--success-green);">رسمي فعال ✓</span></p>
+            </div>
         </div>
 
-        <div id="statusAlert" class="alert-box">
-            <span id="statusText"></span>
-            <span>⚠️</span>
+        <!-- رصيد الحساب -->
+        <div class="balance-card">
+            <div class="balance-title">الرصيد الحالي المتوفر</div>
+            <div class="balance-amount">0.00 <span>CASH</span></div>
         </div>
 
-        <div id="loginForm" class="form-content active">
-
-            <div class="group">
-                <input type="text" id="lUser" placeholder="اسم المستخدم">
-            </div>
-
-            <div class="group">
-                <input type="password" id="lPass" placeholder="كلمة المرور">
-            </div>
-
-            <button class="btn" id="lBtn" onclick="handleLogin()">
-                <span id="lBtnText">دخول ⚡</span>
-            </button>
-
+        <div class="section-title">
+            <span>⚡</span> خدمات الشحن السريع
         </div>
 
-        <div id="registerForm" class="form-content">
-
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <input type="text" id="fName" placeholder="الاسم الأول" style="flex:1">
-                <input type="text" id="lName" placeholder="اسم العائلة" style="flex:1">
+        <!-- شبكة الخدمات -->
+        <div class="services-grid">
+            <div class="service-item">
+                <span class="service-icon">🎱</span>
+                <div class="service-name">شحن كوينز (Coins)</div>
             </div>
-
-            <div class="group">
-                <input type="email" id="email" placeholder="البريد الإلكتروني">
+            <div class="service-item">
+                <span class="service-icon">💵</span>
+                <div class="service-name">شحن كاش (Cash)</div>
             </div>
-
-            <label style="display:block; margin-bottom:10px; font-size:.9rem; color:var(--text-muted); text-align:right;">
-                الدولة *
-            </label>
-
-            <div class="country-grid">
-
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>المغرب</span><span>🇲🇦</span>
-                </div>
-
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>الجزائر</span><span>🇩🇿</span>
-                </div>
-
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>تونس</span><span>🇹🇳</span>
-                </div>
-
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>الكويت</span><span>🇰🇼</span>
-                </div>
-
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>العراق</span><span>🇮🇶</span>
-                </div>
-
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>السعودية</span><span>🇸🇦</span>
-                </div>
-
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>الإمارات</span><span>🇦🇪</span>
-                </div>
-
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>الأردن</span><span>🇯🇴</span>
-                </div>
-
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>مصر</span><span>🇪🇬</span>
-                </div>
-
-                <div class="c-item" onclick="selectCountry(this)">
-                    <span>ليبيا</span><span>🇱🇾</span>
-                </div>
-
+            <div class="service-item">
+                <span class="service-icon">🔑</span>
+                <div class="service-name">حسابات جاهزة</div>
             </div>
-
-            <div class="group">
-                <input type="text" id="rUser" placeholder="اسم المستخدم">
+            <div class="service-item">
+                <span class="service-icon">🎟️</span>
+                <div class="service-name">الـ Pass المميز</div>
             </div>
-
-            <div class="group">
-                <input type="password" id="rPass" placeholder="كلمة المرور (6+ أحرف)">
-            </div>
-
-            <button class="btn" id="rBtn" onclick="handleRegister()">
-                <span id="rBtnText">إنشاء الحساب 🎱</span>
-            </button>
-
         </div>
 
-    </div>
+        <!-- زر تسجيل الخروج -->
+        <button class="logout-btn" onclick="handleLogout()">تسجيل الخروج</button>
 
-    <div class="footer-text">
-        بالتسجيل توافق على الشروط. العب بمسؤولية.
     </div>
 
 </div>
 
 <script>
+// السكريبت الذكي لجلب الإسم الرسمي وعرضه فوراً
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // 1. محاولة جلب الإسم من الرابط (URL Parameters) أولاً
+    const urlParams = new URLSearchParams(window.location.search);
+    let username = urlParams.get('username');
 
-function showForm(type){
-    document.getElementById('statusAlert').style.display = 'none';
-
-    document.getElementById('loginForm').classList.toggle('active', type === 'login');
-    document.getElementById('registerForm').classList.toggle('active', type === 'register');
-
-    document.getElementById('loginTab').classList.toggle('active', type === 'login');
-    document.getElementById('registerTab').classList.toggle('active', type === 'register');
-}
-
-let selectedCountryName = "";
-
-function selectCountry(el){
-    document.querySelectorAll('.c-item').forEach(item=>{
-        item.classList.remove('selected');
-    });
-    el.classList.add('selected');
-    selectedCountryName = el.querySelector('span').innerText;
-}
-
-function triggerAlert(msg){
-    const box = document.getElementById('statusAlert');
-    document.getElementById('statusText').innerText = msg;
-    box.style.display = 'flex';
-}
-
-function handleRegister(){
-    const user = document.getElementById('rUser').value.trim();
-    const pass = document.getElementById('rPass').value;
-    const mail = document.getElementById('email').value;
-
-    const btn = document.getElementById('rBtn');
-    const text = document.getElementById('rBtnText');
-
-    if(!user || !mail || pass.length < 6){
-        triggerAlert('تأكد من إدخال جميع البيانات');
-        return;
+    // 2. إذا لم يكن ف الرابط، جلب الإسم من التخزين المحلي
+    if (!username) {
+        username = localStorage.getItem('username') || localStorage.getItem('u8');
     }
 
-    if(selectedCountryName === ""){
-        triggerAlert('اختر الدولة');
-        return;
+    // 3. عرض الإسم ف المكان المحدد
+    const nameDisplay = document.getElementById('official-username');
+    const avatarDisplay = document.getElementById('user-avatar');
+
+    if (username) {
+        nameDisplay.innerText = username;
+        // وضع الحرف الأول من الإسم ف الصورة الرمزية (Avatar) كحركة ديزاين احترافية
+        avatarDisplay.innerText = username.charAt(0).toUpperCase();
+    } else {
+        // حماية: إذا دخل شخص غريب بلا حساب كيرجع لصفحة الدخول
+        nameDisplay.innerText = "زائر";
+        window.location.replace("index.html"); 
     }
+});
 
-    btn.disabled = true;
-    text.innerHTML = '<span class="loader"></span>';
-
-    setTimeout(()=>{
-        // حفظ بيانات تسجيل الدخول الأساسية
-        localStorage.setItem('u8', user);
-        localStorage.setItem('p8', pass);
-        
-        // ربط الاسم كـ مفتاح أساسي (username) لتقرأه صفحة الحساب ar.html فوراً
-        localStorage.setItem('username', user);
-
-        // الانتقال لصفحة ar.html
-        window.location.href = "ar.html";
-    }, 2000);
-}
-
-function handleLogin(){
-    const user = document.getElementById('lUser').value.trim();
-    const pass = document.getElementById('lPass').value;
-
-    const savedU = localStorage.getItem('u8');
-    const savedP = localStorage.getItem('p8');
-
-    const btn = document.getElementById('lBtn');
-    const text = document.getElementById('lBtnText');
-
-    if(user === savedU && pass === savedP){
-        btn.disabled = true;
-        text.innerHTML = '<span class="loader"></span>';
-
-        setTimeout(()=>{
-            // تحديث اسم المستخدم النشط الحالي قبل الانتقال لتأكيد المزامنة
-            localStorage.setItem('username', user);
-
-            // الانتقال لصفحة ar.html
-            window.location.href = "ar.html";
-        }, 1500);
-    }else{
-        triggerAlert('المعلومات غير صحيحة!');
-    }
+function handleLogout() {
+    // تنظيف كاش المستخدم الحالي والرجوع لصفحة الدخول
+    localStorage.removeItem('username');
+    window.location.replace("index.html");
 }
 </script>
 
