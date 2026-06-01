@@ -3,77 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHICKEN PRO - REAL MODE</title>
-    <!-- يمكنك إضافة الـ CSS الخاص بك هنا -->
+    <title>CHICKEN PRO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* CSS مريكل كما هو في ملفك السابق */
-        body { background-color: #020408; color: #fff; font-family: sans-serif; padding: 20px; }
-        .stat-value { color: #39ff14; font-weight: bold; font-size: 20px; }
-        .main-btn { padding: 15px; width: 100%; border: none; border-radius: 10px; cursor: pointer; }
-        #btn-start { background: #00f0ff; }
+        body { background-color: #020408; color: white; font-family: sans-serif; }
     </style>
 </head>
-<body>
+<body class="p-6">
 
-    <div class="top-global-bar">
-        <div class="stat-box">
-            <span>الرصيد الرئيسي: </span>
-            <span id="balance" class="stat-value">0</span> 🪙
-        </div>
+    <a href="games.html" class="block w-full mb-6 bg-gray-800 text-center p-3 rounded-xl border border-gray-600">
+        ← العودة للرئيسية
+    </a>
+
+    <div class="max-w-md mx-auto bg-[#111520] p-6 rounded-3xl border border-amber-500/20">
+        <h2 class="text-center text-xl font-bold mb-4">الرصيد الرئيسي: <span id="balance" class="text-amber-500">0</span> 🪙</h2>
+        
+        <input type="number" id="bet-amount" value="100" class="w-full bg-black p-4 rounded-xl text-center mb-4 text-white">
+        
+        <button id="btn-start" onclick="playGame()" class="w-full bg-blue-600 p-4 rounded-xl font-bold mb-2">لعب الآن 🚀</button>
+        <button id="btn-cashout" onclick="cashOut()" disabled class="w-full bg-green-600 p-4 rounded-xl font-bold">سحب الأرباح 💰</button>
     </div>
 
-    <div class="game-core">
-        <input type="number" id="bet-amount" value="100">
-        <button id="btn-start" class="main-btn" onclick="startGame()">لعب الآن 🚀</button>
-        <button id="btn-cashout" class="main-btn" onclick="endGame(true)" disabled>سحب الأرباح 💰</button>
-    </div>
+    <script>
+        // قراءة الرصيد من النظام
+        let balance = parseFloat(localStorage.getItem("elite_chicken_bal")) || 0;
+        let currentBet = 0;
 
-<script>
-    // ربط مباشر مع الرصيد الرئيسي للموقع
-    let balance = parseFloat(localStorage.getItem("elite_chicken_bal")) || 0;
-    let betAmount = 0;
-    let isGameActive = false;
+        function updateUI() {
+            document.getElementById("balance").innerText = Math.floor(balance);
+            localStorage.setItem("elite_chicken_bal", Math.floor(balance));
+        }
 
-    // دالة تحديث الواجهة
-    function updateUI() {
-        document.getElementById("balance").innerText = Math.floor(balance);
-    }
+        function playGame() {
+            let bet = parseInt(document.getElementById("bet-amount").value);
+            if (balance >= bet) {
+                balance -= bet;
+                currentBet = bet;
+                document.getElementById("btn-start").disabled = true;
+                document.getElementById("btn-cashout").disabled = false;
+                updateUI();
+            } else {
+                alert("الرصيد غير كافٍ للشحن!");
+            }
+        }
 
-    // حفظ الرصيد في التخزين المحلي لكي تراه الصفحة الرئيسية (GOOOBET)
-    function saveBalance() {
-        localStorage.setItem("elite_chicken_bal", Math.floor(balance));
-    }
-
-    function startGame() {
-        betAmount = parseInt(document.getElementById("bet-amount").value);
-        if (balance >= betAmount) {
-            balance -= betAmount;
-            isGameActive = true;
-            document.getElementById("btn-start").disabled = true;
-            document.getElementById("btn-cashout").disabled = false;
+        function cashOut() {
+            // منطق الربح (مثال: ربح 50%)
+            let win = currentBet * 1.5;
+            balance += win;
+            document.getElementById("btn-start").disabled = false;
+            document.getElementById("btn-cashout").disabled = true;
             updateUI();
-            saveBalance();
-        } else {
-            alert("الرصيد غير كافٍ! يرجى الشحن.");
+            alert("مبروك ربحتي: " + win);
         }
-    }
 
-    function endGame(isWin) {
-        if (isWin) {
-            // مثال لربح مضاعف (يمكنك تعديل النسبة حسب حاجتك)
-            let winAmount = betAmount * 1.5; 
-            balance += winAmount;
-            alert("مبروك! ربحت: " + winAmount);
-        }
-        isGameActive = false;
-        document.getElementById("btn-start").disabled = false;
-        document.getElementById("btn-cashout").disabled = true;
         updateUI();
-        saveBalance();
-    }
-
-    // تحديث الرصيد عند فتح الصفحة
-    updateUI();
-</script>
+    </script>
 </body>
 </html>
