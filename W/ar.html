@@ -2,58 +2,56 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>8POOLCASH | الحساب الشخصي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-    <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #08090c; color: white; }
-        .active { background: #f59e0b !important; color: #000 !important; border-color: #f59e0b !important; }
-    </style>
 </head>
-<body class="p-4">
+<body class="bg-[#08090c] text-white p-4">
 
-    <div class="bg-gray-900 p-6 rounded-2xl mb-6 border border-white/10">
+    <!-- معلومات الحساب -->
+    <div class="bg-[#111520] p-6 rounded-2xl mb-6 border border-white/10 text-right">
         <h2 class="text-gray-400 text-sm">مرحباً: <span id="userDisplay" class="text-white font-bold">...</span></h2>
         <div class="text-4xl font-black mt-2 text-amber-400" id="balanceDisplay">0 DH</div>
     </div>
 
+    <!-- اختيار المبلغ -->
     <div class="grid grid-cols-2 gap-3 mb-6">
-        <button onclick="selectAmount(150, this)" class="amount-tab p-4 bg-gray-800 rounded-xl border border-white/10">150 DH</button>
-        <button onclick="selectAmount(300, this)" class="amount-tab p-4 bg-gray-800 rounded-xl border border-white/10">300 DH</button>
-        <button onclick="selectAmount(500, this)" class="amount-tab p-4 bg-gray-800 rounded-xl border border-white/10">500 DH</button>
-        <button onclick="selectAmount(1000, this)" class="amount-tab p-4 bg-gray-800 rounded-xl border border-white/10">1000 DH</button>
+        <button onclick="selectAmount(150, this)" class="amount-tab p-4 bg-[#111520] border border-white/10 rounded-xl">150 DH</button>
+        <button onclick="selectAmount(300, this)" class="amount-tab p-4 bg-[#111520] border border-white/10 rounded-xl">300 DH</button>
+        <button onclick="selectAmount(500, this)" class="amount-tab p-4 bg-[#111520] border border-white/10 rounded-xl">500 DH</button>
+        <button onclick="selectAmount(1000, this)" class="amount-tab p-4 bg-[#111520] border border-white/10 rounded-xl">1000 DH</button>
     </div>
 
-    <button onclick="goToGame()" class="w-full bg-amber-500 py-4 rounded-xl font-black text-black">العب الآن</button>
+    <button onclick="goToGame()" class="w-full bg-amber-500 py-4 rounded-xl font-black text-black text-lg">العب الآن</button>
 
     <script>
         const firebaseConfig = { /* حط الكونفيغ ديالك هنا */ };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        
         let selectedAmount = 0;
-
-        // جلب البيانات
+        // جيب السمية من localStorage اللي مخزونة عندك فـ Login
         const username = localStorage.getItem('username') || "Ayoube";
         document.getElementById('userDisplay').innerText = username;
 
+        // جلب الصولد ديريكت
         db.ref('users/' + username + '/balance').on('value', (snap) => {
-            document.getElementById('balanceDisplay').innerText = (snap.val() || 0) + " DH";
+            const val = snap.val();
+            document.getElementById('balanceDisplay').innerText = (val ? val : 0) + " DH";
         });
 
-        // اختيار المبلغ
         function selectAmount(amt, btn) {
             selectedAmount = amt;
-            document.querySelectorAll('.amount-tab').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            // حيد active من كلشي
+            document.querySelectorAll('.amount-tab').forEach(b => b.className = "amount-tab p-4 bg-[#111520] border border-white/10 rounded-xl");
+            // رد هاد الزر active
+            btn.className = "amount-tab p-4 bg-amber-500 border border-amber-500 rounded-xl font-bold text-black";
         }
 
-        // الانتقال للعبة
         function goToGame() {
-            if(selectedAmount === 0) return alert("المرجو اختيار مبلغ الرهان أولاً!");
+            if(selectedAmount === 0) return alert("المرجو اختيار مبلغ أولاً");
             localStorage.setItem('pendingBet', selectedAmount);
-            window.location.href = 'game.html'; // هنا غتحط اسم صفحة اللعبة
+            window.location.href = 'games.html'; // تأكد أن الصفحة سميتها games.html
         }
     </script>
 </body>
