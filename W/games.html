@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ك<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -14,6 +14,7 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
+            width: 100%;
         }
         .game-card:hover { 
             border-color: #f59e0b; 
@@ -26,6 +27,12 @@
 <body class="p-4">
 
     <div class="max-w-[400px] mx-auto">
+        <!-- إضافة خانة لعرض الرصيد الحالي -->
+        <div class="bg-[#111520] p-4 rounded-2xl mb-6 text-center border border-amber-500/20">
+            <p class="text-xs text-gray-400">رصيدك الحالي</p>
+            <h2 class="text-xl font-bold text-amber-500" id="header-balance">0 🪙</h2>
+        </div>
+
         <div class="relative mb-8">
             <input type="text" id="searchInput" oninput="filterGames()" 
                    placeholder="بحث عن ألعاب..." 
@@ -36,26 +43,32 @@
     </div>
 
     <script>
-        // هنا كتحط كاع الألعاب ديالك - أي لعبة زدتيها هنا، كطلع أوتوماتيك فالبحث
+        // قائمة الألعاب مع تحديد الرابط (url) الخاص بكل لعبة
         const myGames = [
-            { id: 'chicken-pro', name: 'CHICKEN PRO', provider: 'ORIGINALS', img: 'https://i.postimg.cc/PxX81N92/6753D2AB-5759-41C9-97FE-B02C51510A36.png' },
-            { id: 'sweet-bonanza', name: 'Sweet Bonanza', provider: 'PragmaticPlay', img: 'https://i.imgur.com/bH9q1W2.png' },
-            { id: 'le-bandit', name: 'Le Bandit', provider: 'Hacksaw', img: 'https://i.imgur.com/gOq7a2a.png' },
-            { id: 'gates-zeus', name: 'Gates of Olympus', provider: 'PragmaticPlay', img: 'https://i.imgur.com/ZeusImage.png' }
+            { id: 'chicken-pro', name: 'CHICKEN PRO', provider: 'ORIGINALS', img: 'https://i.postimg.cc/PxX81N92/6753D2AB-5759-41C9-97FE-B02C51510A36.png', url: 'CHICKEN.html' },
+            { id: 'sweet-bonanza', name: 'Sweet Bonanza', provider: 'PragmaticPlay', img: 'https://i.imgur.com/bH9q1W2.png', url: '#' },
+            { id: 'le-bandit', name: 'Le Bandit', provider: 'Hacksaw', img: 'https://i.imgur.com/gOq7a2a.png', url: '#' },
+            { id: 'gates-zeus', name: 'Gates of Olympus', provider: 'PragmaticPlay', img: 'https://i.imgur.com/ZeusImage.png', url: '#' }
         ];
+
+        // تحديث الرصيد من الـ localStorage
+        function updateBalance() {
+            const bal = localStorage.getItem('elite_chicken_bal') || 0;
+            document.getElementById('header-balance').innerText = Math.floor(bal) + ' 🪙';
+        }
 
         function renderGames(gamesArray) {
             const container = document.getElementById('games-container');
             container.innerHTML = '';
             gamesArray.forEach(game => {
                 container.innerHTML += `
-                    <button onclick="selectGame('${game.id}')" class="game-card">
+                    <a href="${game.url}" class="game-card">
                         <img src="${game.img}" class="game-img" alt="${game.name}">
                         <div class="p-3 text-start">
                             <h3 class="text-xs font-bold truncate">${game.name}</h3>
                             <p class="text-[9px] text-amber-500 font-bold uppercase mt-1">${game.provider}</p>
                         </div>
-                    </button>
+                    </a>
                 `;
             });
         }
@@ -66,13 +79,10 @@
             renderGames(filtered);
         }
 
-        function selectGame(gameId) {
-            localStorage.setItem('currentGame', gameId);
-            window.location.href = 'game-play.html';
-        }
-
-        // باش نلـوديو الألعاب فاش تحل الصفحة
+        // تشغيل الألعاب وتحديث الرصيد
         renderGames(myGames);
+        updateBalance();
+        setInterval(updateBalance, 2000); // تحديث الرصيد أوتوماتيك كل 2 ثانية
     </script>
 </body>
 </html>
