@@ -1,63 +1,78 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHICKEN PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
-        body { background-color: #020408; color: white; font-family: sans-serif; }
+        body { background-color: #020408; color: white; font-family: 'Cairo', sans-serif; }
     </style>
 </head>
 <body class="p-6">
 
-    <a href="games.html" class="block w-full mb-6 bg-gray-800 text-center p-3 rounded-xl border border-gray-600">
+    <a href="ar.html" class="block w-full mb-6 bg-gray-800 text-center p-3 rounded-xl border border-gray-600">
         ← العودة للرئيسية
     </a>
 
     <div class="max-w-md mx-auto bg-[#111520] p-6 rounded-3xl border border-amber-500/20">
-        <h2 class="text-center text-xl font-bold mb-4">الرصيد الرئيسي: <span id="balance" class="text-amber-500">0</span> 🪙</h2>
-        
+        <h2 class="text-center text-xl font-bold mb-4">الرصيد: <span id="balance" class="text-amber-500">0</span> DH</h2>
         <input type="number" id="bet-amount" value="100" class="w-full bg-black p-4 rounded-xl text-center mb-4 text-white">
-        
         <button id="btn-start" onclick="playGame()" class="w-full bg-blue-600 p-4 rounded-xl font-bold mb-2">لعب الآن 🚀</button>
         <button id="btn-cashout" onclick="cashOut()" disabled class="w-full bg-green-600 p-4 rounded-xl font-bold">سحب الأرباح 💰</button>
     </div>
 
     <script>
-        // قراءة الرصيد من النظام
+        // إعداد Firebase (نفس اللي في ar.html)
+        const firebaseConfig = {
+            apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
+            databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
+            projectId: "poolcash-6692c"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        const username = "Ayoube"; // اليوزر اللي خدام بيه
         let balance = parseFloat(localStorage.getItem("elite_chicken_bal")) || 0;
         let currentBet = 0;
 
-        function updateUI() {
+        // دالة تحديث الصولد في Firebase والصفحة الرئيسية
+        function syncBalanceToSystem(newBalance) {
+            balance = newBalance;
             document.getElementById("balance").innerText = Math.floor(balance);
             localStorage.setItem("elite_chicken_bal", Math.floor(balance));
+            
+            // تحديث Firebase
+            database.ref('users/' + username).update({
+                balance: balance
+            });
         }
 
         function playGame() {
             let bet = parseInt(document.getElementById("bet-amount").value);
             if (balance >= bet) {
-                balance -= bet;
+                syncBalanceToSystem(balance - bet);
                 currentBet = bet;
                 document.getElementById("btn-start").disabled = true;
                 document.getElementById("btn-cashout").disabled = false;
-                updateUI();
             } else {
-                alert("الرصيد غير كافٍ للشحن!");
+                alert("الرصيد غير كافٍ!");
             }
         }
 
         function cashOut() {
-            // منطق الربح (مثال: ربح 50%)
-            let win = currentBet * 1.5;
-            balance += win;
+            let win = currentBet * 1.5; // مثال ربح 50%
+            syncBalanceToSystem(balance + win);
             document.getElementById("btn-start").disabled = false;
             document.getElementById("btn-cashout").disabled = true;
-            updateUI();
-            alert("مبروك ربحتي: " + win);
+            alert("مبروك ربحتي: " + win + " DH");
         }
 
-        updateUI();
+        // تحديث الصولد عند فتح الصفحة
+        document.getElementById("balance").innerText = Math.floor(balance);
     </script>
 </body>
 </html>
