@@ -241,8 +241,8 @@ input:focus{
             <span>⚠️</span>
         </div>
 
+        <!-- LOGIN FORM -->
         <div id="loginForm" class="form-content active">
-
             <div class="group">
                 <input type="text" id="lUser" placeholder="اسم المستخدم">
             </div>
@@ -254,11 +254,10 @@ input:focus{
             <button class="btn" id="lBtn" onclick="handleLogin()">
                 <span id="lBtnText">دخول ⚡</span>
             </button>
-
         </div>
 
+        <!-- REGISTER FORM -->
         <div id="registerForm" class="form-content">
-
             <div style="display:flex; gap:10px; margin-bottom:15px;">
                 <input type="text" id="fName" placeholder="الاسم الأول" style="flex:1">
                 <input type="text" id="lName" placeholder="اسم العائلة" style="flex:1">
@@ -273,47 +272,36 @@ input:focus{
             </label>
 
             <div class="country-grid">
-
                 <div class="c-item" onclick="selectCountry(this)">
                     <span>المغرب</span><span>🇲🇦</span>
                 </div>
-
                 <div class="c-item" onclick="selectCountry(this)">
                     <span>الجزائر</span><span>🇩🇿</span>
                 </div>
-
                 <div class="c-item" onclick="selectCountry(this)">
                     <span>تونس</span><span>🇹🇳</span>
                 </div>
-
                 <div class="c-item" onclick="selectCountry(this)">
                     <span>الكويت</span><span>🇰🇼</span>
                 </div>
-
                 <div class="c-item" onclick="selectCountry(this)">
                     <span>العراق</span><span>🇮🇶</span>
                 </div>
-
                 <div class="c-item" onclick="selectCountry(this)">
                     <span>السعودية</span><span>🇸🇦</span>
                 </div>
-
                 <div class="c-item" onclick="selectCountry(this)">
                     <span>الإمارات</span><span>🇦🇪</span>
                 </div>
-
                 <div class="c-item" onclick="selectCountry(this)">
                     <span>الأردن</span><span>🇯🇴</span>
                 </div>
-
                 <div class="c-item" onclick="selectCountry(this)">
                     <span>مصر</span><span>🇪🇬</span>
                 </div>
-
                 <div class="c-item" onclick="selectCountry(this)">
                     <span>ليبيا</span><span>🇱🇾</span>
                 </div>
-
             </div>
 
             <div class="group">
@@ -327,7 +315,6 @@ input:focus{
             <button class="btn" id="rBtn" onclick="handleRegister()">
                 <span id="rBtnText">إنشاء الحساب 🎱</span>
             </button>
-
         </div>
 
     </div>
@@ -339,15 +326,20 @@ input:focus{
 </div>
 
 <script>
-
 function showForm(type){
     document.getElementById('statusAlert').style.display = 'none';
 
-    document.getElementById('loginForm').classList.toggle('active', type === 'login');
-    document.getElementById('registerForm').classList.toggle('active', type === 'register');
-
-    document.getElementById('loginTab').classList.toggle('active', type === 'login');
-    document.getElementById('registerTab').classList.toggle('active', type === 'register');
+    if(type === 'login') {
+        document.getElementById('loginForm').classList.add('active');
+        document.getElementById('registerForm').classList.remove('active');
+        document.getElementById('loginTab').classList.add('active');
+        document.getElementById('registerTab').classList.remove('active');
+    } else {
+        document.getElementById('registerForm').classList.add('active');
+        document.getElementById('loginForm').classList.remove('active');
+        document.getElementById('registerTab').classList.add('active');
+        document.getElementById('loginTab').classList.remove('active');
+    }
 }
 
 let selectedCountryName = "";
@@ -384,20 +376,20 @@ function handleRegister(){
         return;
     }
 
+    // إخفاء أي تنبيه قديم لمنع التداخل
+    document.getElementById('statusAlert').style.display = 'none';
+    
     btn.disabled = true;
     text.innerHTML = '<span class="loader"></span>';
 
-    setTimeout(()=>{
-        // حفظ بيانات تسجيل الدخول الأساسية
-        localStorage.setItem('u8', user);
-        localStorage.setItem('p8', pass);
-        
-        // ربط الاسم كـ مفتاح أساسي (username) لتقرأه صفحة الحساب ar.html فوراً
-        localStorage.setItem('username', user);
+    // الحفظ المباشر لضمان عدم ضياع الداتا
+    localStorage.setItem('u8', user);
+    localStorage.setItem('p8', pass);
+    localStorage.setItem('username', user);
 
-        // الانتقال لصفحة ar.html
-        window.location.href = "ar.html";
-    }, 2000);
+    setTimeout(()=>{
+        window.location.replace("ar.html");
+    }, 1800);
 }
 
 function handleLogin(){
@@ -410,17 +402,21 @@ function handleLogin(){
     const btn = document.getElementById('lBtn');
     const text = document.getElementById('lBtnText');
 
+    if(!user || !pass) {
+        triggerAlert('أدخل اسم المستخدم وكلمة المرور');
+        return;
+    }
+
     if(user === savedU && pass === savedP){
+        document.getElementById('statusAlert').style.display = 'none';
         btn.disabled = true;
         text.innerHTML = '<span class="loader"></span>';
 
-        setTimeout(()=>{
-            // تحديث اسم المستخدم النشط الحالي قبل الانتقال لتأكيد المزامنة
-            localStorage.setItem('username', user);
+        localStorage.setItem('username', user);
 
-            // الانتقال لصفحة ar.html
-            window.location.href = "ar.html";
-        }, 1500);
+        setTimeout(()=>{
+            window.location.replace("ar.html");
+        }, 1200);
     }else{
         triggerAlert('المعلومات غير صحيحة!');
     }
