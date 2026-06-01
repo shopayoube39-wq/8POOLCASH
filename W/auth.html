@@ -342,6 +342,12 @@ input:focus{
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
+  // ⚡ الفحص التلقائي الفوري لتوجيه المستخدم لـ ar.html إذا كان مسجلاً ديجا ⚡
+  const savedUser = localStorage.getItem('username');
+  if (savedUser) {
+      window.location.replace("ar.html");
+  }
+
   // دالة إنشاء الحساب والتحقق من البيانات وصيغة البريد الإلكتروني
   window.handleRegister = async function() {
       const firstName = document.getElementById('fName').value.trim();
@@ -387,7 +393,7 @@ input:focus{
               return;
           }
 
-          // حفظ البيانات كاملة في المسار المخصص باسم المستخدم الفريد مع رصيد أولي 0
+          // حفظ البيانات كاملة في المسار المخصص باسم المستخدم الفريد
           await set(userRef, {
               firstName: firstName,
               lastName: lastName,
@@ -395,7 +401,8 @@ input:focus{
               country: window.selectedCountryName,
               username: user,
               password: pass,
-              balance: 0  // الصولد الأولي الافتراضي
+              balance: 0,   // الصولد الأولي الافتراضي للشحن
+              earnings: 0   // الأرباح مفصولة تماماً من البداية
           });
 
           // تخزين الهوية محلياً لتثبيت الجلسة
