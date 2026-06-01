@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>8POOLCASH - لوحة التحكم</title>
+<title>8POOLCASH - حسابي</title>
 
 <style>
 :root{
@@ -14,7 +14,6 @@
     --border-color:#2a343f;
     --text-main:#ffffff;
     --text-muted:#808e9b;
-    --success-green:#2ecc71;
 }
 
 *{
@@ -28,280 +27,292 @@ body{
     background-image:radial-gradient(circle at center, rgba(31,48,71,.4) 0%, rgba(6,10,16,1) 70%);
     color:var(--text-main);
     font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-    display:flex;
-    justify-content:center;
-    align-items:center;
     min-height:100vh;
     padding:20px;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
 }
 
 .container{
     width:100%;
-    max-width:500px;
-    text-align:center;
+    max-width:480px;
+    margin: 0 auto;
 }
 
-.logo-box{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:15px;
-    margin-bottom:25px;
+/* الهيدر العلوي */
+.header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.ball-8{
-    background:#fff;
-    color:#000;
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-weight:900;
-    font-size:1.4rem;
+.logo-side {
+    font-size: 1.5rem;
+    font-weight: 900;
+    font-style: italic;
+}
+.logo-side span { color: #fcc316; }
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
 }
 
-.logo-text{
-    font-size:2.2rem;
-    font-weight:900;
-    font-style:italic;
+.nav-btn {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
 }
+.btn-gold { background: var(--primary-gold); color: #000; }
+.btn-dark { background: #1c2635; color: #fff; border: 1px solid var(--border-color); }
 
-.logo-text span{
-    color:#fcc316;
-}
-
+/* الكارت الرئيسي */
 .card{
     background:var(--card-bg);
     border:1px solid var(--border-color);
-    border-radius:28px;
+    border-radius:24px;
     padding:25px;
     box-shadow:0 20px 50px rgba(0,0,0,.7);
-    text-align:right;
-}
-
-.welcome-box {
-    background: #080c12;
-    border: 1px solid var(--border-color);
-    border-radius: 18px;
-    padding: 20px;
     margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
 }
 
-.avatar {
-    width: 55px;
-    height: 55px;
-    background: var(--primary-gold);
-    border-radius: 50%;
+.account-status {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    font-size: 1.5rem;
-    color: #000;
+    margin-bottom: 20px;
+}
+
+.status-tag {
+    background: #1e2b1e;
+    color: #2ecc71;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
     font-weight: bold;
 }
 
-.user-info h3 {
-    font-size: 1.2rem;
-    color: var(--text-main);
-    margin-bottom: 4px;
+.user-title {
+    font-size: 1.1rem;
+    color: var(--text-muted);
 }
-
-/* هادا هو المكان المخصص للاسم الرسمي */
 #official-username {
-    color: #fcc316;
+    color: #fff;
     font-weight: 800;
 }
 
-.user-info p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
-
-.balance-card {
-    background: linear-gradient(135deg, #1e2732 0%, #111822 100%);
-    border: 1px solid rgba(252, 195, 22, 0.2);
-    border-radius: 20px;
-    padding: 20px;
+/* الرصيد */
+.balance-section {
     text-align: center;
-    margin-bottom: 25px;
+    margin: 25px 0;
 }
-
-.balance-title {
-    font-size: 0.9rem;
+.balance-label {
     color: var(--text-muted);
+    font-size: 0.95rem;
     margin-bottom: 5px;
 }
-
-.balance-amount {
-    font-size: 2.2rem;
+.balance-value {
+    font-size: 3rem;
     font-weight: 900;
-    color: var(--text-main);
 }
-
-.balance-amount span {
+.balance-value span {
     color: #fcc316;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     margin-right: 5px;
 }
 
-.section-title {
-    font-size: 1rem;
-    color: var(--text-main);
-    margin-bottom: 15px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.services-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.service-item {
-    background: var(--input-bg);
-    border: 1px solid var(--border-color);
+/* الإشعار الداخلي */
+.alert-box-info {
+    background: rgba(252, 195, 22, 0.08);
+    border: 1px solid rgba(252, 195, 22, 0.2);
     border-radius: 16px;
     padding: 15px;
-    text-align: center;
-    cursor: pointer;
-    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #fcc316;
 }
 
-.service-item:hover {
-    border-color: #fcc316;
-    transform: translateY(-3px);
+/* الإحصائيات */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
 }
-
-.service-icon {
-    font-size: 1.8rem;
-    margin-bottom: 8px;
-    display: block;
-}
-
-.service-name {
-    font-size: 0.95rem;
-    font-weight: bold;
-}
-
-.logout-btn {
-    width: 100%;
-    padding: 15px;
-    background: rgba(255, 94, 94, 0.1);
-    border: 1px solid rgba(255, 94, 94, 0.2);
+.stat-item {
+    background: #0b1016;
+    border: 1px solid var(--border-color);
     border-radius: 14px;
-    color: #ff5e5e;
-    font-weight: bold;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: 0.2s;
+    padding: 12px;
     text-align: center;
 }
+.stat-label { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 5px; }
+.stat-val { font-size: 1.2rem; font-weight: bold; }
 
-.logout-btn:hover {
-    background: rgba(255, 94, 94, 0.2);
+/* الرهانات والمباريات */
+.section-title {
+    font-size: 1rem;
+    margin: 20px 0 12px 0;
+    text-align: right;
+    font-weight: bold;
+}
+
+.bet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+.bet-item {
+    background: #0b1016;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 15px 5px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+.bet-item.active {
+    border: 2px solid #fcc316;
+    background: #17202c;
+}
+
+.action-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--primary-gold);
+    border: none;
+    border-radius: 14px;
+    color: #000;
+    font-weight: 800;
+    font-size: 1.1rem;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+.logout-link {
+    display: block;
+    text-align: center;
+    color: #ff5e5e;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    cursor: pointer;
 }
 </style>
 </head>
-
 <body>
 
 <div class="container">
 
-    <div class="logo-box">
-        <div class="ball-8">8</div>
-        <h1 class="logo-text">8POOL<span>CASH</span></h1>
+    <div class="header-nav">
+        <div class="nav-buttons">
+            <button class="nav-btn btn-dark">سحب</button>
+            <button class="nav-btn btn-gold">إيداع</button>
+            <button class="nav-btn btn-dark">الدعم ✉</button>
+        </div>
+        <div class="logo-side">8POOL<span>CASH</span> 🎱</div>
     </div>
 
     <div class="card">
-
-        <!-- صندوق الترحيب وعرض الإسم الرسمي -->
-        <div class="welcome-box">
-            <div class="avatar" id="user-avatar">👤</div>
-            <div class="user-info">
-                <h3>مرحباً، <span id="official-username">جاري التحميل...</span></h3>
-                <p>نوع الحساب: <span style="color: var(--success-green);">رسمي فعال ✓</span></p>
-            </div>
+        <div class="account-status">
+            <span class="status-tag">المستوى المعتمد 1</span>
+            <div class="user-title">الحساب الرسمي: <span id="official-username">جاري التحميل...</span></div>
         </div>
 
-        <!-- رصيد الحساب -->
-        <div class="balance-card">
-            <div class="balance-title">الرصيد الحالي المتوفر</div>
-            <div class="balance-amount">0.00 <span>CASH</span></div>
+        <div class="balance-section">
+            <div class="balance-label">الرصيد المتاح حالياً</div>
+            <div class="balance-value"><span id="live-balance">0</span> <span>DH</span></div>
         </div>
 
-        <div class="section-title">
-            <span>⚡</span> خدمات الشحن السريع
+        <div class="alert-box-info">
+            <span>⚠️</span>
+            <p>رصيدك الحالي غير كافي، يرجى شحن حسابك لتتمكن من دخول غرف اللعب والمواجهة المباشرة.</p>
         </div>
 
-        <!-- شبكة الخدمات -->
-        <div class="services-grid">
-            <div class="service-item">
-                <span class="service-icon">🎱</span>
-                <div class="service-name">شحن كوينز (Coins)</div>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-label">إجمالي الأرباح</div>
+                <div class="stat-val" style="color:#2ecc71;">DH 0</div>
             </div>
-            <div class="service-item">
-                <span class="service-icon">💵</span>
-                <div class="service-name">شحن كاش (Cash)</div>
+            <div class="stat-item">
+                <div class="stat-label">المباريات</div>
+                <div class="stat-val">0</div>
             </div>
-            <div class="service-item">
-                <span class="service-icon">🔑</span>
-                <div class="service-name">حسابات جاهزة</div>
-            </div>
-            <div class="service-item">
-                <span class="service-icon">🎟️</span>
-                <div class="service-name">الـ Pass المميز</div>
+            <div class="stat-item">
+                <div class="stat-label">الانتصارات</div>
+                <div class="stat-val">0</div>
             </div>
         </div>
-
-        <!-- زر تسجيل الخروج -->
-        <button class="logout-btn" onclick="handleLogout()">تسجيل الخروج</button>
-
     </div>
+
+    <div class="section-title"> اختر مبلغ الرهان (مواجهة لاعب ضد لاعب)</div>
+    <div class="bet-grid">
+        <div class="bet-item">DH 500</div>
+        <div class="bet-item">DH 300</div>
+        <div class="bet-item active">DH 150</div>
+    </div>
+
+    <button class="action-btn">⚡ اللعب الآن - DH 150</button>
+    
+    <a class="logout-link" onclick="logout()">تسجيل الخروج 안전</a>
 
 </div>
 
-<script>
-// السكريبت الذكي لجلب الإسم الرسمي وعرضه فوراً
-document.addEventListener("DOMContentLoaded", function() {
-    
-    // 1. محاولة جلب الإسم من الرابط (URL Parameters) أولاً
-    const urlParams = new URLSearchParams(window.location.search);
-    let username = urlParams.get('username');
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // 2. إذا لم يكن ف الرابط، جلب الإسم من التخزين المحلي
-    if (!username) {
-        username = localStorage.getItem('username') || localStorage.getItem('u8');
-    }
+  // نفس الإعدادات اللي صيفطتي ف الصورة image_8.png
+  const firebaseConfig = {
+    apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
+    authDomain: "poolcash-6692c.firebaseapp.com",
+    databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
+    projectId: "poolcash-6692c",
+    storageBucket: "poolcash-6692c.firebasestorage.app",
+    messagingSenderId: "866544389541",
+    appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
+  };
 
-    // 3. عرض الإسم ف المكان المحدد
-    const nameDisplay = document.getElementById('official-username');
-    const avatarDisplay = document.getElementById('user-avatar');
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-    if (username) {
-        nameDisplay.innerText = username;
-        // وضع الحرف الأول من الإسم ف الصورة الرمزية (Avatar) كحركة ديزاين احترافية
-        avatarDisplay.innerText = username.charAt(0).toUpperCase();
-    } else {
-        // حماية: إذا دخل شخص غريب بلا حساب كيرجع لصفحة الدخول
-        nameDisplay.innerText = "زائر";
-        window.location.replace("index.html"); 
-    }
-});
+  // جلب إسم المستخدم الحالي من المتصفح
+  const activeUser = localStorage.getItem('username');
 
-function handleLogout() {
-    // تنظيف كاش المستخدم الحالي والرجوع لصفحة الدخول
-    localStorage.removeItem('username');
-    window.location.replace("index.html");
-}
+  if (!activeUser) {
+      // حماية: إلا مكاينش كونت كيرجع لصفحة تسجيل الدخول ديريكت
+      window.location.replace("index.html");
+  } else {
+      // إظهار السمتية فوراً ف الشاشة
+      document.getElementById('official-username').innerText = activeUser;
+
+      // الاتصال بـ Firebase لجلب الصولد الحقيقي (Realtime Sync)
+      const userRef = ref(db, 'users/' + activeUser);
+      onValue(userRef, (snapshot) => {
+          if (snapshot.exists()) {
+              const data = snapshot.val();
+              // تحديث الصولد ف البلاصة تع DH ديريكت
+              document.getElementById('live-balance').innerText = data.balance !== undefined ? data.balance : 0;
+          } else {
+              // إذا مسحتي الكونت من الفايربيس كيموت الدخول هنا تلقائياً
+              window.location.replace("index.html");
+          }
+      });
+  }
+
+  // دالة الخروج
+  window.logout = function() {
+      localStorage.removeItem('username');
+      window.location.replace("index.html");
+  }
 </script>
 
 </body>
