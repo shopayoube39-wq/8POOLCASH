@@ -241,6 +241,7 @@ input:focus{
             <span>⚠️</span>
         </div>
 
+        <!-- LOGIN FORM -->
         <div id="loginForm" class="form-content active">
             <div class="group">
                 <input type="text" id="lUser" placeholder="اسم المستخدم">
@@ -255,6 +256,7 @@ input:focus{
             </button>
         </div>
 
+        <!-- REGISTER FORM -->
         <div id="registerForm" class="form-content">
             <div style="display:flex; gap:10px; margin-bottom:15px;">
                 <input type="text" id="fName" placeholder="الاسم الأول" style="flex:1">
@@ -323,6 +325,7 @@ input:focus{
 
 </div>
 
+<!-- استدعاء حزم Firebase الرسمية لتنفيذ العمليات على السيرفر -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -387,7 +390,7 @@ input:focus{
               return;
           }
 
-          // حفظ البيانات كاملة في المسار المخصص باسم المستخدم الفريد مع رصيد أولي 0
+          // حفظ البيانات كاملة في المسار المخصص باسم المستخدم الفريد
           await set(userRef, {
               firstName: firstName,
               lastName: lastName,
@@ -395,7 +398,8 @@ input:focus{
               country: window.selectedCountryName,
               username: user,
               password: pass,
-              balance: 0  // الصولد الأولي الافتراضي
+              balance: 0,   // الصولد الأولي الافتراضي (الرصيد المتاح للشحن)
+              earnings: 0   // إجمالي الأرباح الافتراضي منفصل تماماً عن الشحن
           });
 
           // تخزين الهوية محلياً لتثبيت الجلسة
