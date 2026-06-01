@@ -241,8 +241,6 @@ input:focus{
             <span>⚠️</span>
         </div>
 
-        <!-- LOGIN -->
-
         <div id="loginForm" class="form-content active">
 
             <div class="group">
@@ -258,8 +256,6 @@ input:focus{
             </button>
 
         </div>
-
-        <!-- REGISTER -->
 
         <div id="registerForm" class="form-content">
 
@@ -345,55 +341,33 @@ input:focus{
 <script>
 
 function showForm(type){
-
     document.getElementById('statusAlert').style.display = 'none';
 
-    document.getElementById('loginForm').classList.toggle(
-        'active',
-        type === 'login'
-    );
+    document.getElementById('loginForm').classList.toggle('active', type === 'login');
+    document.getElementById('registerForm').classList.toggle('active', type === 'register');
 
-    document.getElementById('registerForm').classList.toggle(
-        'active',
-        type === 'register'
-    );
-
-    document.getElementById('loginTab').classList.toggle(
-        'active',
-        type === 'login'
-    );
-
-    document.getElementById('registerTab').classList.toggle(
-        'active',
-        type === 'register'
-    );
+    document.getElementById('loginTab').classList.toggle('active', type === 'login');
+    document.getElementById('registerTab').classList.toggle('active', type === 'register');
 }
 
 let selectedCountryName = "";
 
 function selectCountry(el){
-
     document.querySelectorAll('.c-item').forEach(item=>{
         item.classList.remove('selected');
     });
-
     el.classList.add('selected');
-
     selectedCountryName = el.querySelector('span').innerText;
 }
 
 function triggerAlert(msg){
-
     const box = document.getElementById('statusAlert');
-
     document.getElementById('statusText').innerText = msg;
-
     box.style.display = 'flex';
 }
 
 function handleRegister(){
-
-    const user = document.getElementById('rUser').value;
+    const user = document.getElementById('rUser').value.trim();
     const pass = document.getElementById('rPass').value;
     const mail = document.getElementById('email').value;
 
@@ -401,35 +375,33 @@ function handleRegister(){
     const text = document.getElementById('rBtnText');
 
     if(!user || !mail || pass.length < 6){
-
         triggerAlert('تأكد من إدخال جميع البيانات');
         return;
     }
 
     if(selectedCountryName === ""){
-
         triggerAlert('اختر الدولة');
         return;
     }
 
     btn.disabled = true;
-
     text.innerHTML = '<span class="loader"></span>';
 
     setTimeout(()=>{
-
+        // حفظ بيانات تسجيل الدخول الأساسية
         localStorage.setItem('u8', user);
         localStorage.setItem('p8', pass);
+        
+        // ربط الاسم كـ مفتاح أساسي (username) لتقرأه صفحة الحساب ar.html فوراً
+        localStorage.setItem('username', user);
 
         // الانتقال لصفحة ar.html
         window.location.href = "ar.html";
-
-    },2000);
+    }, 2000);
 }
 
 function handleLogin(){
-
-    const user = document.getElementById('lUser').value;
+    const user = document.getElementById('lUser').value.trim();
     const pass = document.getElementById('lPass').value;
 
     const savedU = localStorage.getItem('u8');
@@ -439,24 +411,20 @@ function handleLogin(){
     const text = document.getElementById('lBtnText');
 
     if(user === savedU && pass === savedP){
-
         btn.disabled = true;
-
         text.innerHTML = '<span class="loader"></span>';
 
         setTimeout(()=>{
+            // تحديث اسم المستخدم النشط الحالي قبل الانتقال لتأكيد المزامنة
+            localStorage.setItem('username', user);
 
             // الانتقال لصفحة ar.html
             window.location.href = "ar.html";
-
-        },1500);
-
+        }, 1500);
     }else{
-
         triggerAlert('المعلومات غير صحيحة!');
     }
 }
-
 </script>
 
 </body>
