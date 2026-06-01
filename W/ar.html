@@ -270,19 +270,17 @@
 
       const amountValues = [150, 200, 300, 500, 1000, 2500, 5000];
       let currentSelectedIndex = 0;
-      let globalUserBalance = 0; 
+      let globalUserBalance = 0; // الرصيد لايف من الفايربيز
       let currentUsername = "Ayoube"; 
 
-      // دالة لتحديث حالة الحساب بناءً على الرصيد الفوري والرهان المختار
-      function updateUIBasedOnBalance() {
-          const requiredAmount = amountValues[currentSelectedIndex];
+      // دالة لتحديث ظهور الصندوق الأصفر: يختفي بصفة نهائية يلا كان الصولد كبر من 0
+      function checkWarningBoxVisibility() {
           const warningBox = document.getElementById('warningBox');
-          
           if (warningBox) {
-              if (globalUserBalance >= requiredAmount) {
-                  warningBox.classList.add('hidden'); // إخفاء التحذير فالحين يلا الصولد كافي
+              if (globalUserBalance > 0) {
+                  warningBox.classList.add('hidden'); // اختفاء الميساج الأصفر تماماً ملي يفوت 0 درهم
               } else {
-                  warningBox.classList.remove('hidden'); // إظهار التحذير توماتيك يلا الصولد ناقص
+                  warningBox.classList.remove('hidden'); // يظهر الميساج يلا كان الصولد 0 نيشان
               }
           }
       }
@@ -309,39 +307,41 @@
                   <span>العب الآن - DH ${currentAmount.toLocaleString()}</span>
               `;
           }
-          updateUIBasedOnBalance();
+          // هنا حيدت الفحص القديم باش الكليان يقلب الخيارات بحرية بلا ما يرجع الميساج يبرزطو
       }
 
+      // الفحص النهائي الذكي عند كبس زر "العب الآن"
       function handlePlayClick() {
           const requiredAmount = amountValues[currentSelectedIndex];
+          
+          // الفحص واش الصولد كافي للرهان المختار بالظبط
           if (globalUserBalance < requiredAmount) {
-              alert("عذراً، رصيدك الحالي غير كافي لدخول هذه المواجهة! يرجى الشحن أولاً.");
+              alert(`عذراً، رصيدك الحالي (${globalUserBalance} DH) غير كافي لدخول هذه المواجهة! يرجى شحن حسابك لتغطية مبلغ الـ ${requiredAmount} DH.`);
           } else {
-              alert("تم قبول دخولك للمواجهة بنجاح! جاري البحث عن لاعب منافس...");
+              alert(`تم قبول دخولك للمواجهة بنجاح بمبلغ ${requiredAmount} DH! جاري البحث عن لاعب منافس...`);
           }
       }
 
-      // نظام البث والربط المباشر الفوري والمستمر (Realtime Listener)
+      // الربط التلقائي الفوري والمستمر (Realtime Live Streaming)
       function startFirebaseSync(username) {
           if (!username) return;
           
           const userRef = database.ref('users/' + username);
           
-          // استخدام دالة on لضمان التحديث التلقائي الفوري ف نفس الميلي ثانية وبلا ريفريش
           userRef.on('value', (snapshot) => {
               const userData = snapshot.val();
               if (userData) {
                   globalUserBalance = userData.balance !== undefined ? parseFloat(userData.balance) : 0;
                   
-                  // تحديث الرصيد وإجمالي الأرباح ف الشاشة فوراً وبسرعة فائقة
+                  // تحديث الأرقام ف الشاشة توماتيك بلا ريفريش
                   const balanceDisplay = document.getElementById('balanceDisplay');
                   if(balanceDisplay) balanceDisplay.innerText = globalUserBalance;
                   
                   const totalEarningsDisplay = document.getElementById('totalEarningsDisplay');
                   if(totalEarningsDisplay) totalEarningsDisplay.innerText = globalUserBalance + " DH";
                   
-                  // فحص وتحديث مظهر التحذير توماتيكياً
-                  updateUIBasedOnBalance();
+                  // فحص الميساج الأصفر توماتيكياً فالحين
+                  checkWarningBoxVisibility();
               }
           }, (error) => {
               console.error("Firebase sync error: ", error);
