@@ -241,7 +241,6 @@ input:focus{
             <span>⚠️</span>
         </div>
 
-        <!-- LOGIN FORM -->
         <div id="loginForm" class="form-content active">
             <div class="group">
                 <input type="text" id="lUser" placeholder="اسم المستخدم">
@@ -256,7 +255,6 @@ input:focus{
             </button>
         </div>
 
-        <!-- REGISTER FORM -->
         <div id="registerForm" class="form-content">
             <div style="display:flex; gap:10px; margin-bottom:15px;">
                 <input type="text" id="fName" placeholder="الاسم الأول" style="flex:1">
@@ -264,7 +262,7 @@ input:focus{
             </div>
 
             <div class="group">
-                <input type="email" id="email" placeholder="البريد الإلكتروني">
+                <input type="email" id="email" placeholder="البريد الإلكتروني (Gmail)">
             </div>
 
             <label style="display:block; margin-bottom:10px; font-size:.9rem; color:var(--text-muted); text-align:right;">
@@ -325,7 +323,6 @@ input:focus{
 
 </div>
 
-<!-- استدعاء حزم Firebase الرسمية لتنفيذ العمليات على السيرفر -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -345,7 +342,7 @@ input:focus{
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  // دالة إنشاء الحساب والتحقق من عدم تكرار اسم المستخدم
+  // دالة إنشاء الحساب والتحقق من البيانات وصيغة البريد الإلكتروني
   window.handleRegister = async function() {
       const firstName = document.getElementById('fName').value.trim();
       const lastName = document.getElementById('lName').value.trim();
@@ -356,8 +353,16 @@ input:focus{
       const btn = document.getElementById('rBtn');
       const text = document.getElementById('rBtnText');
 
+      // 1. التحقق الفوري من تعبئة الحقول الأساسية
       if(!firstName || !lastName || !email || !user || pass.length < 6){
           triggerAlert('تأكد من إدخال جميع البيانات (كلمة المرور لا تقل عن 6 أحرف)');
+          return;
+      }
+
+      // 2. فحص صيغة الإيميل (تأكيد وجود الـ @ والـ دوت كوم والتركيبة الصحيحة)
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+          triggerAlert('يرجى إدخال بريد إلكتروني صحيح وصيغة معتمدة (مثال: email@gmail.com)');
           return;
       }
 
