@@ -2,55 +2,73 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>8POOLCASH | ساحة اللعب</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8POOLCASH | ساحة التحدي</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 </head>
-<body class="bg-[#08090c] text-white p-5 text-center">
+<body class="bg-[#08090c] text-white p-5 text-center flex flex-col items-center justify-center min-h-screen">
 
-    <h1 class="text-2xl font-black mb-5">مرحباً بك في ساحة التحدي</h1>
-    <div class="bg-[#111520] p-6 rounded-xl border border-white/10">
-        <p class="text-gray-400">رصيدك الحالي:</p>
-        <h2 id="balance-display" class="text-4xl font-black text-amber-400">0 DH</h2>
+    <div class="w-full max-w-sm bg-[#111520] p-8 rounded-3xl border border-white/10 shadow-2xl">
+        <h1 class="text-xl font-black mb-6">مرحباً بك في المواجهة</h1>
+        
+        <div class="mb-8">
+            <p class="text-gray-400 text-sm">رصيدك الحالي:</p>
+            <h2 id="balance-display" class="text-5xl font-black text-amber-400 mt-2">0 DH</h2>
+        </div>
+
+        <button onclick="playGame()" id="play-btn" class="w-full bg-amber-500 hover:bg-amber-600 text-black font-black py-4 rounded-xl text-lg transition-all transform active:scale-95">
+            العب الآن
+        </button>
+        
+        <p id="status-msg" class="mt-4 text-xs text-gray-500"></p>
     </div>
 
-    <button onclick="playGame()" class="mt-8 bg-amber-500 hover:bg-amber-600 text-black font-black py-4 px-10 rounded-full text-xl transition-all">
-        العب الآن (رهان 50 DH)
-    </button>
-
     <script>
-        const firebaseConfig = { /* حط هنا نفس الكونفيغ اللي عطيتك قبيلة */ };
+        const firebaseConfig = { /* حط الكونفيغ ديالك هنا */ };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         
-        // جيب الـ ID ديال اليوزر من localStorage (خاصك تكون مخزنو فاش دار Login)
-        const userId = localStorage.getItem('userId'); 
+        // جيب اليوزر والرهان اللي تختار
+        const userId = localStorage.getItem('username') || "Ayoube"; 
+        const bet = parseInt(localStorage.getItem('pendingBet')) || 50;
 
-        // 1. عرض الصولد ديما
+        // تحديث الزر بالمبلغ المختار
+        document.getElementById('play-btn').innerText = `تأكيد الرهان (${bet} DH)`;
+
+        // عرض الصولد لايف
         database.ref('users/' + userId + '/balance').on('value', (snapshot) => {
             document.getElementById('balance-display').innerText = (snapshot.val() || 0) + " DH";
         });
 
-        // 2. فانكشن اللعب والربح
         function playGame() {
-            const bet = 50;
             const balanceRef = database.ref('users/' + userId + '/balance');
+            const statusMsg = document.getElementById('status-msg');
+
+            statusMsg.innerText = "جاري التحقق من الرصيد...";
 
             balanceRef.transaction((currentBalance) => {
                 if (currentBalance < bet) {
-                    alert("رصيدك غير كافٍ!");
-                    return; // مايلعبش
+                    return; // رصيد غير كافي
                 }
-                
-                // هنا اللعبة كتحسب واش ربح ولا خسر (هنا درنا مثال ربح ديريكت)
-                const isWinner = true; 
-                if (isWinner) {
-                    alert("مبروك! ربحتي 100 DH");
-                    return currentBalance - bet + 100; // خصم الرهان + إضافة الربح
+                return currentBalance - bet; // خصم الرهان
+            }, (error, committed, snapshot) => {
+                if (error) {
+                    statusMsg.innerText = "حدث خطأ!";
+                } else if (!committed) {
+                    alert("عذراً، رصيدك غير كافي!");
                 } else {
-                    return currentBalance - bet; // خصم الرهان
+                    // اللعبة بدات
+                    statusMsg.innerText = "تم خصم الرهان، جاري محاكاة النتيجة...";
+                    
+                    // هنا كدير logic الربح (مثال: ربح 2x)
+                    setTimeout(() => {
+                        const winAmount = bet * 2;
+                        balanceRef.transaction((c) => (c || 0) + winAmount);
+                        alert("مبروك! ربحت " + winAmount + " DH");
+                        statusMsg.innerText = "انتهت الجولة!";
+                    }, 2000);
                 }
             });
         }
