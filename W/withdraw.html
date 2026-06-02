@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8POOLCASH - السحب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #0d111b;
+            background-image: radial-gradient(circle at top, #161b26 0%, #0d111b 100%);
+            font-family: 'Cairo', sans-serif;
+        }
+        .pool-gold {
+            background-color: #ff9900;
+        }
+        .text-pool-gold {
+            color: #ff9900;
+        }
+        .border-pool-gold {
+            border-color: #ff9900;
+        }
+        .active-tab {
+            color: #ff9900;
+            border-bottom: 2px solid #ff9900;
+        }
+        .bank-card {
+            background-color: #121824;
+            border: 1px solid #1c2436;
+            transition: all 0.2s ease-in-out;
+        }
+        .bank-card:hover {
+            border-color: #ff9900;
+            transform: translateY(-1px);
+        }
+        .app-logo-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1.25rem;
+            width: 4rem;
+            height: 4rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            overflow: hidden;
+            transition: all 0.2s ease-in-out;
+            padding: 0.25rem;
+            background-color: white;
+        }
+        .crypto-logo-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            width: 2.25rem;
+            height: 2.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            overflow: hidden;
+            transition: all 0.2s ease-in-out;
+            background-color: white;
+            border: 1px solid #1c2436;
+        }
+    </style>
+</head>
+<body class="text-gray-200 min-h-screen pb-12 select-none tracking-wide">
+
+    <header class="max-w-md mx-auto p-4 flex justify-between items-center border-b border-[#1c2436]">
+        <div class="flex items-center gap-3">
+            <button onclick="goBack()" class="bg-[#121824] hover:bg-[#1c2436] text-white w-9 h-9 rounded-xl flex justify-center items-center border border-[#1c2436] transition">
+                <i class="fas fa-arrow-right text-sm"></i>
+            </button>
+            <h1 class="text-base font-black">السحب</h1>
+        </div>
+        <div></div>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 mt-5 space-y-4">
+
+        <div class="bg-[#121824] border border-[#1c2436] rounded-xl p-3.5 flex justify-between items-center text-xs">
+            <span class="text-gray-400 font-medium">هل تحتاج مساعدة؟</span>
+            <a href="mailto:support@8poolcash.com" class="text-[#ff9900] font-bold font-mono hover:underline">support@8poolcash.com</a>
+        </div>
+
+        <div class="bg-[#121824] border border-[#1c2436] rounded-2xl p-4 flex flex-col space-y-3">
+            <div class="flex justify-between items-center">
+                <div class="space-y-1">
+                    <span class="text-[10px] text-gray-500 block font-medium">رصيدك المتاح</span>
+                    <span class="text-xl font-black text-white font-mono" id="userBalanceDisplay">DH 0</span>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-[#ff9900]/10 flex justify-center items-center text-[#ff9900] border border-[#ff9900]/20 text-base">
+                    <i class="fas fa-wallet"></i>
+                </div>
+            </div>
+            <div class="flex justify-between items-center border-t border-[#1c2436] pt-2 text-[10px]">
+                <span class="text-gray-500">الحد الأدنى للسحب:</span>
+                <span class="font-bold text-gray-300 font-mono">DH 100</span>
+            </div>
+        </div>
+
+        <div class="flex border-b border-[#1c2436] text-center font-bold text-xs">
+            <button onclick="switchTab('deposit')" id="tab-deposit" class="flex-1 py-3 active-tab transition-all">سحب جديد</button>
+            <button onclick="switchTab('history')" id="tab-history" class="flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all">السجل</button>
+        </div>
+
+        <div id="deposit-section" class="space-y-4">
+
+            <div id="crypto-methods-main" class="space-y-4">
+                <div onclick="showCryptoStep1()" class="bank-card rounded-2xl p-4 flex justify-between items-center cursor-pointer">
+                    <div class="flex items-center gap-3">
+                        <div class="w-14 h-14 rounded-2xl bg-[#ff9900]/10 text-[#ff9900] border border-[#ff9900]/20 flex justify-center items-center text-xl shadow-inner">
+                            <i class="fab fa-bitcoin"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-bold text-gray-200">الدفع بالعملات الرقمية</h3>
+                            <p class="text-[10px] text-gray-500 mt-0.5">Bitcoin, USDT, ETH... متاح لكل الدول 🌍</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-left text-[10px] text-gray-600"></i>
+                </div>
+
+                <p class="text-[11px] text-gray-500 text-center font-bold my-2">أو اختر بنك مغربي 🇲🇦</p>
+
+                <div class="grid grid-cols-2 gap-3">
+                    
+                    <div onclick="selectMethod('cih', 'CIH Bank')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
+                        <div class="app-logo-box border border-[#1c2436] group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/S7yJ3PD2/IMG-3730.png" alt="CIH Bank" class="w-full h-full object-contain rounded-xl">
+                        </div>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ff9900]">CIH Bank</span>
+                    </div>
+
+                    <div onclick="selectMethod('attijari', 'Attijariwafa Bank')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
+                        <div class="app-logo-box border border-[#1c2436] group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/0ysK3ySQ/IMG-3731.png" alt="Attijariwafa Bank" class="w-full h-full object-contain rounded-xl">
+                        </div>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ff9900]">التجاري وفا بنك</span>
+                    </div>
+
+                    <div onclick="selectMethod('lbankalik', 'L\'bankalik')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
+                        <div class="app-logo-box border border-[#1c2436] group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/tMR8tVky/IMG-3733.png" alt="L'bankalik" class="w-full h-full object-contain rounded-xl">
+                        </div>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ff9900]">لبنك اليك</span>
+                    </div>
+
+                    <div onclick="selectMethod('albarid', 'Al Barid Bank')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
+                        <div class="app-logo-box border border-[#1c2436] group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/Jjy3FRRK/IMG-3980.webp" alt="Al Barid Bank" class="w-full h-full object-contain rounded-xl">
+                        </div>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ff9900]">البريد بنك</span>
+                    </div>
+
+                    <div onclick="selectMethod('cashplus', 'Cash Plus')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
+                        <div class="app-logo-box border border-[#1c2436] group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/JFn2cfLM/IMG-3737.jpg" alt="Cash Plus" class="w-full h-full object-contain rounded-xl">
+                        </div>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ff9900]">كاش بلوس</span>
+                    </div>
+
+                    <div onclick="selectMethod('bmce', 'BMCE Bank of Africa')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
+                        <div class="app-logo-box border border-[#1c2436] group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/LDWFNTWR/IMG-3736.png" alt="BMCE Bank of Africa" class="w-full h-full object-contain rounded-xl">
+                        </div>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ff9900]">BMCE بنك أفريقيا</span>
+                    </div>
+
+                    <div onclick="selectMethod('chaabi', 'Chaabi Bank')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
+                        <div class="app-logo-box border border-[#1c2436] group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/S7xtn8Vk/IMG-3738.png" alt="Chaabi Bank" class="w-full h-full object-contain rounded-xl">
+                        </div>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ff9900]">البنك الشعبي</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="crypto-step-1" class="hidden space-y-4">
+                <div onclick="hideCryptoSteps()" class="text-xs font-bold text-[#ff9900] flex items-center gap-1 cursor-pointer hover:underline mb-2">
+                    <i class="fas fa-arrow-right text-[10px]"></i>
+                    <span>رجوع إلى البنوك</span>
+                </div>
+
+                <div class="bank-card rounded-2xl p-4 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-[#ff9900]/10 text-[#ff9900] border border-[#ff9900]/20 flex justify-center items-center text-lg">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-black text-gray-200">السحب بالعملات الرقمية</h3>
+                            <p class="text-[10px] text-gray-500 mt-0.5">الخطوة 1 من 3: المبلغ</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-right text-xs space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-gray-400 font-medium">المبلغ بالدولار ($1,000 - $20)</label>
+                    </div>
+                    <div class="relative flex items-center bg-[#0d111b] border border-[#1c2436] rounded-xl p-1 focus-within:border-[#ff9900]">
+                        <span class="text-[#ff9900] font-black font-mono px-3 text-sm">$</span>
+                        <input type="number" id="cryptoAmountInput" value="20" oninput="updateCryptoBonusText()" class="w-full p-2.5 bg-transparent text-white font-black text-left outline-none font-mono text-sm">
+                    </div>
+                    <p class="text-[11px] text-[#ff9900] font-bold" id="cryptoBonusText">سيتم خصم 200 رصيد</p>
+                </div>
+
+                <div class="grid grid-cols-4 gap-2">
+                    <button onclick="setCryptoAmount(20)" class="bg-[#121824] border border-[#1c2436] hover:border-[#ff9900] focus:border-[#ff9900] text-gray-300 font-black py-2.5 rounded-xl text-xs font-mono transition">$20</button>
+                    <button onclick="setCryptoAmount(50)" class="bg-[#121824] border border-[#1c2436] hover:border-[#ff9900] focus:border-[#ff9900] text-gray-300 font-black py-2.5 rounded-xl text-xs font-mono transition">$50</button>
+                    <button onclick="setCryptoAmount(100)" class="bg-[#121824] border border-[#1c2436] hover:border-[#ff9900] focus:border-[#ff9900] text-gray-300 font-black py-2.5 rounded-xl text-xs font-mono transition">$100</button>
+                    <button onclick="setCryptoAmount(500)" class="bg-[#121824] border border-[#1c2436] hover:border-[#ff9900] focus:border-[#ff9900] text-gray-300 font-black py-2.5 rounded-xl text-xs font-mono transition">$500</button>
+                </div>
+
+                <button onclick="showCryptoStep2()" class="w-full pool-gold text-black font-black py-3.5 rounded-xl text-xs transition shadow-lg shadow-[#ff9900]/5 flex justify-center items-center gap-1.5 active:scale-[0.99]">
+                    متابعة ← اختيار العملة
+                </button>
+            </div>
+
+            <div id="crypto-step-2" class="hidden space-y-4">
+                <div onclick="showCryptoStep1()" class="text-xs font-bold text-[#ff9900] flex items-center gap-1 cursor-pointer hover:underline mb-2">
+                    <i class="fas fa-arrow-right text-[10px]"></i>
+                    <span id="cryptoBackToStep1Text">تغيير المبلغ ($20)</span>
+                </div>
+
+                <div class="bank-card rounded-2xl p-4 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-[#ff9900]/10 text-[#ff9900] border border-[#ff9900]/20 flex justify-center items-center text-lg">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-black text-gray-200">السحب بالعملات الرقمية</h3>
+                            <p class="text-[10px] text-gray-500 mt-0.5">الخطوة 2 من 3: اختر العملة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-[11px] text-gray-400 font-medium text-right px-1">اختر العملة الرقمية للسحب</p>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div onclick="selectCryptoCurrency('USDT (TRC20)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
+                        <div class="text-right">
+                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ff9900]">USDT</h4>
+                            <p class="text-[10px] text-gray-500 font-mono">TRC20</p>
+                        </div>
+                        <div class="crypto-logo-box group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/hxshTnYD/IMG-4007.png" alt="USDT" class="w-full h-full object-contain rounded-full">
+                        </div>
+                    </div>
+
+                    <div onclick="selectCryptoCurrency('BTC (Bitcoin)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
+                        <div class="text-right">
+                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ff9900]">BTC</h4>
+                            <p class="text-[10px] text-gray-500 font-mono">Bitcoin</p>
+                        </div>
+                        <div class="crypto-logo-box group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/tMHCD2p7/IMG-4006.png" alt="BTC" class="w-full h-full object-contain rounded-full">
+                        </div>
+                    </div>
+
+                    <div onclick="selectCryptoCurrency('TRX (Tron)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
+                        <div class="text-right">
+                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ff9900]">TRX</h4>
+                            <p class="text-[10px] text-gray-500 font-mono">Tron</p>
+                        </div>
+                        <div class="crypto-logo-box group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/wZJ29Zvn/IMG-4005.png" alt="TRX" class="w-full h-full object-contain rounded-full">
+                        </div>
+                    </div>
+
+                    <div onclick="selectCryptoCurrency('LTC (Litecoin)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
+                        <div class="text-right">
+                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ff9900]">LTC</h4>
+                            <p class="text-[10px] text-gray-500 font-mono">Litecoin</p>
+                        </div>
+                        <div class="crypto-logo-box group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/7d6PNpq9/IMG-4009.png" alt="LTC" class="w-full h-full object-contain rounded-full">
+                        </div>
+                    </div>
+
+                    <div onclick="selectCryptoCurrency('BNB (BSC)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
+                        <div class="text-right">
+                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ff9900]">BNB</h4>
+                            <p class="text-[10px] text-gray-500 font-mono">BSC</p>
+                        </div>
+                        <div class="crypto-logo-box group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/S439n4VG/IMG-4010.png" alt="BNB" class="w-full h-full object-contain rounded-full">
+                        </div>
+                    </div>
+
+                    <div onclick="selectCryptoCurrency('ETH (Ethereum)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
+                        <div class="text-right">
+                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ff9900]">ETH</h4>
+                            <p class="text-[10px] text-gray-500 font-mono">Ethereum</p>
+                        </div>
+                        <div class="crypto-logo-box group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/8km1Myr/IMG-4011.png" alt="ETH" class="w-full h-full object-contain rounded-full">
+                        </div>
+                    </div>
+
+                    <div onclick="selectCryptoCurrency('TON (Toncoin)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
+                        <div class="text-right">
+                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ff9900]">TON</h4>
+                            <p class="text-[10px] text-gray-500 font-mono">Toncoin</p>
+                        </div>
+                        <div class="crypto-logo-box group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/PGVhrYn7/IMG-4012.png" alt="TON" class="w-full h-full object-contain rounded-full">
+                        </div>
+                    </div>
+
+                    <div onclick="selectCryptoCurrency('SOL (Solana)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
+                        <div class="text-right">
+                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ff9900]">SOL</h4>
+                            <p class="text-[10px] text-gray-500 font-mono">Solana</p>
+                        </div>
+                        <div class="crypto-logo-box group-hover:border-[#ff9900]">
+                            <img src="https://i.ibb.co/tw4VQSJk/IMG-4013.png" alt="SOL" class="w-full h-full object-contain rounded-full">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center text-[11px] text-gray-400 flex items-center justify-center gap-1 py-1">
+                    <span class="text-[#ff9900]">💡</span>
+                    <span><strong class="text-[#ff9900] font-mono">USDT TRC20</strong> هي الأرخص والأسرع</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="paymentModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-end justify-center">
+            <div class="bg-[#121824] w-full max-w-md rounded-t-3xl border-t border-[#1c2436] p-5 space-y-4">
+                
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xs font-bold text-gray-200">السحب عبر: <span id="modalMethodName" class="text-[#ff9900]"></span></h3>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-white text-base"><i class="fas fa-times"></i></button>
+                </div>
+
+                <div class="space-y-3 text-right text-xs">
+                    <div>
+                        <label class="block text-gray-400 mb-1.5 font-medium">المبلغ المراد سحبه (بالدرهم DH):</label>
+                        <input type="number" id="amountInput" placeholder="مثال: 150" class="w-full p-3 bg-[#0d111b] border border-[#1c2436] rounded-xl text-white font-bold outline-none focus:border-[#ff9900] font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 mb-1.5 font-medium" id="userAddressLabel">معلومات حسابك البنكي لتلقي الأموال:</label>
+                        <textarea id="userPaymentDetails" rows="3" placeholder="أدخل هنا رقم حسابك (RIB) والإسم الكامل الخاص بك بشكل صحيح" class="w-full p-3 bg-[#0d111b] border border-[#1c2436] rounded-xl text-white font-bold outline-none focus:border-[#ff9900] resize-none"></textarea>
+                    </div>
+                </div>
+
+                <button onclick="sendDepositRequest()" id="submitBtn" class="w-full pool-gold text-black font-black py-3.5 rounded-xl text-xs transition shadow-lg shadow-[#ff9900]/5 active:scale-[0.99]">
+                    تأكيد وإرسال طلب السحب 🚀
+                </button>
+            </div>
+        </div>
+
+        <div id="history-section" class="hidden space-y-3">
+            <p class="text-xs text-gray-500 text-center py-6 font-medium" id="noHistoryText">لا توجد أي عمليات سحب سابقة حالياً.</p>
+            <div id="historyList" class="space-y-2"></div>
+        </div>
+
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
+            authDomain: "poolcash-6692c.firebaseapp.com",
+            databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
+            projectId: "poolcash-6692c",
+            storageBucket: "poolcash-6692c.firebasestorage.app",
+            messagingSenderId: "866544389541",
+            appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const currentUsername = localStorage.getItem('username') || "Ayoub_Player";
+
+        window.selectedBankId = "";
+        window.selectedBankName = "";
+
+        window.showCryptoStep1 = function() {
+            document.getElementById('crypto-methods-main').classList.add('hidden');
+            document.getElementById('crypto-step-2').classList.add('hidden');
+            document.getElementById('crypto-step-1').classList.remove('hidden');
+            window.updateCryptoBonusText();
+        };
+
+        window.hideCryptoSteps = function() {
+            document.getElementById('crypto-step-1').classList.add('hidden');
+            document.getElementById('crypto-step-2').classList.add('hidden');
+            document.getElementById('crypto-methods-main').classList.remove('hidden');
+        };
+
+        window.setCryptoAmount = function(amount) {
+            document.getElementById('cryptoAmountInput').value = amount;
+            window.updateCryptoBonusText();
+        };
+
+        window.updateCryptoBonusText = function() {
+            const val = document.getElementById('cryptoAmountInput').value || 0;
+            const coins = val * 10;
+            document.getElementById('cryptoBonusText').innerText = `سيتم خصم ${coins} رصيد`;
+        };
+
+        window.showCryptoStep2 = function() {
+            const amount = document.getElementById('cryptoAmountInput').value;
+            if(!amount || parseFloat(amount) <= 0) {
+                alert('الرجاء إدخال مبلغ صحيح بالدولار!');
+                return;
+            }
+            document.getElementById('cryptoBackToStep1Text').innerText = `تغيير المبلغ ($${amount})`;
+            document.getElementById('crypto-step-1').classList.add('hidden');
+            document.getElementById('crypto-step-2').classList.remove('hidden');
+        };
+
+        window.selectCryptoCurrency = function(cryptoName) {
+            const amountInDollars = document.getElementById('cryptoAmountInput').value;
+            const amountInDh = parseFloat(amountInDollars) * 10; 
+            
+            document.getElementById('crypto-step-2').classList.add('hidden');
+            document.getElementById('crypto-methods-main').classList.remove('hidden');
+            
+            window.selectMethod('crypto', cryptoName);
+            document.getElementById('amountInput').value = amountInDh;
+        };
+
+        window.selectMethod = function(id, name) {
+            window.selectedBankId = id;
+            window.selectedBankName = name;
+            
+            document.getElementById('modalMethodName').innerText = name;
+            document.getElementById('paymentModal').classList.remove('hidden');
+
+            const labelEl = document.getElementById('userAddressLabel');
+            const detailsInput = document.getElementById('userPaymentDetails');
+
+            if(id === 'crypto') {
+                labelEl.innerText = "عنوان محفظتك (Wallet Address) لتلقي الأموال:";
+                detailsInput.placeholder = "أدخل عنوان محفظتك الكامل والشبكة المستخدمة بشكل صحيح";
+            } else {
+                labelEl.innerText = "معلومات حسابك البنكي لتلقي الأموال:";
+                detailsInput.placeholder = "أدخل هنا رقم حسابك (RIB) والإسم الكامل الخاص بك بشكل صحيح";
+            }
+        };
+
+        window.closeModal = function() {
+            document.getElementById('paymentModal').classList.add('hidden');
+            document.getElementById('amountInput').value = "";
+            document.getElementById('userPaymentDetails').value = "";
+        };
+
+        window.sendDepositRequest = function() {
+            const amount = document.getElementById('amountInput').value.trim();
+            const details = document.getElementById('userPaymentDetails').value.trim();
+
+            if(!amount || parseFloat(amount) <= 0) {
+                alert('الرجاء كتابة مبلغ سحب صحيح!');
+                return;
+            }
+            if(!details) {
+                alert('من فضلك قم بكتابة معلومات حسابك لتلقي الأموال عليها!');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = "جاري إرسال طلبك...";
+
+            const requestsRef = ref(db, 'withdrawal_requests');
+            const newRequestRef = push(requestsRef);
+
+            set(newRequestRef, {
+                username: currentUsername,
+                bankName: window.selectedBankName,
+                amount: parseFloat(amount),
+                paymentDetails: details,
+                status: "pending",
+                timestamp: Date.now()
+            }).then(() => {
+                alert('تم إرسال طلب السحب بنجاح! سيتم مراجعة الطلب وتحويل الأموال إلى حسابك خلال دقائق.');
+                window.closeModal();
+                window.switchTab('history'); 
+            }).catch((err) => {
+                alert('حدث خطأ: ' + err.message);
+                btn.disabled = false;
+                btn.innerText = "تأكيد وإرسال طلب السحب 🚀";
+            });
+        };
+
+        window.loadDepositHistory = async function() {
+            const requestsRef = ref(db, 'withdrawal_requests');
+            const snapshot = await get(requestsRef);
+            const listEl = document.getElementById('historyList');
+            listEl.innerHTML = "";
+            
+            let hasHistory = false;
+
+            if(snapshot.exists()) {
+                const data = snapshot.val();
+                for(let key in data) {
+                    if(data[key].username === currentUsername) {
+                        hasHistory = true;
+                        const req = data[key];
+                        
+                        let statusColor = "text-amber-400 bg-amber-500/5 border-amber-500/20";
+                        let statusText = "قيد الانتظار";
+                        if(req.status === "approved") {
+                            statusColor = "text-emerald-400 bg-emerald-500/5 border-emerald-500/20";
+                            statusText = "مقبول ✅";
+                        } else if(req.status === "rejected") {
+                            statusColor = "text-rose-400 bg-rose-500/5 border-rose-500/20";
+                            statusText = "مرفوض ❌";
+                        }
+
+                        const itemHtml = `
+                            <div class="bg-[#121824] border border-[#1c2436] p-4 rounded-xl flex justify-between items-center text-xs">
+                                <div class="space-y-1">
+                                    <p class="font-bold text-gray-200">${req.bankName}</p>
+                                    <p class="text-gray-500 font-mono">${new Date(req.timestamp).toLocaleString('ar-MA')}</p>
+                                </div>
+                                <div class="text-right space-y-1.5">
+                                    <p class="font-bold text-[#ff9900] font-mono">${req.amount} DH</p>
+                                    <span class="inline-block px-2 py-0.5 border rounded text-[10px] ${statusColor}">${statusText}</span>
+                                </div>
+                            </div>
+                        `;
+                        listEl.insertAdjacentHTML('afterbegin', itemHtml);
+                    }
+                }
+            }
+
+            if(hasHistory) {
+                document.getElementById('noHistoryText').classList.add('hidden');
+            } else {
+                document.getElementById('noHistoryText').classList.remove('hidden');
+            }
+        };
+
+        window.switchTab = function(type) {
+            const depTab = document.getElementById('tab-deposit');
+            const hisTab = document.getElementById('tab-history');
+            const depSec = document.getElementById('deposit-section');
+            const hisSec = document.getElementById('history-section');
+
+            if(type === 'deposit') {
+                depTab.className = "flex-1 py-3 active-tab transition-all";
+                hisTab.className = "flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all";
+                depSec.classList.remove('hidden');
+                hisSec.classList.add('hidden');
+                window.hideCryptoSteps();
+            } else {
+                hisTab.className = "flex-1 py-3 active-tab transition-all";
+                depTab.className = "flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all";
+                hisSec.classList.remove('hidden');
+                depSec.classList.add('hidden');
+                window.loadDepositHistory(); 
+            }
+        };
+    </script>
+
+    <script>
+        function goBack() {
+            window.location.href = "ar.html";
+        }
+    </script>
+</body>
+</html>
