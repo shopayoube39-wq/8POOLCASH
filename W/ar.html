@@ -101,7 +101,7 @@
                 <button onclick="goToDeposit()" class="brand-glow-btn text-[#08090c] text-xs font-black px-4 py-2 rounded-xl flex items-center gap-1">
                     <span>إيداع</span>
                 </button>
-                <button class="bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-bold px-3.5 py-2 rounded-xl border border-white/5 transition-all">
+                <button onclick="goToWithdraw()" class="bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-bold px-3.5 py-2 rounded-xl border border-white/5 transition-all">
                     سحب
                 </button>
             </div>
@@ -277,6 +277,12 @@
       function goToDeposit() {
           localStorage.setItem('username', currentUsername);
           window.location.href = 'deposit.html';
+      }
+
+      // دالة التوجيه لصفحة السحب مع الاحتفاظ بالمستخدم الحالي
+      function goToWithdraw() {
+          localStorage.setItem('username', currentUsername);
+          window.location.href = 'withdraw.html';
       }
 
       function checkWarningBoxVisibility() {
