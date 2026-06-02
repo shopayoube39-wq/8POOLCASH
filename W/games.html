@@ -1,88 +1,606 @@
-ك<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #08090c; color: white; font-family: 'Cairo', sans-serif; }
-        .game-card { 
-            background: #111520; 
-            border-radius: 20px; 
-            padding: 8px;
-            border: 1px solid rgba(255,255,255,0.08);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-        .game-card:hover { 
-            border-color: #f59e0b; 
-            transform: translateY(-8px);
-            box-shadow: 0 20px 30px -10px rgba(245, 158, 11, 0.2);
-        }
-        .game-img { width: 100%; height: 140px; object-fit: cover; border-radius: 14px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
+<title>Pro 8-Ball Tournament Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-dark: #030611;
+  --panel-bg: rgba(6, 10, 26, 0.96);
+  --accent-gold: #fbbf24;
+  --neon-cyan: #06b6d4;
+  --neon-emerald: #10b981;
+  --table-green: #011f16;
+  --wood-border: #3b2314;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background-color: var(--bg-dark);
+  background-image: radial-gradient(circle at 50% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+  color: #f8fafc; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center; padding: 10px; overflow: hidden;
+}
+
+.main-wrapper { display: flex; gap: 20px; width: 100%; max-width: 1400px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+.game-container { flex: 1; min-width: 320px; max-width: 960px; display: flex; flex-direction: column; gap: 12px; }
+
+.side-panel {
+  width: 330px; background: var(--panel-bg); border: 2px solid rgba(6, 182, 212, 0.25);
+  border-radius: 24px; padding: 20px; box-shadow: 0 0 40px rgba(6, 182, 212, 0.1); backdrop-filter: blur(25px);
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+.panel-title { font-family: 'Orbitron', sans-serif; font-size: 14px; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; text-align: center; }
+
+.leaderboard-list { display: flex; flex-direction: column; gap: 6px; }
+.leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; font-size: 13px; }
+.leaderboard-item.player-row { background: linear-gradient(90deg, rgba(6, 182, 212, 0.15), transparent); border-left: 4px solid var(--neon-cyan); font-weight: 900; }
+
+.economy-bar {
+  width: 100%; background: var(--panel-bg); padding: 12px 20px; border-radius: 20px;
+  display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(6, 182, 212, 0.2);
+}
+.solde-txt { font-weight: 900; color: var(--neon-emerald); font-size: 18px; font-family: 'Orbitron', sans-serif; }
+
+.scoreboard {
+  width: 100%; background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.03);
+  padding: 12px 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center;
+}
+.player-card { display: flex; flex-direction: column; gap: 4px; align-items: center; min-width: 140px; transition: all 0.3s ease; opacity: 0.6; }
+.player-card.active { opacity: 1; transform: scale(1.03); }
+.player-name { font-size: 15px; font-weight: 900; color: #94a3b8; }
+.player-card.active .player-name { color: var(--neon-cyan); text-shadow: 0 0 10px rgba(6, 182, 212, 0.5); }
+.player-card.opp.active .player-name { color: var(--accent-gold); text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+
+.pocketed-balls-display { display: flex; gap: 4px; min-height: 14px; }
+.pocketed-dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset -2px -2px 4px rgba(0,0,0,0.8); }
+
+.arena-container { display: flex; width: 100%; gap: 12px; align-items: center; }
+.power-slider-container { width: 35px; height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; background: #050814; border-radius: 12px; border: 1px solid #1e293b; padding: 10px 0; }
+
+.table-wrapper { position: relative; flex: 1; background: var(--wood-border); padding: 16px; border-radius: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); border: 4px solid #23140b; }
+#billiards-canvas { display: block; width: 100%; background: var(--table-green); border-radius: 8px; cursor: crosshair; touch-action: none; }
+
+.spin-selector-container { display: flex; flex-direction: column; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
+.spin-pad { width: 85px; height: 85px; background: #ffffff; border-radius: 50%; position: relative; border: 4px solid #475569; cursor: pointer; }
+.spin-marker { width: 12px; height: 12px; background: #ef4444; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+
+.shop-buttons { display: flex; flex-direction: column; gap: 8px; }
+.shop-btn { background: #070b14; border: 1px solid #1e293b; color: #fff; padding: 12px; border-radius: 12px; font-size: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.shop-btn.active { border-color: var(--neon-emerald); background: rgba(16, 185, 129, 0.08); }
+
+.status-msg { font-size: 13px; font-weight: 700; color: #475569; text-align: center; min-height: 20px; }
+#toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; }
+.toast { background: #060a17; border: 2px solid var(--neon-cyan); color: #fff; padding: 12px 35px; border-radius: 14px; font-size: 13px; font-weight: 900; box-shadow: 0 0 25px rgba(6, 182, 212, 0.4); }
+</style>
 </head>
-<body class="p-4">
+<body>
 
-    <div class="max-w-[400px] mx-auto">
-        <!-- إضافة خانة لعرض الرصيد الحالي -->
-        <div class="bg-[#111520] p-4 rounded-2xl mb-6 text-center border border-amber-500/20">
-            <p class="text-xs text-gray-400">رصيدك الحالي</p>
-            <h2 class="text-xl font-bold text-amber-500" id="header-balance">0 🪙</h2>
-        </div>
+<div id="toast-container"></div>
 
-        <div class="relative mb-8">
-            <input type="text" id="searchInput" oninput="filterGames()" 
-                   placeholder="بحث عن ألعاب..." 
-                   class="w-full bg-[#111520] p-4 rounded-2xl border border-white/5 text-sm focus:border-amber-500 outline-none transition-all text-center">
-        </div>
-
-        <div id="games-container" class="grid grid-cols-2 gap-4"></div>
+<div class="main-wrapper">
+  <div class="game-container">
+    <div class="economy-bar">
+      <div class="solde-txt">SOLDE: <span id="solde-val">$1000</span></div>
+      <div>
+        <select id="bet-amount" style="background:#050814; border:1px solid var(--neon-cyan); color:#fff; padding:6px 12px; border-radius:8px; font-family:'Orbitron'; font-weight:bold;">
+          <option value="100" selected>$100</option>
+          <option value="500">$500</option>
+          <option value="1000">$1000</option>
+        </select>
+      </div>
     </div>
 
-    <script>
-        // قائمة الألعاب مع تحديد الرابط (url) الخاص بكل لعبة
-        const myGames = [
-            { id: 'chicken-pro', name: 'CHICKEN PRO', provider: 'ORIGINALS', img: 'https://i.postimg.cc/PxX81N92/6753D2AB-5759-41C9-97FE-B02C51510A36.png', url: 'CHICKEN.html' },
-            { id: 'sweet-bonanza', name: 'Sweet Bonanza', provider: 'PragmaticPlay', img: 'https://i.imgur.com/bH9q1W2.png', url: '#' },
-            { id: 'le-bandit', name: 'Le Bandit', provider: 'Hacksaw', img: 'https://i.imgur.com/gOq7a2a.png', url: '#' },
-            { id: 'gates-zeus', name: 'Gates of Olympus', provider: 'PragmaticPlay', img: 'https://i.imgur.com/ZeusImage.png', url: '#' }
-        ];
+    <div class="scoreboard">
+      <div class="player-card active" id="card-player">
+        <span class="player-name">Vous</span>
+        <span style="font-size:11px; color:#64748b;" id="player-target">Table Ouverte</span>
+        <div class="pocketed-balls-display" id="player-pockets"></div>
+      </div>
+      <div style="font-family:'Orbitron'; font-weight:900; color:#1e293b; font-size:18px;">VS</div>
+      <div class="player-card opp" id="card-opp">
+        <span class="player-name" id="opp-name-label">Lucas 🇫🇷</span>
+        <span style="font-size:11px; color:#64748b;" id="opp-target">Table Ouverte</span>
+        <div class="pocketed-balls-display" id="opp-pockets"></div>
+      </div>
+    </div>
 
-        // تحديث الرصيد من الـ localStorage
-        function updateBalance() {
-            const bal = localStorage.getItem('elite_chicken_bal') || 0;
-            document.getElementById('header-balance').innerText = Math.floor(bal) + ' 🪙';
-        }
+    <div class="arena-container">
+      <div class="power-slider-container">
+        <span style="font-size:9px; font-weight:bold; color:#ef4444;">MAX</span>
+        <svg width="20" height="320" style="background:#02040a; border-radius:6px;">
+          <rect id="power-fill" x="0" y="320" width="20" height="0" fill="url(#pGrad)"/>
+          <defs>
+            <linearGradient id="pGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stop-color="#10b981"/><stop offset="70%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#ef4444"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span style="font-size:9px; font-weight:bold; color:#10b981;">MIN</span>
+      </div>
+      
+      <div class="table-wrapper">
+        <canvas id="billiards-canvas" width="800" height="400"></canvas>
+      </div>
+    </div>
 
-        function renderGames(gamesArray) {
-            const container = document.getElementById('games-container');
-            container.innerHTML = '';
-            gamesArray.forEach(game => {
-                container.innerHTML += `
-                    <a href="${game.url}" class="game-card">
-                        <img src="${game.img}" class="game-img" alt="${game.name}">
-                        <div class="p-3 text-start">
-                            <h3 class="text-xs font-bold truncate">${game.name}</h3>
-                            <p class="text-[9px] text-amber-500 font-bold uppercase mt-1">${game.provider}</p>
-                        </div>
-                    </a>
-                `;
-            });
-        }
+    <div class="status-msg" id="game-status">Choisissez votre angle et tirez...</div>
+  </div>
 
-        function filterGames() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = myGames.filter(game => game.name.toLowerCase().includes(searchTerm));
-            renderGames(filtered);
-        }
+  <div class="side-panel">
+    <div class="panel-title">Elite Lounge</div>
+    <div class="leaderboard-list" id="leaderboard-list"></div>
 
-        // تشغيل الألعاب وتحديث الرصيد
-        renderGames(myGames);
-        updateBalance();
-        setInterval(updateBalance, 2000); // تحديث الرصيد أوتوماتيك كل 2 ثانية
-    </script>
+    <div class="spin-selector-container">
+      <span style="font-size:11px; font-weight:900; text-transform:uppercase; color:#94a3b8; font-family:'Orbitron';">Effet (Spin)</span>
+      <div class="spin-pad" id="spin-pad">
+        <div class="spin-marker" id="spin-marker"></div>
+      </div>
+    </div>
+
+    <div class="shop-buttons">
+      <div style="font-family:'Orbitron'; font-size:11px; color:#64748b; text-align:center; text-transform:uppercase;">Boutique Queues</div>
+      <button class="shop-btn active" id="cue-classic" onclick="buyCue('classic', 0)">
+        <span>Standard</span><span>Gratuit</span>
+      </button>
+      <button class="shop-btn" id="cue-cyber" onclick="buyCue('cyber', 200)">
+        <span>Cyber Laser ⚡</span><span>$200</span>
+      </button>
+      <button class="shop-btn" id="cue-gold" onclick="buyCue('gold', 500)">
+        <span>Or Impérial 👑</span><span>$500</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById("billiards-canvas");
+const ctx = canvas.getContext("2d");
+
+const FRICTION = 0.988;
+const BALL_RADIUS = 11;
+const POCKET_RADIUS = 22;
+const TABLE_PADDING = 14;
+
+let userSolde = 1000;
+let currentBet = 100;
+let cueStyle = "classic";
+let spinX = 0; let spinY = 0; 
+
+let balls = [];
+let cueBall = null;
+let gameState = "aiming"; 
+let currentTurn = "player";
+
+let isDraggingAim = false;
+let aimAngle = 0;
+let aimPower = 0;
+
+let tableAssigned = false;
+let playerGroup = null; 
+let oppGroup = null;
+let playerPocketed = [];
+let oppPocketed = [];
+
+// متغيرات لتتبع كرات الجولة الحالية
+let ballsPocketedThisTurn = [];
+let firstBallHitThisTurn = null;
+
+const pockets = [
+  { x: 14, y: 14 }, { x: 400, y: 10 }, { x: 786, y: 14 },
+  { x: 14, y: 386 }, { x: 400, y: 390 }, { x: 786, y: 386 }
+];
+
+const onlineOpponents = [
+  { name: "Lucas 🇫🇷", skill: 0.85 }, { name: "Karim 🇩🇿", skill: 0.90 }, { name: "Mehdi 🇹🇳", skill: 0.88 }
+];
+let currentOpponent = onlineOpponents[0];
+
+let leaderboardData = [
+  { name: "Youssef 🇲🇦", score: 1900 }, { name: "Vous", score: 1000 },
+  { name: "Lucas 🇫🇷", score: 750 }, { name: "Karim 🇩🇿", score: 400 }
+];
+
+document.getElementById("solde-val").innerText = `$${userSolde}`;
+document.getElementById("bet-amount").addEventListener("change", (e) => currentBet = parseInt(e.target.value));
+
+function showToast(msg) {
+  const container = document.getElementById("toast-container");
+  container.innerHTML = `<div class="toast">${msg}</div>`;
+  setTimeout(() => container.innerHTML = "", 2500);
+}
+
+function updateLeaderboardUI() {
+  let playerRow = leaderboardData.find(i => i.name === "Vous");
+  if(playerRow) playerRow.score = userSolde;
+  leaderboardData.sort((a,b) => b.score - a.score);
+  const container = document.getElementById("leaderboard-list");
+  container.innerHTML = "";
+  leaderboardData.forEach((item, index) => {
+    let isPlayer = item.name === "Vous";
+    container.innerHTML += `<div class="leaderboard-item ${isPlayer ? 'player-row' : ''}">
+      <span>#${index+1} ${item.name}</span><span>$${item.score}</span>
+    </div>`;
+  });
+}
+
+function buyCue(style, price) {
+  if (cueStyle === style) return;
+  if (userSolde < price && style !== 'classic') { showToast("❌ Solde insuffisant !"); return; }
+  if (style !== 'classic' && cueStyle === 'classic') { userSolde -= price; document.getElementById("solde-val").innerText = `$${userSolde}`; }
+  cueStyle = style;
+  document.querySelectorAll('.shop-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`cue-${style}`).classList.add('active');
+  showToast("🔥 Queue équipée !");
+  updateLeaderboardUI();
+}
+
+class Ball {
+  constructor(x, y, color, number, type) {
+    this.x = x; this.y = y; this.vx = 0; this.vy = 0;
+    this.color = color; this.number = number; this.type = type;
+    this.isPocketed = false;
+    this.spinX = 0; this.spinY = 0;
+  }
+
+  update() {
+    if (this.isPocketed) return;
+
+    this.x += this.vx; this.y += this.vy;
+    this.vx *= FRICTION; this.vy *= FRICTION;
+
+    if (this.type === "cue") {
+      this.vx += this.spinX * 0.03; this.vy += this.spinY * 0.03;
+      this.spinX *= 0.95; this.spinY *= 0.95;
+    }
+
+    if (Math.abs(this.vx) < 0.02) this.vx = 0;
+    if (Math.abs(this.vy) < 0.02) this.vy = 0;
+
+    const minX = TABLE_PADDING + BALL_RADIUS; const maxX = canvas.width - TABLE_PADDING - BALL_RADIUS;
+    const minY = TABLE_PADDING + BALL_RADIUS; const maxY = canvas.height - TABLE_PADDING - BALL_RADIUS;
+
+    if (this.x < minX) { this.x = minX; this.vx *= -1; }
+    if (this.x > maxX) { this.x = maxX; this.vx *= -1; }
+    if (this.y < minY) { this.y = minY; this.vy *= -1; }
+    if (this.y > maxY) { this.y = maxY; this.vy *= -1; }
+
+    for (let pocket of pockets) {
+      let dist = Math.hypot(this.x - pocket.x, this.y - pocket.y);
+      if (dist < POCKET_RADIUS) {
+        this.isPocketed = true; this.vx = 0; this.vy = 0;
+        onBallPocketed(this); break;
+      }
+    }
+  }
+
+  draw() {
+    if (this.isPocketed) return;
+    ctx.save();
+    let grad = ctx.createRadialGradient(this.x - BALL_RADIUS*0.3, this.y - BALL_RADIUS*0.3, 1, this.x, this.y, BALL_RADIUS);
+    grad.addColorStop(0, "#ffffff"); grad.addColorStop(0.3, this.color); grad.addColorStop(1, "#000000");
+    ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS, 0, Math.PI * 2);
+    ctx.fillStyle = grad; ctx.fill(); ctx.restore();
+
+    if (this.type === "striped") {
+      ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS, -Math.PI/3, Math.PI/3); ctx.lineTo(this.x, this.y); ctx.fillStyle = "rgba(255,255,255,0.25)"; ctx.fill(); ctx.restore();
+    }
+    if (this.type !== "cue") {
+      ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS*0.35, 0, Math.PI*2); ctx.fillStyle = "#fff"; ctx.fill();
+      ctx.font = "bold 8px Arial"; ctx.fillStyle = "#000"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(this.number, this.x, this.y); ctx.restore();
+    }
+  }
+}
+
+function initGame() {
+  balls = []; playerPocketed = []; oppPocketed = []; tableAssigned = false;
+  playerGroup = null; oppGroup = null;
+  document.getElementById("player-target").innerText = "Table Ouverte";
+  document.getElementById("opp-target").innerText = "Table Ouverte";
+
+  currentOpponent = onlineOpponents[Math.floor(Math.random() * onlineOpponents.length)];
+  document.getElementById("opp-name-label").innerText = currentOpponent.name;
+
+  cueBall = new Ball(220, 200, "#ffffff", 0, "cue"); balls.push(cueBall);
+
+  let startX = 530; let startY = 200;
+  let layout = [
+    { n: 1, c: "#fbbf24", t: "solid" },   { n: 9, c: "#fbbf24", t: "striped" },
+    { n: 2, c: "#2563eb", t: "solid" },   { n: 8, c: "#111111", t: "black" },
+    { n: 10, c: "#2563eb", t: "striped" }, { n: 3, c: "#dc2626", t: "solid" },
+    { n: 11, c: "#dc2626", t: "striped" }, { n: 4, c: "#7c3aed", t: "solid" },
+    { n: 12, c: "#7c3aed", t: "striped" }, { n: 5, c: "#ea580c", t: "solid" },
+    { n: 13, c: "#ea580c", t: "striped" }, { n: 6, c: "#16a34a", t: "solid" },
+    { n: 14, c: "#16a34a", t: "striped" }, { n: 7, c: "#9a3412", t: "solid" },
+    { n: 15, c: "#9a3412", t: "striped" }
+  ];
+
+  let idx = 0;
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j <= i; j++) {
+      let x = startX + i * (BALL_RADIUS * 1.74); let y = startY + (j - i / 2) * (BALL_RADIUS * 2.05);
+      if(layout[idx]) balls.push(new Ball(x, y, layout[idx].c, layout[idx].n, layout[idx].t));
+      idx++;
+    }
+  }
+  renderPocketsUI(); updateLeaderboardUI();
+  gameState = "aiming"; currentTurn = "player";
+}
+
+function renderPocketsUI() {
+  document.getElementById("player-pockets").innerHTML = playerPocketed.map(c => `<div class="pocketed-dot" style="background:${c}"></div>`).join('');
+  document.getElementById("opp-pockets").innerHTML = oppPocketed.map(c => `<div class="pocketed-dot" style="background:${c}"></div>`).join('');
+}
+
+function onBallPocketed(ball) {
+  if (ball.type === "cue") {
+    ballsPocketedThisTurn.push("cue");
+    setTimeout(() => { ball.isPocketed = false; ball.x = 220; ball.y = 200; ball.vx = 0; ball.vy = 0; }, 1200);
+  } else if (ball.type === "black") {
+    ballsPocketedThisTurn.push("black");
+    let currentGrp = currentTurn === "player" ? playerGroup : oppGroup;
+    let rem = balls.filter(b => !b.isPocketed && b.type === currentGrp);
+    if (rem.length === 0) {
+      if(currentTurn === "player") { userSolde += currentBet; showToast(`🏆 Vous avez gagné ! +$${currentBet}`); }
+      else { userSolde -= currentBet; showToast(`❌ Vous avez perdu ! -$${currentBet}`); }
+    } else {
+      if(currentTurn === "player") { userSolde -= currentBet; showToast("❌ Perdu ! Noire empochée trop tôt."); }
+      else { userSolde += currentBet; showToast("🏆 Gagné ! L'adversaire a fait une faute."); }
+    }
+    document.getElementById("solde-val").innerText = `$${userSolde}`;
+    setTimeout(initGame, 3000);
+  } else {
+    // تخزين الكرة التي سقطت في هذه الضربة لتطبيق القوانين عليها لاحقاً
+    ballsPocketedThisTurn.push(ball);
+    
+    if (currentTurn === "player") playerPocketed.push(ball.color); else oppPocketed.push(ball.color);
+    renderPocketsUI();
+  }
+}
+
+function resolveCollisions() {
+  for (let i = 0; i < balls.length; i++) {
+    for (let j = i + 1; j < balls.length; j++) {
+      let b1 = balls[i]; let b2 = balls[j];
+      if (b1.isPocketed || b2.isPocketed) continue;
+
+      let dx = b2.x - b1.x; let dy = b2.y - b1.y;
+      let dist = Math.hypot(dx, dy);
+
+      if (dist < BALL_RADIUS * 2) {
+        if (b1.type === "cue" && !firstBallHitThisTurn) firstBallHitThisTurn = b2;
+        if (b2.type === "cue" && !firstBallHitThisTurn) firstBallHitThisTurn = b1;
+
+        let overlap = (BALL_RADIUS * 2) - dist;
+        let nx = dx / dist; let ny = dy / dist;
+        b1.x -= nx * overlap * 0.5; b1.y -= ny * overlap * 0.5;
+        b2.x += nx * overlap * 0.5; b2.y += ny * overlap * 0.5;
+
+        let kx = b1.vx - b2.vx; let ky = b1.vy - b2.vy;
+        let p = 2 * (nx * kx + ny * ky) / 2;
+        b1.vx -= p * nx; b1.vy -= p * ny;
+        b2.vx += p * nx; b2.vy += p * ny;
+      }
+    }
+  }
+}
+
+function executeOpponentLogic() {
+  gameState = "opp_thinking";
+  document.getElementById("game-status").innerText = `${currentOpponent.name} joue...`;
+
+  setTimeout(() => {
+    let targetGrp = oppGroup || "solid";
+    let targets = balls.filter(b => !b.isPocketed && b.type === targetGrp);
+    if(targets.length === 0) targets = balls.filter(b => !b.isPocketed && b.type === "black");
+
+    let bestShot = null; let bestScore = -Infinity;
+    for (let ball of targets) {
+      for (let pocket of pockets) {
+        let angleToPocket = Math.atan2(pocket.y - ball.y, pocket.x - ball.x);
+        let ghostX = ball.x - Math.cos(angleToPocket) * (BALL_RADIUS * 2);
+        let ghostY = ball.y - Math.sin(angleToPocket) * (BALL_RADIUS * 2);
+        let angleCue = Math.atan2(ghostY - cueBall.y, ghostX - cueBall.x);
+        let dist = Math.hypot(ghostX - cueBall.x, ghostY - cueBall.y);
+        let score = 800 - dist;
+        if (score > bestScore) { bestScore = score; bestShot = { angle: angleCue, power: Math.min(12, Math.max(5, dist / 15)) }; }
+      }
+    }
+
+    if (bestShot) {
+      cueBall.vx = Math.cos(bestShot.angle) * bestShot.power;
+      cueBall.vy = Math.sin(bestShot.angle) * bestShot.power;
+      gameState = "moving";
+    } else {
+      switchTurn();
+    }
+  }, 1200);
+}
+
+// العقل المدبر لنظام القوانين المتقدم وانقسام الكرات ومتابعة اللعب
+function judgeTurnOutcome() {
+  let nextTurn = currentTurn; 
+  let currentGroup = currentTurn === "player" ? playerGroup : oppGroup;
+
+  // 1. إذا لم يتم تحديد المجموعات بعد (Table Ouverte) ونزلت كرة
+  if (!tableAssigned && ballsPocketedThisTurn.length > 0 && !ballsPocketedThisTurn.includes("cue")) {
+    let firstPocketed = ballsPocketedThisTurn.find(b => b !== "cue" && b !== "black");
+    if (firstPocketed) {
+      tableAssigned = true;
+      if (currentTurn === "player") {
+        playerGroup = firstPocketed.type;
+        oppGroup = firstPocketed.type === "solid" ? "striped" : "solid";
+      } else {
+        oppGroup = firstPocketed.type;
+        playerGroup = firstPocketed.type === "solid" ? "striped" : "solid";
+      }
+      document.getElementById("player-target").innerText = playerGroup === "solid" ? "Pleines (ملساء)" : "Rayées (خطوط)";
+      document.getElementById("opp-target").innerText = oppGroup === "solid" ? "Pleines (ملساء)" : "Rayées (خطوط)";
+      showToast(`🎯 Groupes définis ! Vous jouez les ${playerGroup === "solid" ? "Pleines" : "Rayées"}`);
+      nextTurn = currentTurn; // يستمر نفس اللاعب في اللعب لأنه سجل ضربة صحيحة وقسم الكرات
+    }
+  } 
+  // 2. إذا كانت المجموعات محددة مسبقاً
+  else if (tableAssigned) {
+    let hitOwnBallFirst = firstBallHitThisTurn && firstBallHitThisTurn.type === currentGroup;
+    let pocketedOwnBall = ballsPocketedThisTurn.some(b => b.type === currentGroup);
+    let pocketedOppBall = ballsPocketedThisTurn.some(b => b.type === (currentGroup === "solid" ? "striped" : "solid"));
+
+    // القانون الصارم: تتابع إذا أدخلت كراتك فقط، وينتقل الدور للخصم إذا أدخلت كرة الخصم
+    if (hitOwnBallFirst && pocketedOwnBall && !pocketedOppBall && !ballsPocketedThisTurn.includes("cue")) {
+      showToast("⚡ Bien joué ! Rejouez.");
+      nextTurn = currentTurn; // يستمر باللعب ضربة ثانية
+    } else {
+      if (pocketedOppBall) showToast("⚠️ Bille adverse empochée ! Changement de tour.");
+      else if (ballsPocketedThisTurn.includes("cue")) showToast("❌ Faute blanche ! Tour adverse.");
+      else showToast("Changement de tour.");
+      
+      nextTurn = currentTurn === "player" ? "opp" : "player"; // ينتقل الدور للخصم
+    }
+  } else {
+    // لم يسجل أي شيء
+    nextTurn = currentTurn === "player" ? "opp" : "player";
+  }
+
+  // إعادة تهيئة مصفوفة الفحص للجولة القادمة
+  ballsPocketedThisTurn = [];
+  firstBallHitThisTurn = null;
+
+  // تغيير اللاعب الفعلي
+  currentTurn = nextTurn;
+  document.getElementById("card-player").classList.toggle("active", currentTurn === "player");
+  document.getElementById("card-opp").classList.toggle("active", currentTurn === "opp");
+
+  if (currentTurn === "opp") executeOpponentLogic();
+  else { gameState = "aiming"; document.getElementById("game-status").innerText = "À votre tour !"; }
+}
+
+function switchTurn() {
+  if (balls.some(b => b.vx !== 0 || b.vy !== 0)) return;
+  judgeTurnOutcome();
+}
+
+function drawGuidelines() {
+  if (gameState !== "aiming" || currentTurn !== "player") return;
+  ctx.save();
+  let maxGuideLen = cueStyle === "gold" ? 500 : (cueStyle === "cyber" ? 300 : 140);
+  let endX = cueBall.x + Math.cos(aimAngle) * maxGuideLen;
+  let endY = cueBall.y + Math.sin(aimAngle) * maxGuideLen;
+  let closestBall = null; let closestDist = maxGuideLen;
+
+  for (let ball of balls) {
+    if (ball.type === "cue" || ball.isPocketed) continue;
+    let A = endY - cueBall.y; let B = cueBall.x - endX; let C = endX * cueBall.y - cueBall.x * endY;
+    let distToLine = Math.abs(A * ball.x + B * ball.y + C) / (Math.hypot(A, B) || 1);
+    if (distToLine < BALL_RADIUS * 2) {
+      let dist = Math.hypot(ball.x - cueBall.x, ball.y - cueBall.y);
+      let dot = (ball.x - cueBall.x) * Math.cos(aimAngle) + (ball.y - cueBall.y) * Math.sin(aimAngle);
+      if (dot > 0 && dist < closestDist) { closestDist = dist; closestBall = ball; }
+    }
+  }
+
+  let finalTargetX = cueBall.x + Math.cos(aimAngle) * closestDist;
+  let finalTargetY = cueBall.y + Math.sin(aimAngle) * closestDist;
+
+  ctx.beginPath(); ctx.setLineDash([4, 3]);
+  ctx.moveTo(cueBall.x, cueBall.y); ctx.lineTo(finalTargetX, finalTargetY);
+  ctx.strokeStyle = "rgba(6, 182, 212, 0.6)"; ctx.lineWidth = 1.5; ctx.stroke();
+
+  if (closestBall) {
+    ctx.beginPath(); ctx.arc(finalTargetX, finalTargetY, BALL_RADIUS, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.setLineDash([]); ctx.stroke();
+
+    let ballAngle = Math.atan2(closestBall.y - finalTargetY, closestBall.x - finalTargetX);
+    ctx.beginPath(); ctx.moveTo(closestBall.x, closestBall.y);
+    ctx.lineTo(closestBall.x + Math.cos(ballAngle) * 60, closestBall.y + Math.sin(ballAngle) * 60);
+    ctx.strokeStyle = "var(--accent-gold)"; ctx.lineWidth = 2; ctx.stroke();
+  }
+
+  let cueDist = BALL_RADIUS + 8 + (aimPower * 0.15);
+  let cX = cueBall.x - Math.cos(aimAngle) * cueDist; let cY = cueBall.y - Math.sin(aimAngle) * cueDist;
+  let eX = cueBall.x - Math.cos(aimAngle) * (cueDist + 160); let eY = cueBall.y - Math.sin(aimAngle) * (cueDist + 170);
+
+  ctx.beginPath();
+  ctx.strokeStyle = cueStyle === "gold" ? "var(--accent-gold)" : (cueStyle === "cyber" ? "var(--neon-cyan)" : "#522e1b");
+  ctx.lineWidth = 5; ctx.lineCap = "round"; ctx.moveTo(cX, cY); ctx.lineTo(eX, eY); ctx.stroke();
+  ctx.restore();
+}
+
+canvas.addEventListener("mousedown", (e) => { if (gameState !== "aiming" || currentTurn !== "player") return; isDraggingAim = true; handleAimMove(e); });
+window.addEventListener("mousemove", (e) => { if (isDraggingAim) handleAimMove(e); });
+window.addEventListener("mouseup", () => { if (isDraggingAim) { isDraggingAim = false; launchBall(); } });
+
+canvas.addEventListener("touchstart", (e) => { if (gameState !== "aiming" || currentTurn !== "player") return; isDraggingAim = true; handleAimMove(e.touches[0]); }, {passive:true});
+window.addEventListener("touchmove", (e) => { if (isDraggingAim) handleAimMove(e.touches[0]); }, {passive:true});
+window.addEventListener("touchend", () => { if (isDraggingAim) { isDraggingAim = false; launchBall(); } });
+
+function handleAimMove(e) {
+  let r = canvas.getBoundingClientRect();
+  let x = (e.clientX - r.left) * (canvas.width / r.width);
+  let y = (e.clientY - r.top) * (canvas.height / r.height);
+  aimAngle = Math.atan2(y - cueBall.y, x - cueBall.x);
+  let d = Math.hypot(x - cueBall.x, y - cueBall.y);
+  aimPower = Math.min(100, Math.max(10, d * 0.6));
+
+  let fillH = (aimPower / 100) * 320;
+  document.getElementById("power-fill").setAttribute("y", 320 - fillH);
+  document.getElementById("power-fill").setAttribute("height", fillH);
+}
+
+function launchBall() {
+  if (aimPower < 12) return;
+  cueBall.vx = Math.cos(aimAngle) * (aimPower * 0.15); cueBall.vy = Math.sin(aimAngle) * (aimPower * 0.15);
+  cueBall.spinX = spinX * 3; cueBall.spinY = spinY * 3;
+  gameState = "moving";
+}
+
+const pad = document.getElementById("spin-pad");
+const marker = document.getElementById("spin-marker");
+function updateSpin(e) {
+  let r = pad.getBoundingClientRect();
+  let cx = r.left + r.width/2; let cy = r.top + r.height/2;
+  let dx = e.clientX - cx; let dy = e.clientY - cy;
+  let dist = Math.hypot(dx, dy); let maxR = r.width / 2 - 8;
+  if (dist > maxR) { dx = (dx / dist) * maxR; dy = (dy / dist) * maxR; }
+  marker.style.left = `calc(50% + ${dx}px)`; marker.style.top = `calc(50% + ${dy}px)`;
+  spinX = dx / maxR; spinY = dy / maxR;
+}
+pad.addEventListener("mousedown", (e) => {
+  let move = (ev) => updateSpin(ev);
+  window.addEventListener("mousemove", move);
+  window.addEventListener("mouseup", () => window.removeEventListener("mousemove", move), {once:true});
+});
+
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "rgba(0,0,0,0.2)"; ctx.fillRect(TABLE_PADDING, TABLE_PADDING, canvas.width-(TABLE_PADDING*2), canvas.height-(TABLE_PADDING*2));
+
+  ctx.fillStyle = "#030408";
+  for(let p of pockets) { ctx.beginPath(); ctx.arc(p.x, p.y, POCKET_RADIUS, 0, Math.PI*2); ctx.fill(); }
+
+  let anyMoving = false;
+  for (let ball of balls) {
+    if(!ball.isPocketed) {
+      ctx.save(); ctx.beginPath(); ctx.arc(ball.x+2, ball.y+3, BALL_RADIUS, 0, Math.PI*2); ctx.fillStyle = "rgba(0,0,0,0.4)"; ctx.fill(); ctx.restore();
+    }
+    ball.update(); ball.draw();
+    if(ball.vx !== 0 || ball.vy !== 0) anyMoving = true;
+  }
+
+  resolveCollisions(); drawGuidelines();
+  if(gameState === "moving" && !anyMoving) switchTurn();
+  requestAnimationFrame(loop);
+}
+
+initGame(); loop();
+</script>
 </body>
 </html>
