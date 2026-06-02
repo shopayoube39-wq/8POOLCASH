@@ -178,9 +178,13 @@ const POCKET_RADIUS = 22;
 const TABLE_PADDING = 14;
 
 let userSolde = 0;
+// التعديل هنا: تحديث الواجهتين عند أي تغيير في Firebase
 balanceRef.on('value', (snapshot) => {
     userSolde = snapshot.val() || 0;
-    document.getElementById("solde-val").innerText = userSolde + " DH";
+    const soldeText = userSolde + " DH";
+    document.getElementById("solde-val").innerText = soldeText;
+    // التأكد من أن جميع العناصر التي تعرض SOLDE تأخذ نفس القيمة
+    // في هذا الكود الواجهة الثانية تعتمد على تحديث الـ UI بناءً على userSolde
     updateLeaderboardUI();
 });
 
