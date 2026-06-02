@@ -169,8 +169,8 @@ const BALL_RADIUS = 11;
 const POCKET_RADIUS = 22;
 const TABLE_PADDING = 14;
 
-let userSolde = 1000;
-let currentBet = 100;
+let userSolde = parseInt(localStorage.getItem("user_balance")) || 401;
+let currentBet = parseInt(localStorage.getItem("current_bet")) || 100;
 let cueStyle = "classic";
 let spinX = 0; let spinY = 0; 
 
@@ -422,14 +422,27 @@ function onBallPocketed(ball) {
     ballsPocketedThisTurn.push("black");
     let currentGrp = currentTurn === "player" ? playerGroup : oppGroup;
     let rem = balls.filter(b => !b.isPocketed && b.type === currentGrp);
+    
     if (rem.length === 0) {
-      if(currentTurn === "player") { userSolde += currentBet; showToast(`🏆 Vous avez gagné ! +$${currentBet}`); }
-      else { userSolde -= currentBet; showToast(`❌ Vous avez perdu ! -$${currentBet}`); }
+      if(currentTurn === "player") { 
+        userSolde += currentBet; 
+        showToast(`🏆 ربحت: +$${currentBet}`); 
+      } else { 
+        userSolde -= currentBet; 
+        showToast(`❌ خسرت: -$${currentBet}`); 
+      }
     } else {
-      if(currentTurn === "player") { userSolde -= currentBet; showToast("❌ Perdu ! Noire empochée trop tôt."); }
-      else { userSolde += currentBet; showToast("🏆 Gagné ! L'adversaire a fait une faute."); }
+      if(currentTurn === "player") { 
+        userSolde -= currentBet; 
+        showToast("❌ خسارة! السوداء دخلت مبكراً."); 
+      } else { 
+        userSolde += currentBet; 
+        showToast("🏆 ربحت! الخصم أخطأ."); 
+      }
     }
+    localStorage.setItem("user_balance", userSolde);
     document.getElementById("solde-val").innerText = `$${userSolde}`;
+    
     setTimeout(initGame, 3000);
   } else {
     ballsPocketedThisTurn.push(ball);
