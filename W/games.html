@@ -93,9 +93,9 @@ body {
       <div class="solde-txt">SOLDE: <span id="solde-val">DH0</span></div>
       <div>
         <select id="bet-amount" style="background:#050814; border:1px solid var(--neon-cyan); color:#fff; padding:6px 12px; border-radius:8px; font-family:'Orbitron'; font-weight:bold;">
-          <option value="100" selected>DH100</option>
-          <option value="500">DH500</option>
-          <option value="1000">DH1000</option>
+          <option value="100">100 DH</option>
+          <option value="500">500 DH</option>
+          <option value="1000">1000 DH</option>
         </select>
       </div>
     </div>
@@ -153,10 +153,10 @@ body {
         <span>Standard</span><span>Gratuit</span>
       </button>
       <button class="shop-btn" id="cue-cyber" onclick="buyCue('cyber', 200)">
-        <span>Cyber Laser ⚡</span><span>DH200</span>
+        <span>Cyber Laser ⚡</span><span>200 DH</span>
       </button>
       <button class="shop-btn" id="cue-gold" onclick="buyCue('gold', 500)">
-        <span>Or Impérial 👑</span><span>DH500</span>
+        <span>Or Impérial 👑</span><span>500 DH</span>
       </button>
     </div>
   </div>
@@ -180,7 +180,7 @@ const TABLE_PADDING = 14;
 let userSolde = 0;
 balanceRef.on('value', (snapshot) => {
     userSolde = snapshot.val() || 0;
-    document.getElementById("solde-val").innerText = "DH" + userSolde;
+    document.getElementById("solde-val").innerText = userSolde + " DH";
     updateLeaderboardUI();
 });
 
@@ -305,7 +305,7 @@ function updateLeaderboardUI() {
   leaderboardData.forEach((item, index) => {
     let isPlayer = item.name === "Vous";
     container.innerHTML += `<div class="leaderboard-item ${isPlayer ? 'player-row' : ''}">
-      <span>#${index+1} ${item.name}</span><span>DH${item.score}</span>
+      <span>#${index+1} ${item.name}</span><span>${item.score} DH</span>
     </div>`;
   });
 }
@@ -439,10 +439,10 @@ function onBallPocketed(ball) {
     if (rem.length === 0) {
       if(currentTurn === "player") { 
         balanceRef.transaction((c) => (c || 0) + currentBet);
-        showToast(`🏆 ربحت: +DH${currentBet}`); 
+        showToast(`🏆 ربحت: +${currentBet} DH`); 
       } else { 
         balanceRef.transaction((c) => (c || 0) - currentBet);
-        showToast(`❌ خسرت: -DH${currentBet}`); 
+        showToast(`❌ خسرت: -${currentBet} DH`); 
       }
     } else {
       if(currentTurn === "player") { 
