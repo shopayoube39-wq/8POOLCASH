@@ -98,7 +98,7 @@
                     </svg>
                     <span>الدعم</span>
                 </button>
-                <button class="brand-glow-btn text-[#08090c] text-xs font-black px-4 py-2 rounded-xl flex items-center gap-1">
+                <button onclick="goToDeposit()" class="brand-glow-btn text-[#08090c] text-xs font-black px-4 py-2 rounded-xl flex items-center gap-1">
                     <span>إيداع</span>
                 </button>
                 <button class="bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-bold px-3.5 py-2 rounded-xl border border-white/5 transition-all">
@@ -142,7 +142,7 @@
                         <p class="text-[10px] text-gray-400 mt-0.5 leading-relaxed">يرجى شحن حسابك لتتمكن من دخول غرف اللعب والمواجهة المباشرة.</p>
                     </div>
                 </div>
-                <button class="bg-amber-400 hover:bg-amber-500 text-[#08090c] font-black text-[11px] px-4 py-2.5 rounded-xl transition-all duration-200 shrink-0 shadow-md shadow-amber-500/5 relative z-10">
+                <button onclick="goToDeposit()" class="bg-amber-400 hover:bg-amber-500 text-[#08090c] font-black text-[11px] px-4 py-2.5 rounded-xl transition-all duration-200 shrink-0 shadow-md shadow-amber-500/5 relative z-10">
                     شحن الآن
                 </button>
             </div>
@@ -270,17 +270,22 @@
 
       const amountValues = [150, 200, 300, 500, 1000, 2500, 5000];
       let currentSelectedIndex = 0;
-      let globalUserBalance = 0; // الرصيد لايف من الفايربيز
+      let globalUserBalance = 0; 
       let currentUsername = "Ayoube"; 
 
-      // دالة لتحديث ظهور الصندوق الأصفر: يختفي بصفة نهائية يلا كان الصولد كبر من 0
+      // دالة التوجيه لصفحة الإيداع مع الاحتفاظ بالمستخدم الحالي
+      function goToDeposit() {
+          localStorage.setItem('username', currentUsername);
+          window.location.href = 'deposit.html';
+      }
+
       function checkWarningBoxVisibility() {
           const warningBox = document.getElementById('warningBox');
           if (warningBox) {
               if (globalUserBalance > 0) {
-                  warningBox.classList.add('hidden'); // اختفاء الميساج الأصفر تماماً ملي يفوت 0 درهم
+                  warningBox.classList.add('hidden'); 
               } else {
-                  warningBox.classList.remove('hidden'); // يظهر الميساج يلا كان الصولد 0 نيشان
+                  warningBox.classList.remove('hidden'); 
               }
           }
       }
@@ -307,26 +312,18 @@
                   <span>العب الآن - DH ${currentAmount.toLocaleString()}</span>
               `;
           }
-          // هنا حيدت الفحص القديم باش الكليان يقلب الخيارات بحرية بلا ما يرجع الميساج يبرزطو
       }
 
-      // الفحص النهائي الذكي عند كبس زر "العب الآن"
       function handlePlayClick() {
-    const requiredAmount = amountValues[currentSelectedIndex];
-    
-    // فحص الرصيد
-    if (globalUserBalance < requiredAmount) {
-        alert(`عذراً، رصيدك الحالي (${globalUserBalance} DH) غير كافي! يرجى الشحن.`);
-    } else {
-        // تخزين المبلغ المطلوب في الذاكرة المؤقتة باش يعرفوه الصفحات الأخرى
-        localStorage.setItem('pendingBet', requiredAmount);
-        // التوجيه لصفحة اللعبة
-        window.location.href = 'games.html';
-    }
-}
+          const requiredAmount = amountValues[currentSelectedIndex];
+          if (globalUserBalance < requiredAmount) {
+              alert(`عذراً، رصيدك الحالي (${globalUserBalance} DH) غير كافي! يرجى الشحن.`);
+          } else {
+              localStorage.setItem('pendingBet', requiredAmount);
+              window.location.href = 'games.html';
+          }
+      }
 
-
-      // الربط التلقائي الفوري والمستمر (Realtime Live Streaming)
       function startFirebaseSync(username) {
           if (!username) return;
           
@@ -337,14 +334,12 @@
               if (userData) {
                   globalUserBalance = userData.balance !== undefined ? parseFloat(userData.balance) : 0;
                   
-                  // تحديث الأرقام ف الشاشة توماتيك بلا ريفريش
                   const balanceDisplay = document.getElementById('balanceDisplay');
                   if(balanceDisplay) balanceDisplay.innerText = globalUserBalance;
                   
                   const totalEarningsDisplay = document.getElementById('totalEarningsDisplay');
                   if(totalEarningsDisplay) totalEarningsDisplay.innerText = globalUserBalance + " DH";
                   
-                  // فحص الميساج الأصفر توماتيكياً فالحين
                   checkWarningBoxVisibility();
               }
           }, (error) => {
@@ -477,20 +472,6 @@
                       activeUser = localStorage.getItem('username') || localStorage.getItem('user');
                   }
 
-                  if (!activeUser) {
-                      const targetKeys = ['currentUser', 'user_info', 'auth'];
-                      for (let key of targetKeys) {
-                          const dataStr = localStorage.getItem(key);
-                          if (dataStr) {
-                              try {
-                                  const parsedObj = JSON.parse(dataStr);
-                                  activeUser = parsedObj.username || parsedObj.name;
-                                  if (activeUser) break;
-                              } catch(e) {}
-                          }
-                      }
-                  }
-
                   if (activeUser) {
                       currentUsername = activeUser.trim();
                       if (currentUsername.includes('@')) {
@@ -503,7 +484,6 @@
                       userDisplayEl.innerText = currentUsername;
                   }
 
-                  // إطلاق المزامنة التلقائية الفورية المستمرة مع الفايربيز
                   startFirebaseSync(currentUsername);
 
               } catch (error) {
