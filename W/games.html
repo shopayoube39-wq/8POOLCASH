@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <style>
 :root {
@@ -88,7 +90,7 @@ body {
 <div class="main-wrapper">
   <div class="game-container">
     <div class="economy-bar">
-      <div class="solde-txt">SOLDE: <span id="solde-val">$1000</span></div>
+      <div class="solde-txt">SOLDE: <span id="solde-val">$0</span></div>
       <div>
         <select id="bet-amount" style="background:#050814; border:1px solid var(--neon-cyan); color:#fff; padding:6px 12px; border-radius:8px; font-family:'Orbitron'; font-weight:bold;">
           <option value="100" selected>$100</option>
@@ -161,6 +163,12 @@ body {
 </div>
 
 <script>
+const firebaseConfig = { databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com" };
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const userId = "USER_ID_DEFAULT";
+const balanceRef = database.ref('users/' + userId + '/balance');
+
 const canvas = document.getElementById("billiards-canvas");
 const ctx = canvas.getContext("2d");
 
@@ -169,8 +177,14 @@ const BALL_RADIUS = 11;
 const POCKET_RADIUS = 22;
 const TABLE_PADDING = 14;
 
-let userSolde = parseInt(localStorage.getItem("user_balance")) || 401;
-let currentBet = parseInt(localStorage.getItem("current_bet")) || 100;
+let userSolde = 0;
+balanceRef.on('value', (snapshot) => {
+    userSolde = snapshot.val() || 0;
+    document.getElementById("solde-val").innerText = "$" + userSolde;
+    updateLeaderboardUI();
+});
+
+let currentBet = 100;
 let cueStyle = "classic";
 let spinX = 0; let spinY = 0; 
 
@@ -203,11 +217,10 @@ const onlineOpponents = [
 let currentOpponent = onlineOpponents[0];
 
 let leaderboardData = [
-  { name: "Youssef 🇲🇦", score: 1900 }, { name: "Vous", score: 1000 },
+  { name: "Youssef 🇲🇦", score: 1900 }, { name: "Vous", score: 0 },
   { name: "Lucas 🇫🇷", score: 750 }, { name: "Karim 🇩🇿", score: 400 }
 ];
 
-// --- نظام الصوت المدمج المحسن (Web Audio API) ---
 const AudioEngine = {
   ctx: null,
   init() {
@@ -275,7 +288,6 @@ const AudioEngine = {
   }
 };
 
-document.getElementById("solde-val").innerText = `$${userSolde}`;
 document.getElementById("bet-amount").addEventListener("change", (e) => currentBet = parseInt(e.target.value));
 
 function showToast(msg) {
@@ -301,12 +313,13 @@ function updateLeaderboardUI() {
 function buyCue(style, price) {
   if (cueStyle === style) return;
   if (userSolde < price && style !== 'classic') { showToast("❌ Solde insuffisant !"); return; }
-  if (style !== 'classic' && cueStyle === 'classic') { userSolde -= price; document.getElementById("solde-val").innerText = `$${userSolde}`; }
+  if (style !== 'classic' && cueStyle === 'classic') { 
+      balanceRef.transaction((current) => (current || 0) - price);
+  }
   cueStyle = style;
   document.querySelectorAll('.shop-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(`cue-${style}`).classList.add('active');
   showToast("🔥 Queue équipée !");
-  updateLeaderboardUI();
 }
 
 class Ball {
@@ -405,7 +418,7 @@ function initGame() {
       idx++;
     }
   }
-  renderPocketsUI(); updateLeaderboardUI();
+  renderPocketsUI();
   gameState = "aiming"; currentTurn = "player";
 }
 
@@ -425,24 +438,21 @@ function onBallPocketed(ball) {
     
     if (rem.length === 0) {
       if(currentTurn === "player") { 
-        userSolde += currentBet; 
+        balanceRef.transaction((c) => (c || 0) + currentBet);
         showToast(`🏆 ربحت: +$${currentBet}`); 
       } else { 
-        userSolde -= currentBet; 
+        balanceRef.transaction((c) => (c || 0) - currentBet);
         showToast(`❌ خسرت: -$${currentBet}`); 
       }
     } else {
       if(currentTurn === "player") { 
-        userSolde -= currentBet; 
+        balanceRef.transaction((c) => (c || 0) - currentBet);
         showToast("❌ خسارة! السوداء دخلت مبكراً."); 
       } else { 
-        userSolde += currentBet; 
+        balanceRef.transaction((c) => (c || 0) + currentBet);
         showToast("🏆 ربحت! الخصم أخطأ."); 
       }
     }
-    localStorage.setItem("user_balance", userSolde);
-    document.getElementById("solde-val").innerText = `$${userSolde}`;
-    
     setTimeout(initGame, 3000);
   } else {
     ballsPocketedThisTurn.push(ball);
