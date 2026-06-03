@@ -91,7 +91,7 @@ body {
 <div class="main-wrapper">
   <div class="game-container">
     <div class="economy-bar">
-      <div class="solde-txt">SOLDE: <span id="solde-val">DH0</span></div>
+      <div class="solde-txt">SOLDE: <span id="solde-val">0DH</span></div>
       <div>
         <select id="bet-amount" style="background:#050814; border:1px solid var(--neon-cyan); color:#fff; padding:6px 12px; border-radius:8px; font-family:'Orbitron'; font-weight:bold;">
           <option value="100">100 DH</option>
@@ -188,10 +188,11 @@ function updateBalance(amount) {
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
+    if (balanceRef) balanceRef.off();
     balanceRef = firebase.database().ref('users/' + user.uid + '/solde');
     balanceRef.on('value', (snapshot) => {
       userSolde = snapshot.val() || 0;
-      document.getElementById("solde-val").innerText = userSolde + " DH";
+      document.getElementById("solde-val").innerText = userSolde + "DH";
       updateLeaderboardUI();
     });
 
@@ -331,7 +332,7 @@ function updateLeaderboardUI() {
   leaderboardData.forEach((item, index) => {
     let isPlayer = item.name === "Vous";
     container.innerHTML += `<div class="leaderboard-item ${isPlayer ? 'player-row' : ''}">
-      <span>#${index+1} ${item.name}</span><span>${item.score} DH</span>
+      <span>#${index+1} ${item.name}</span><span>${item.score}DH</span>
     </div>`;
   });
 }
@@ -465,10 +466,10 @@ function onBallPocketed(ball) {
     if (rem.length === 0) {
       if(currentTurn === "player") { 
         updateBalance(currentBet);
-        showToast(`🏆 ربحت: +${currentBet} DH`); 
+        showToast(`🏆 ربحت: +${currentBet}DH`); 
       } else { 
         updateBalance(-currentBet);
-        showToast(`❌ خسرت: -${currentBet} DH`); 
+        showToast(`❌ خسرت: -${currentBet}DH`); 
       }
     } else {
       if(currentTurn === "player") { 
