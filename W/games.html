@@ -165,13 +165,13 @@ body {
 
 <script>
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
   authDomain: "poolcash-6692c.firebaseapp.com",
   databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
   projectId: "poolcash-6692c",
   storageBucket: "poolcash-6692c.appspot.com",
-  messagingSenderId: "XXXX",
-  appId: "XXXX"
+  messagingSenderId: "866544389541",
+  appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
 };
 firebase.initializeApp(firebaseConfig);
 
@@ -179,16 +179,16 @@ let balanceRef;
 let userSolde = 0;
 
 function updateBalance(amount) {
-  if (balanceRef) {
-    balanceRef.transaction((current) => (current || 0) + amount);
+  const user = firebase.auth().currentUser;
+  if (user) {
+    const dbRef = firebase.database().ref('users/' + user.uid + '/solde');
+    dbRef.transaction((current) => (current || 0) + amount);
   }
 }
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
-    const userId = user.uid;
-    balanceRef = firebase.database().ref('users/' + userId + '/solde');
-
+    balanceRef = firebase.database().ref('users/' + user.uid + '/solde');
     balanceRef.on('value', (snapshot) => {
       userSolde = snapshot.val() || 0;
       document.getElementById("solde-val").innerText = userSolde + " DH";
