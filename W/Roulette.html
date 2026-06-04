@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Casino Roulette Premium - Édition Sang & Or</title>
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
-        /* (تم الاحتفاظ بجميع خصائص الـ CSS الخاصة بك كما هي) */
         :root { --bg-color: #000000; --card-bg: #050608; --gold: #f1c40f; --gold-glow: #f39c12; --text-color: #ffffff; --red: #cf1515; --red-glow: #ff2a2a; --black: #111317; --zero-bg: #000000; }
         body { margin: 0; padding: 10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
         .casino-container { width: 100%; max-width: 480px; background: var(--card-bg); padding: 20px; border-radius: 24px; box-shadow: 0 0 25px rgba(241, 196, 15, 0.25), inset 0 0 15px rgba(241, 196, 15, 0.1); border: 2px solid var(--gold); text-align: center; position: relative; }
@@ -34,19 +32,13 @@
         .bet-control-container { background: #000000; padding: 12px; border-radius: 15px; margin-bottom: 15px; border: 1px solid var(--gold); }
         .bet-input-group { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px; }
         .bet-input-group label { font-weight: bold; color: var(--gold); font-size: 13px; text-transform: uppercase; }
-        .bet-input-group input { width: 110px; padding: 8px; background: #050608; border: 2px solid var(--gold); color: #ffffff; border-radius: 8px; text-align: center; font-size: 18px; font-weight: bold; outline: none; box-shadow: 0 0 8px rgba(241, 196, 15, 0.1); }
-        .utility-btns { display: flex; gap: 8px; justify-content: center; }
-        .util-btn { background: #111317; border: 1px solid var(--gold); color: var(--gold); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s; }
-        .util-btn:hover { background: var(--gold); color: #000000; box-shadow: 0 0 10px var(--gold); }
+        .bet-input-group input { width: 110px; padding: 8px; background: #050608; border: 2px solid var(--gold); color: #ffffff; border-radius: 8px; text-align: center; font-size: 18px; font-weight: bold; outline: none; box-shadow: 0 0 8px rgba(241, 196, 15, 0.1); cursor: default; }
         .buttons-grid { display: flex; gap: 12px; justify-content: center; margin-bottom: 15px; }
         .bet-btn { flex: 1; padding: 14px; border: 2px solid var(--gold); border-radius: 12px; color: white; font-weight: bold; font-size: 15px; cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 0.5px; }
         .btn-red { background: linear-gradient(135deg, #ff1a1a, var(--red)); box-shadow: 0 4px 15px rgba(207, 21, 21, 0.4); text-shadow: 0 1px 3px #000; }
         .btn-black { background: linear-gradient(135deg, #2c3038, var(--black)); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); text-shadow: 0 1px 3px #000; }
         .btn-zero { background: #000000; border: 1.5px solid var(--gold); }
         .bet-btn.active, .num-btn.active { border-color: #ffffff !important; box-shadow: 0 0 20px var(--gold) !important; transform: scale(1.04); }
-        .num-btn.winner-flash { animation: goldPulse 0.4s ease 5; }
-        @keyframes goldPulse { 0%, 100% { background-color: inherit; box-shadow: none; } 50% { background-color: var(--gold); color: #000000; box-shadow: 0 0 20px var(--gold); } }
-        .numbers-grid-container p { margin: 8px 0; font-size: 13px; color: var(--gold); font-weight: bold; }
         .numbers-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; max-height: 140px; overflow-y: auto; padding: 8px; background: #000000; border-radius: 12px; border: 1px solid var(--gold); }
         .num-btn { padding: 10px 0; border: 1.5px solid rgba(241, 196, 15, 0.3); border-radius: 6px; color: white; cursor: pointer; font-size: 14px; font-weight: bold; transition: all 0.2s; }
         .current-bet-info { margin: 15px 0; font-size: 14px; color: #bbb; background: #000000; padding: 8px; border-radius: 10px; border: 1.5px dashed var(--gold); }
@@ -87,13 +79,8 @@
         <div class="betting-section">
             <div class="bet-control-container">
                 <div class="bet-input-group">
-                    <label>Mise :</label>
-                    <input type="number" id="betAmount" value="100" min="10">
-                </div>
-                <div class="utility-btns">
-                    <button class="util-btn" onclick="modifyBet('double')">Double x2</button>
-                    <button class="util-btn" onclick="modifyBet('half')">Moitié ½</button>
-                    <button class="util-btn" style="background:#111; color:#ff4444; border-color:#ff4444;" onclick="modifyBet('clear')">Effacer</button>
+                    <label>Mise (Fixée par le système) :</label>
+                    <input type="number" id="betAmount" value="100" readonly style="pointer-events: none;">
                 </div>
             </div>
 
@@ -118,7 +105,6 @@
     </div>
 
     <script>
-        // تهيئة Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
             authDomain: "poolcash-6692c.firebaseapp.com",
@@ -131,19 +117,25 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // جلب اسم المستخدم من الـ LocalStorage الذي تم حفظه في الصفحة السابقة
         const currentUsername = localStorage.getItem('username') || "Ayoube"; 
         let balance = 0;
 
-        // مزامنة الرصيد الحي من Firebase
+        // مزامنة الرصيد
         database.ref('users/' + currentUsername + '/balance').on('value', (snapshot) => {
             balance = parseFloat(snapshot.val()) || 0;
             document.getElementById('balance').innerText = balance;
         });
 
+        // مزامنة قيمة الرهان من قاعدة البيانات مباشرة (بدون تدخل المستخدم)
+        database.ref('users/' + currentUsername + '/pendingBet').on('value', (snapshot) => {
+            const val = snapshot.val();
+            if (val) {
+                document.getElementById('betAmount').value = val;
+            }
+        });
+
         const sounds = {
             spin: new Audio('https://actions.google.com/sounds/v1/science_fiction/glitch_low_frequency.ogg'), 
-            ballFall: new Audio('https://actions.google.com/sounds/v1/foley/crumple_paper.ogg'),
             win: new Audio('https://actions.google.com/sounds/v1/cartoon/cartoon_cowbell.ogg'), 
             lose: new Audio('https://actions.google.com/sounds/v1/digital/fail_sound.ogg') 
         };
@@ -166,14 +158,12 @@
 
         let currentBet = { type: null, value: null }; 
         let isSpinning = false;
-        let history = [];
-
         const totalNumbers = rouletteNumbers.length;
         const degreesPerSector = 360 / totalNumbers;
 
+        // بناء العجلة
         const wheel = document.getElementById('wheel');
         const wheelNumbersContainer = document.getElementById('wheelNumbers');
-        
         let conicGradientString = "conic-gradient(";
         rouletteNumbers.forEach((item, index) => {
             const startAngle = index * degreesPerSector;
@@ -186,8 +176,7 @@
             numLabel.style.transform = `rotate(${startAngle + (degreesPerSector / 2)}deg)`;
             wheelNumbersContainer.appendChild(numLabel);
         });
-        conicGradientString += ")";
-        wheel.style.background = conicGradientString;
+        wheel.style.background = conicGradientString + ")";
 
         const numbersGrid = document.getElementById('numbersGrid');
         [...rouletteNumbers].sort((a, b) => a.num - b.num).forEach(item => {
@@ -207,22 +196,12 @@
             else { document.getElementById(`bet-${value}`).classList.add('active'); document.getElementById('currentBetType').innerText = value === 'red' ? 'Rouge' : 'Noir'; }
         }
 
-        function modifyBet(action) {
-            if (isSpinning) return;
-            let input = document.getElementById('betAmount');
-            let currentAmount = parseInt(input.value) || 0;
-            if (action === 'double') input.value = Math.min(currentAmount * 2, balance);
-            else if (action === 'half') input.value = Math.max(Math.floor(currentAmount / 2), 10);
-            else if (action === 'clear') { currentBet = { type: null, value: null }; document.querySelectorAll('.bet-btn, .num-btn').forEach(b => b.classList.remove('active')); document.getElementById('currentBetType').innerText = 'Aucune sélection'; }
-        }
-
         function spinWheel() {
             const betAmount = parseInt(document.getElementById('betAmount').value);
             if (!currentBet.type) { alert('Veuillez sélectionner une mise !'); return; }
-            if (isNaN(betAmount) || betAmount <= 0 || betAmount > balance) { alert('Solde insuffisant !'); return; }
+            if (isNaN(betAmount) || betAmount > balance) { alert('Solde insuffisant !'); return; }
 
             isSpinning = true;
-            // خصم الرهان من Firebase
             database.ref('users/' + currentUsername).update({ balance: balance - betAmount });
             
             document.getElementById('spinBtn').disabled = true;
@@ -231,9 +210,8 @@
             let randomIndex = Math.floor(Math.random() * rouletteNumbers.length);
             const winning = rouletteNumbers[randomIndex];
             
-            const targetSectorAngle = (randomIndex * degreesPerSector) + (degreesPerSector / 2);
             wheel.style.transition = 'transform 4.8s cubic-bezier(0.1, 0.8, 0.1, 1)';
-            wheel.style.transform = `rotate(${6 * 360 - targetSectorAngle}deg)`;
+            wheel.style.transform = `rotate(${6 * 360 - ((randomIndex * degreesPerSector) + (degreesPerSector / 2))}deg)`;
 
             setTimeout(() => {
                 let won = false; let prize = 0;
