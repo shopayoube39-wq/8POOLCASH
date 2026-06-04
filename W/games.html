@@ -79,7 +79,7 @@ body {
 
 .profile-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .u-name { font-size: 21px; font-weight: 700; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.u-group { font-size: 13px; font-weight: 800; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 1px; }
+.u-group { font-size: 14px; font-weight: 800; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 1px; }
 
 .center-core { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; }
 .core-vs { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 900; color: var(--cyber-red); text-shadow: 0 0 20px var(--cyber-red); }
@@ -176,15 +176,15 @@ body {
       <div class="balance-container">
         <div class="balance-sub">
           <span class="balance-label" id="lbl-solde">SOLDE</span>
-          <span class="balance-digits" id="solde-val">0 DH</span>
+          <span class="balance-digits" id="solde-val">0</span>
         </div>
         <div class="balance-sub">
           <span class="balance-label">BET</span>
-          <span class="bet-digits" id="bet-val">0 DH</span>
+          <span class="bet-digits" id="bet-val">0</span>
         </div>
       </div>
       <div class="controls-selectors">
-        <div class="level-badge" id="player-level-lbl">LVL 1 - Rookie</div>
+        <div class="level-badge" id="player-level-lbl">LVL 4 - Zeus</div>
         <select class="custom-select" id="lang-select" onchange="toggleSystemLanguage()">
           <option value="fr">Français</option>
           <option value="ar" selected>العربية</option>
@@ -197,7 +197,7 @@ body {
         <div class="avatar-ring">🇲🇦</div>
         <div class="profile-info">
           <span class="u-name">Vous</span>
-          <span class="u-group" id="p-target">Table Ouverte</span>
+          <span class="u-group" id="p-target">طاولة مفتوحة</span>
           <div class="pocketed-row" id="p-pockets"></div>
         </div>
       </div>
@@ -206,11 +206,11 @@ body {
 
       <div class="radar-user opp">
         <div class="profile-info">
-          <span class="u-name" id="opp-name-lbl">En attente...</span>
-          <span class="u-group" id="o-target">Table Ouverte</span>
+          <span class="u-name" id="opp-name-lbl">OmniBot 🤖</span>
+          <span class="u-group" id="o-target">طاولة مفتوحة</span>
           <div class="pocketed-row" id="o-pockets"></div>
         </div>
-        <div class="avatar-ring" id="opp-avatar">👤</div>
+        <div class="avatar-ring" id="opp-avatar">🤖</div>
       </div>
     </div>
 
@@ -241,16 +241,16 @@ body {
     
     <div class="stats-card">
       <div class="stats-row">
-        <span id="lbl-stat-ratio">نسبة مهارة اللاعب:</span>
-        <span class="stats-val" id="stat-skill-ratio">85% (ممتاز)</span>
+        <span id="lbl-stat-ratio">المستوى الحالي:</span>
+        <span class="stats-val" id="stat-skill-ratio">خارق (God Mode)</span>
       </div>
       <div class="stats-row">
-        <span id="lbl-stat-win">الأرباح المحققة اليوم:</span>
-        <span class="stats-val" style="color:var(--neon-emerald)" id="stat-total-wins">0 DH</span>
+        <span id="lbl-stat-win">الأرباح اليومية:</span>
+        <span class="stats-val" style="color:var(--neon-emerald)" id="stat-total-wins">0</span>
       </div>
       <div class="stats-row">
         <span id="lbl-stat-lose">الخسائر الإجمالية:</span>
-        <span class="stats-val" style="color:var(--cyber-red)" id="stat-total-loses">0 DH</span>
+        <span class="stats-val" style="color:var(--cyber-red)" id="stat-total-loses">0</span>
       </div>
     </div>
 
@@ -291,8 +291,8 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const Dictionary = {
-  fr: { solde: "SOLDE", open: "Table Ouverte", solid: "Pleines", striped: "Rayées", ready: "Moteur prêt. À votre tour !", thinking: "réfléchit...", insf: "⚠️ SOLDE INSUFFISANT !", win: "🏆 VICTOIRE !", lose: "❌ DÉFAITE !", foul: "❌ FAUTE !", lounge: "Elite Live Lounge", spin: "Contrôle d'effet", ballInHand: "🔮 Balle en main ! Déplacez la blanche.", hitMsg: "Frappe effectuée !", potMsg: "Balle empochée : " },
-  ar: { solde: "الرصيد", open: "طاولة مفتوحة", solid: "الكرات المصمتة", striped: "الكرات المخططة", ready: "المحرك جاهز. دورك الآن !", thinking: "يفكر الآن...", insf: "⚠️ الرصيد غير كافي !", win: "🏆 انتصار رائع !", lose: "❌ خسارة !", foul: "❌ خطأ قانوني !", lounge: "صالة النخبة الحية", spin: "توجيه الدوران والملامسة", ballInHand: "🔮 كرة حرة في يدك! حرك البيضاء.", hitMsg: "تمت الضربة بنجاح فورياً !", potMsg: "تم إسقاط كرة من نوع: " }
+  fr: { solde: "SOLDE", open: "Table Ouverte", solid: "Pleines 🔴", striped: "Rayées 🟡", ready: "Moteur prêt. À votre tour !", thinking: "calcule le coup parfait...", insf: "⚠️ SOLDE INSUFFISANT !", win: "🏆 VICTOIRE !", lose: "❌ DÉFAITE !", foul: "❌ FAUTE LAW !", lounge: "Elite Live Lounge", spin: "Contrôle d'effet", ballInHand: "🔮 Balle en main ! Déplacez la blanche.", hitMsg: "Frappe effectuée !", potMsg: "Balle empochée : " },
+  ar: { solde: "الرصيد", open: "طاولة مفتوحة", solid: "الكرات المصمتة 🔴", striped: "الكرات المخططة 🟡", ready: "المحرك جاهز. دورك الآن !", thinking: "يحسب زوايا الضربة الخارقة...", insf: "⚠️ الرصيد غير كافي !", win: "🏆 انتصار رائع !", lose: "❌ خسارة !", foul: "❌ خطأ قانوني (Foul) !", lounge: "صالة النخبة الحية", spin: "توجيه الدوران والملامسة", ballInHand: "🔮 كرة حرة في يدك! حرك البيضاء.", hitMsg: "تمت الضربة بنجاح فورياً !", potMsg: "تم إسقاط كرة من نوع: " }
 };
 let currentLang = "ar";
 
@@ -356,22 +356,23 @@ function toggleSystemLanguage() {
   document.getElementById("lbl-solde").innerText = Dictionary[currentLang].solde;
   document.getElementById("lbl-lounge").innerText = Dictionary[currentLang].lounge;
   document.getElementById("lbl-spin").innerText = Dictionary[currentLang].spin;
-  updateStatusUI(); refreshLeaderboardView();
+  updateStatusUI(); refreshLeaderboardView(); updateGroupLabelsUI();
 }
 
 function updateStatusUI() {
   const s = document.getElementById("game-status");
   if (gameState === "aiming" && currentTurn === "player") s.innerText = Dictionary[currentLang].ready;
-  else if (currentTurn === "opp") s.innerText = `${activeOpponent.name} ${Dictionary[currentLang].thinking}`;
+  else if (currentTurn === "opp") s.innerText = `OmniBot 🤖 ${Dictionary[currentLang].thinking}`;
 }
 
-function calculateDynamicLevel(score) {
-  let lvl = 1; let title = "Rookie"; let ratio = "70% (مقبول)";
-  if(score >= 200) { lvl = 2; title = "Semi-Pro"; ratio = "78% (جيد)"; }
-  if(score >= 500) { lvl = 3; title = "Master Pro"; ratio = "88% (جيد جداً)"; }
-  if(score >= 1500) { lvl = 4; title = "Elite Grandmaster"; ratio = "96% (ممتاز)"; }
-  document.getElementById("player-level-lbl").innerText = `LVL ${lvl} - ${title}`;
-  document.getElementById("stat-skill-ratio").innerText = ratio;
+function updateGroupLabelsUI() {
+  if (tableAssigned) {
+    document.getElementById("p-target").innerText = Dictionary[currentLang][playerGroup];
+    document.getElementById("o-target").innerText = Dictionary[currentLang][oppGroup];
+  } else {
+    document.getElementById("p-target").innerText = Dictionary[currentLang].open;
+    document.getElementById("o-target").innerText = Dictionary[currentLang].open;
+  }
 }
 
 function initUserSession() {
@@ -389,7 +390,7 @@ function initUserSession() {
       const betVal = urlParams.get('bet') || urlParams.get('mise');
       if (betVal && !isNaN(betVal)) currentBet = parseInt(betVal);
   }
-  document.getElementById('bet-val').innerText = `${currentBet} DH`;
+  document.getElementById('bet-val').innerText = `${currentBet}`;
   syncLiveBalance();
 }
 
@@ -399,8 +400,7 @@ function syncLiveBalance() {
   balanceRef.on('value', (snap) => {
     let freshVal = snap.val() || 0;
     VaultSecure.lock(freshVal);
-    document.getElementById("solde-val").innerText = `${freshVal} DH`;
-    calculateDynamicLevel(freshVal);
+    document.getElementById("solde-val").innerText = `${freshVal}`;
     refreshLeaderboardView();
   });
 }
@@ -420,23 +420,23 @@ let cueStyle = "classic"; let spinX = 0; let spinY = 0;
 let balls = []; let particles = []; let cueBall = null; let gameState = "aiming"; let currentTurn = "player";
 let isAimDragging = false; let isPowerDragging = false; let isBallInHandDragging = false;
 let aimAngle = 0; let aimPower = 25;
-let tableAssigned = false; let playerGroup = null; let oppGroup = null; let playerPocketed = []; let oppPocketed = [];
-let ballsPocketedThisTurn = []; let firstBallHitThisTurn = null; let isBallInHand = false;
+
+let tableAssigned = false; 
+let playerGroup = null; 
+let oppGroup = null; 
+let playerPocketed = []; 
+let oppPocketed = [];
+let ballsPocketedThisTurn = []; 
+let firstBallHitThisTurn = null; 
+let isBallInHand = false;
 
 const pockets = [
   { x: 24, y: 24 }, { x: 400, y: 17 }, { x: 776, y: 24 },
   { x: 24, y: 376 }, { x: 400, y: 383 }, { x: 776, y: 376 }
 ];
 
-const dynamicOpponents = [
-  { name: "Alex 🇺🇸", skill: 0.75, avatar: "👨‍💻" },
-  { name: "Amine 🇲🇦", skill: 0.88, avatar: "🥷" },
-  { name: "Chloe 🇫🇷", skill: 0.80, avatar: "👩‍🎤" }
-];
-let activeOpponent = dynamicOpponents[0];
-
 let dynamicLeaderboard = [
-  { name: "Amine 🇲🇦", score: 2800 }, { name: "Vous", score: 0 }, { name: "Alex 🇺🇸", score: 1200 }
+  { name: "OmniBot 🤖", score: 9999 }, { name: "Vous", score: 0 }, { name: "Amine 🇲🇦", score: 2800 }
 ];
 
 function triggerToast(txt) { const b = document.getElementById("toast-box"); b.innerHTML = `<div class="quantum-toast">${txt}</div>`; setTimeout(() => b.innerHTML = "", 3000); }
@@ -447,7 +447,7 @@ function refreshLeaderboardView() {
   dynamicLeaderboard.sort((a,b) => b.score - a.score);
   const container = document.getElementById("leaderboard-view"); container.innerHTML = "";
   dynamicLeaderboard.forEach((item, idx) => {
-    container.innerHTML += `<div class="leader-row ${item.name === "Vous" ? 'highlight' : ''}"><span>#${idx+1} ${item.name}</span><span>${item.score} DH</span></div>`;
+    container.innerHTML += `<div class="leader-row ${item.name === "Vous" ? 'highlight' : ''}"><span>#${idx+1} ${item.name}</span><span>${item.score}</span></div>`;
   });
 }
 
@@ -473,7 +473,7 @@ function spawnShockwaveParticles(x, y, color, amt=20) {
 }
 
 class Ball {
-  constructor(x, y, color, num, type) { this.x = x; this.y = y; this.vx = 0; this.vy = 0; this.color = color; this.num = num; this.type = type; this.isPocketed = false; this.pulse = Math.random()*5; }
+  constructor(x, y, color, num, type) { this.x = x; this.y = y; this.vx = 0; this.vy = 0; this.color = color; this.num = num; this.type = type; this.isPocketed = false; }
   update() {
     if (this.isPocketed) return;
     this.x += this.vx; this.y += this.vy; this.vx *= FRICTION; this.vy *= FRICTION;
@@ -516,12 +516,8 @@ class Ball {
 
 function buildArena() {
   balls = []; particles = []; playerPocketed = []; oppPocketed = []; tableAssigned = false; playerGroup = null; oppGroup = null; hasDeductedBet = false; isBallInHand = false;
-  document.getElementById("p-target").innerText = Dictionary[currentLang].open;
-  document.getElementById("o-target").innerText = Dictionary[currentLang].open;
+  updateGroupLabelsUI();
   
-  activeOpponent = dynamicOpponents[Math.floor(Math.random() * dynamicOpponents.length)];
-  document.getElementById("opp-name-lbl").innerText = activeOpponent.name;
-
   cueBall = new Ball(220, 200, "#ffffff", 0, "cue"); balls.push(cueBall);
   let startX = 540; let startY = 200;
   let layout = [
@@ -551,38 +547,11 @@ function refreshPocketsDisplay() {
 
 function handleScoreProcessing(ball) {
   if (ball.type === "cue") {
-    ballsPocketedThisTurn.push("cue"); isBallInHand = true; 
-    setTimeout(() => { ball.isPocketed = false; ball.x = 220; ball.y = 200; ball.vx = 0; ball.vy = 0; }, 800);
+    ballsPocketedThisTurn.push("cue");
   } else if (ball.type === "black") {
     ballsPocketedThisTurn.push("black");
-    let currentGrp = currentTurn === "player" ? playerGroup : oppGroup;
-    if (balls.filter(b => !b.isPocketed && b.type === currentGrp).length === 0) {
-      if(currentTurn === "player") { 
-         commitBalanceUpdate(currentBet * 2); 
-         totalWinsToday += currentBet;
-         document.getElementById("stat-total-wins").innerText = `${totalWinsToday} DH`;
-         triggerToast(Dictionary[currentLang].win); 
-      } else { 
-         totalLosesToday += currentBet;
-         document.getElementById("stat-total-loses").innerText = `${totalLosesToday} DH`;
-         triggerToast(Dictionary[currentLang].lose); 
-      }
-    } else {
-      if(currentTurn === "player") {
-         totalLosesToday += currentBet;
-         document.getElementById("stat-total-loses").innerText = `${totalLosesToday} DH`;
-         triggerToast(Dictionary[currentLang].foul);
-      } else { 
-         commitBalanceUpdate(currentBet * 2); 
-         totalWinsToday += currentBet;
-         document.getElementById("stat-total-wins").innerText = `${totalWinsToday} DH`;
-         triggerToast(Dictionary[currentLang].win); 
-      }
-    }
-    setTimeout(buildArena, 2000);
   } else {
     ballsPocketedThisTurn.push(ball);
-    document.getElementById("game-status").innerText = `${Dictionary[currentLang].potMsg} ${ball.type}`;
     if (currentTurn === "player") playerPocketed.push(ball.color); else oppPocketed.push(ball.color);
     refreshPocketsDisplay();
   }
@@ -612,46 +581,142 @@ function computeCollisions() {
 function runOpponentAI() {
   gameState = "opp_thinking"; updateStatusUI();
   setTimeout(() => {
-    let targetGrp = oppGroup || "solid"; let targets = balls.filter(b => !b.isPocketed && b.type === targetGrp);
-    if(targets.length === 0) targets = balls.filter(b => !b.isPocketed && b.type === "black");
-    let bestShot = null; let bestScore = -Infinity;
+    if (isBallInHand) {
+      cueBall.x = 200 + Math.random() * 50;
+      cueBall.y = 150 + Math.random() * 100;
+      cueBall.isPocketed = false;
+      isBallInHand = false;
+    }
+
+    let targetGrp = oppGroup;
+    if (!tableAssigned) targetGrp = "any"; 
+    
+    let remainingTargets = balls.filter(b => !b.isPocketed && b.type === targetGrp);
+    if (tableAssigned && remainingTargets.length === 0) targetGrp = "black";
+
+    let targets = balls.filter(b => !b.isPocketed && (targetGrp === "any" ? (b.type === "solid" || b.type === "striped") : b.type === targetGrp));
+    
+    let bestShot = null;
+    let highestScore = -Infinity;
+
     for (let ball of targets) {
       for (let pocket of pockets) {
         let angleToPocket = Math.atan2(pocket.y - ball.y, pocket.x - ball.x);
-        let ghostX = ball.x - Math.cos(angleToPocket) * (BALL_RADIUS * 2); let ghostY = ball.y - Math.sin(angleToPocket) * (BALL_RADIUS * 2);
-        let angleCue = Math.atan2(ghostY - cueBall.y, ghostX - cueBall.x); let dist = Math.hypot(ghostX - cueBall.x, ghostY - cueBall.y);
-        if (1000 - dist > bestScore) { bestScore = 1000 - dist; bestShot = { angle: angleCue, power: Math.min(13, Math.max(5, dist / 12)) }; }
+        let ghostX = ball.x - Math.cos(angleToPocket) * (BALL_RADIUS * 2);
+        let ghostY = ball.y - Math.sin(angleToPocket) * (BALL_RADIUS * 2);
+        
+        let angleCue = Math.atan2(ghostY - cueBall.y, ghostX - cueBall.x);
+        let distToGhost = Math.hypot(ghostX - cueBall.x, ghostY - cueBall.y);
+        let distBallToPocket = Math.hypot(pocket.x - ball.x, pocket.y - ball.y);
+
+        let score = 5000 - (distToGhost + distBallToPocket * 1.5);
+        
+        if (score > highestScore) {
+          highestScore = score;
+          bestShot = { angle: angleCue, power: Math.min(16, Math.max(7, distToGhost / 11)) };
+        }
       }
     }
+
     if (bestShot) {
-      aimAngle = bestShot.angle; cueBall.vx = Math.cos(bestShot.angle) * bestShot.power; cueBall.vy = Math.sin(bestShot.angle) * bestShot.power; gameState = "moving";
-    } else { finalizeTurn(); }
-  }, 1000);
+      aimAngle = bestShot.angle;
+      cueBall.vx = Math.cos(bestShot.angle) * bestShot.power;
+      cueBall.vy = Math.sin(bestShot.angle) * bestShot.power;
+      gameState = "moving";
+    } else {
+      let randomTarget = targets[0] || cueBall;
+      let angle = Math.atan2(randomTarget.y - cueBall.y, randomTarget.x - cueBall.x);
+      aimAngle = angle;
+      cueBall.vx = Math.cos(angle) * 8;
+      cueBall.vy = Math.sin(angle) * 8;
+      gameState = "moving";
+    }
+  }, 1200);
 }
 
 function finalizeTurn() {
-  let nextTurn = currentTurn; let currentGroup = currentTurn === "player" ? playerGroup : oppGroup;
-  if (ballsPocketedThisTurn.includes("cue")) {
-    isBallInHand = true; nextTurn = currentTurn === "player" ? "opp" : "player";
-    triggerToast(Dictionary[currentLang].ballInHand);
-  } else if (!tableAssigned && ballsPocketedThisTurn.length > 0) {
-    let f = ballsPocketedThisTurn.find(b => b !== "black");
-    if (f) {
-      tableAssigned = true;
-      if (currentTurn === "player") { playerGroup = f.type; oppGroup = f.type === "solid" ? "striped" : "solid"; }
-      else { oppGroup = f.type; playerGroup = f.type === "solid" ? "striped" : "solid"; }
-      document.getElementById("p-target").innerText = Dictionary[currentLang][playerGroup];
-      document.getElementById("o-target").innerText = Dictionary[currentLang][oppGroup];
-    }
-  } else if (tableAssigned) {
-    let hitOwn = firstBallHitThisTurn && firstBallHitThisTurn.type === currentGroup;
-    let pocketedOwn = ballsPocketedThisTurn.some(b => b.type === currentGroup);
-    if (hitOwn && pocketedOwn) {} else { nextTurn = currentTurn === "player" ? "opp" : "player"; }
-  } else { nextTurn = currentTurn === "player" ? "opp" : "player"; }
+  let nextTurn = currentTurn;
+  let currentGroup = currentTurn === "player" ? playerGroup : oppGroup;
+  let triggerFoul = false;
 
-  ballsPocketedThisTurn = []; firstBallHitThisTurn = null; currentTurn = nextTurn;
+  if (ballsPocketedThisTurn.includes("cue")) {
+    triggerFoul = true;
+    isBallInHand = true;
+    cueBall.isPocketed = false;
+    cueBall.x = 220; cueBall.y = 200; cueBall.vx = 0; cueBall.vy = 0;
+    triggerToast(Dictionary[currentLang].ballInHand);
+  }
+
+  if (!triggerFoul && tableAssigned) {
+    if (!firstBallHitThisTurn || firstBallHitThisTurn.type !== currentGroup) {
+      triggerFoul = true;
+      isBallInHand = true;
+      triggerToast(Dictionary[currentLang].foul + " (Foul! لم تلمس كرتك أولاً)");
+    }
+  }
+
+  if (ballsPocketedThisTurn.includes("black")) {
+    let activeGroupBalls = balls.filter(b => !b.isPocketed && b.type === currentGroup);
+    if (tableAssigned && activeGroupBalls.length === 0 && !triggerFoul) {
+      if (currentTurn === "player") {
+        commitBalanceUpdate(currentBet * 2); totalWinsToday += currentBet;
+        document.getElementById("stat-total-wins").innerText = `${totalWinsToday}`;
+        triggerToast(Dictionary[currentLang].win);
+      } else {
+        totalLosesToday += currentBet; document.getElementById("stat-total-loses").innerText = `${totalLosesToday}`;
+        triggerToast(Dictionary[currentLang].lose);
+      }
+    } else {
+      if (currentTurn === "player") {
+        totalLosesToday += currentBet; document.getElementById("stat-total-loses").innerText = `${totalLosesToday}`;
+        triggerToast(Dictionary[currentLang].lose + " (أدخلت السوداء مبكراً!)");
+      } else {
+        commitBalanceUpdate(currentBet * 2); totalWinsToday += currentBet;
+        document.getElementById("stat-total-wins").innerText = `${totalWinsToday}`;
+        triggerToast(Dictionary[currentLang].win);
+      }
+    }
+    setTimeout(buildArena, 2500);
+    return;
+  }
+
+  if (!triggerFoul && !tableAssigned && ballsPocketedThisTurn.length > 0) {
+    let validBall = ballsPocketedThisTurn.find(b => b !== "cue" && b !== "black");
+    if (validBall) {
+      tableAssigned = true;
+      if (currentTurn === "player") {
+        playerGroup = validBall.type;
+        oppGroup = validBall.type === "solid" ? "striped" : "solid";
+      } else {
+        oppGroup = validBall.type;
+        playerGroup = validBall.type === "solid" ? "striped" : "solid";
+      }
+      updateGroupLabelsUI();
+    }
+  }
+
+  if (triggerFoul) {
+    nextTurn = currentTurn === "player" ? "opp" : "player";
+  } else {
+    let currentGroupUpdated = currentTurn === "player" ? playerGroup : oppGroup;
+    let pocketedOwnBalls = ballsPocketedThisTurn.some(b => b.type === currentGroupUpdated);
+    
+    if (tableAssigned && pocketedOwnBalls) {
+      nextTurn = currentTurn; 
+    } else if (!tableAssigned && ballsPocketedThisTurn.length > 0 && !ballsPocketedThisTurn.includes("cue")) {
+      nextTurn = currentTurn;
+    } else {
+      nextTurn = currentTurn === "player" ? "opp" : "player";
+    }
+  }
+
+  ballsPocketedThisTurn = [];
+  firstBallHitThisTurn = null;
+  currentTurn = nextTurn;
+
   document.getElementById("radar-hull").className = currentTurn === "player" ? "versus-radar player-active" : "versus-radar opp-active";
   aimPower = 25; updateSliderUI();
+  
   if (currentTurn === "opp") runOpponentAI(); else { gameState = "aiming"; updateStatusUI(); }
 }
 
@@ -703,11 +768,11 @@ canvas.addEventListener("touchstart", (e) => {
 window.addEventListener("touchmove", (e) => { if (isPowerDragging) handlePowerInput(e.touches[0].clientY); else if (isAimDragging || isBallInHandDragging) handleAimInput(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
 window.addEventListener("touchend", () => { isPowerDragging = false; isBallInHandDragging = false; if (isAimDragging) { isAimDragging = false; fireCueBall(); } });
 
-// 🔥 تم إزالة كود الاقتطاع من هنا نهائياً لمنع الخصم المزدوج لأن المنصة الأولى قامت بالخصم مسبقاً عند الدخول
 function fireCueBall() {
-  if (aimPower < 5 || isBallInHand) return;
+  if (aimPower < 5) return;
+  if (isBallInHand) { isBallInHand = false; return; }
   
-  hasDeductedBet = true; // نضعها True مباشرة دون القيام بأي طلب لـ Firebase لمنع تكرار الخصم
+  hasDeductedBet = true; 
   SpatialAudio.ballHit(cueBall.x, aimPower / 10); 
   
   let velocityMagnitude = aimPower * 0.15;
