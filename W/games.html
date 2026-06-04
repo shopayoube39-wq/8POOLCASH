@@ -179,28 +179,28 @@ let balanceRef;
 let userSolde = 0;
 
 function updateBalance(amount) {
-  const user = firebase.auth().currentUser;
-  if (user) {
-    const dbRef = firebase.database().ref('users/' + user.uid + '/balance');
+  const activeUser = localStorage.getItem('username') || "Ayoube";
+  if (activeUser) {
+    const dbRef = firebase.database().ref('users/' + activeUser + '/balance');
     dbRef.transaction((current) => (current || 0) + amount);
   }
 }
 
-firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    if (balanceRef) balanceRef.off();
-    balanceRef = firebase.database().ref('users/' + user.uid + '/balance');
-    balanceRef.on('value', (snapshot) => {
-      userSolde = snapshot.val() || 0;
-      document.getElementById("solde-val").innerText = userSolde + "DH";
-      updateLeaderboardUI();
-    });
+function syncBalanceNode() {
+  const activeUser = localStorage.getItem('username') || "Ayoube";
+  if (balanceRef) balanceRef.off();
+  balanceRef = firebase.database().ref('users/' + activeUser + '/balance');
+  balanceRef.on('value', (snapshot) => {
+    userSolde = snapshot.val() || 0;
+    document.getElementById("solde-val").innerText = userSolde + "DH";
+    updateLeaderboardUI();
+  });
+}
 
-    initGame();
-    loop();
-  } else {
-    document.getElementById("game-status").innerText = "Veuillez vous connecter pour jouer.";
-  }
+firebase.auth().onAuthStateChanged((user) => {
+  syncBalanceNode();
+  initGame();
+  loop();
 });
 
 const canvas = document.getElementById("billiards-canvas");
@@ -641,7 +641,7 @@ function drawGuidelines() {
     ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.setLineDash([]); ctx.stroke();
 
     let ballAngle = Math.atan2(closestBall.y - finalTargetY, closestBall.x - finalTargetX);
-    ctx.beginPath(); ctx.moveTo(closestBall.x, closestBall.y);
+    ctx.beginPath(); moveTo(closestBall.x, closestBall.y);
     ctx.lineTo(closestBall.x + Math.cos(ballAngle) * 60, closestBall.y + Math.sin(ballAngle) * 60);
     ctx.strokeStyle = "var(--accent-gold)"; ctx.lineWidth = 2; ctx.stroke();
   }
