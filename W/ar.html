@@ -1,848 +1,524 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
-<title>Quantum 8-Ball Absolute Masterpiece 3M</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700&family=Cairo:wght@700;900&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-
-<style>
-:root {
-  --neon-cyan: #00f3ff;
-  --neon-gold: #ffb700;
-  --neon-emerald: #00ff87;
-  --cyber-red: #ff0055;
-  --table-green: #052214;
-  --glass-bg: rgba(4, 9, 20, 0.94);
-  --glass-border: rgba(0, 243, 255, 0.3);
-  --gold-border: #d4af37;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Rajdhani', 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
-
-body {
-  background: #010205;
-  background-image: 
-    radial-gradient(circle at 50% 10%, rgba(0, 243, 255, 0.25) 0%, transparent 50%),
-    radial-gradient(circle at 10% 90%, rgba(255, 183, 0, 0.1) 0%, transparent 40%);
-  color: #e2e8f0; min-height: 100vh;
-  display: flex; align-items: center; justify-content: center; padding: 15px; overflow: hidden;
-}
-
-.main-grid {
-  display: grid; grid-template-columns: 1fr 380px; gap: 25px;
-  width: 100%; max-width: 1550px; height: auto;
-}
-
-.game-zone { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
-
-.top-hub {
-  background: var(--glass-bg); border: 2px solid var(--glass-border);
-  border-radius: 22px; padding: 14px 30px; display: flex; justify-content: space-between;
-  align-items: center; box-shadow: 0 0 50px rgba(0, 243, 255, 0.2); backdrop-filter: blur(25px);
-}
-.balance-container { display: flex; flex-direction: column; }
-.balance-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #64748b; font-weight: 700; }
-.balance-digits { font-family: 'Orbitron', sans-serif; font-size: 34px; font-weight: 900; color: var(--neon-emerald); text-shadow: 0 0 25px rgba(0, 255, 135, 0.7); }
-
-.controls-selectors { display: flex; gap: 12px; }
-.custom-select {
-  background: rgba(0,0,0,0.6); border: 1px solid var(--neon-cyan); color: #fff;
-  padding: 8px 14px; border-radius: 12px; font-weight: 700; cursor: pointer; outline: none; font-size: 13px;
-}
-.custom-select.premium { border-color: var(--neon-gold); }
-
-.versus-radar {
-  display: flex; justify-content: space-between; align-items: center;
-  background: linear-gradient(135deg, rgba(2,6,18,0.98), rgba(8,20,48,0.98));
-  border: 2px solid rgba(0, 243, 255, 0.15); padding: 18px; border-radius: 24px; position: relative;
-}
-.versus-radar.player-active { border-color: var(--neon-cyan); box-shadow: 0 0 25px rgba(0,243,255,0.25); }
-.versus-radar.opp-active { border-color: var(--neon-gold); box-shadow: 0 0 25px rgba(255,183,0,0.25); }
-
-.radar-user { display: flex; align-items: center; gap: 16px; width: 45%; }
-.radar-user.player { justify-content: flex-start; }
-.radar-user.opp { justify-content: flex-end; text-align: right; }
-
-.avatar-ring {
-  width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  font-size: 24px; background: rgba(0,0,0,0.6); border: 3px solid #334155; transition: all 0.4s; flex-shrink: 0;
-}
-.active-turn-p .player .avatar-ring { border-color: var(--neon-cyan); box-shadow: 0 0 25px var(--neon-cyan); }
-.active-turn-o .opp .avatar-ring { border-color: var(--neon-gold); box-shadow: 0 0 25px var(--neon-gold); }
-
-.profile-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.u-name { font-size: 21px; font-weight: 700; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.u-group { font-size: 13px; font-weight: 800; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 1px; }
-.u-group.solid { color: #ffb700; text-shadow: 0 0 10px rgba(255,183,0,0.4); }
-.u-group.striped { color: #00f3ff; text-shadow: 0 0 10px rgba(0,243,255,0.4); }
-
-.center-core { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; }
-.core-vs { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 900; color: var(--cyber-red); text-shadow: 0 0 20px var(--cyber-red); }
-
-.pocketed-row { display: flex; gap: 5px; margin-top: 6px; min-height: 14px; overflow: hidden; }
-.pocket-dot { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset -2px -2px 6px rgba(0,0,0,0.9), 0 0 8px rgba(255,255,255,0.2); flex-shrink: 0; }
-
-.arena-box { display: flex; gap: 18px; align-items: center; width: 100%; }
-
-.power-track {
-  width: 56px; height: 100%; min-height: 320px; background: rgba(1,4,12,0.98); border: 2px solid rgba(255,255,255,0.06);
-  border-radius: 18px; display: flex; flex-direction: column; align-items: center; padding: 20px 0;
-  position: relative; cursor: ns-resize; box-shadow: inset 0 0 30px rgba(0,0,0,0.95); align-self: stretch;
-}
-.power-fill-bar {
-  width: 16px; background: linear-gradient(to top, var(--neon-emerald), var(--neon-gold), var(--cyber-red));
-  border-radius: 8px; position: absolute; bottom: 20px; height: 0%; transition: height 0.04s linear;
-  box-shadow: 0 0 15px rgba(0,255,135,0.5);
-}
-
-.table-frame {
-  position: relative; flex: 1; background: linear-gradient(135deg, #170d06, #080301); padding: 24px;
-  border-radius: 34px; box-shadow: 0 45px 95px rgba(0,0,0,1), inset 0 2px 10px rgba(255,255,255,0.2);
-  border: 6px solid #050201; overflow: hidden; display: flex; align-items: center; justify-content: center;
-}
-.table-frame::before {
-  content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
-  border: 2px dashed var(--gold-border); border-radius: 26px; pointer-events: none; opacity: 0.25;
-}
-#billiards-canvas { display: block; max-width: 100%; height: auto; background: var(--table-green); border-radius: 16px; cursor: crosshair; touch-action: none; }
-
-.fine-tune-controls { display: flex; justify-content: center; gap: 25px; margin-top: 5px; }
-.tune-btn {
-  background: var(--glass-bg); border: 1px solid var(--glass-border); color: #fff;
-  padding: 12px 30px; border-radius: 14px; font-weight: 700; cursor: pointer;
-  display: flex; align-items: center; gap: 10px; transition: all 0.2s; font-size: 14px;
-}
-.tune-btn:active { transform: scale(0.94); border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0,243,255,0.3); }
-
-.side-lounge {
-  background: var(--glass-bg); border: 2px solid var(--glass-border);
-  border-radius: 28px; padding: 25px; display: flex; flex-direction: column; gap: 24px;
-  box-shadow: 0 40px 85px rgba(0,0,0,0.9); backdrop-filter: blur(25px);
-}
-.panel-headline { font-family: 'Orbitron', sans-serif; font-size: 15px; color: var(--neon-cyan); letter-spacing: 2px; text-transform: uppercase; text-align: center; font-weight: 900; }
-
-.leader-board { display: flex; flex-direction: column; gap: 10px; }
-.leader-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 14px 18px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 14px; font-size: 15px; font-weight: 600;
-}
-.leader-row.highlight {
-  background: linear-gradient(90deg, rgba(0, 243, 255, 0.2), transparent);
-  border-left: 5px solid var(--neon-cyan); font-weight: 700; color: #fff; box-shadow: 0 0 15px rgba(0,243,255,0.1);
-}
-
-.spin-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.spin-disc {
-  width: 90px; height: 90px; background: radial-gradient(circle at 30% 30%, #ffffff 0%, #cbd5e1 55%, #1e293b 100%);
-  border-radius: 50%; position: relative; border: 6px solid #0f172a; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.7);
-}
-.spin-pointer { width: 14px; height: 14px; background: #ff0044; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; box-shadow: 0 0 10px #ff0044; }
-
-.shop-deck { display: flex; flex-direction: column; gap: 10px; }
-.cue-card {
-  background: #02050c; border: 1px solid rgba(255,255,255,0.05); color: #94a3b8;
-  padding: 16px; border-radius: 14px; font-size: 14px; cursor: pointer; display: flex;
-  justify-content: space-between; align-items: center; transition: all 0.3s;
-}
-.cue-card.selected { border-color: var(--neon-emerald); background: rgba(0, 255, 135, 0.08); color: #fff; font-weight: 700; box-shadow: 0 0 15px rgba(0,255,135,0.15); }
-
-.footer-status { text-align: center; font-size: 14px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #475569; min-height: 20px; }
-
-#toast-box { position: fixed; top: 25px; left: 50%; transform: translateX(-50%); z-index: 100000; pointer-events: none; width: 90%; max-width: 440px; }
-.quantum-toast { background: rgba(1,4,12,0.99); border: 2px solid var(--neon-cyan); color: #fff; padding: 16px 32px; border-radius: 16px; font-family: 'Orbitron', 'Cairo'; font-weight: 900; box-shadow: 0 0 40px rgba(0, 243, 255, 0.45); text-align: center; font-size: 15px; letter-spacing: 0.5px; }
-
-@media (max-width: 992px) {
-  body { padding: 10px; overflow-y: auto; align-items: flex-start; }
-  .main-grid { grid-template-columns: 1fr; gap: 20px; }
-  .table-frame { padding: 12px; border-radius: 22px; }
-  .top-hub { padding: 12px 20px; }
-}
-</style>
-</head>
-<body>
-
-<div id="toast-box"></div>
-
-<div class="main-grid">
-  
-  <div class="game-zone">
-    <div class="top-hub">
-      <div class="balance-container">
-        <span class="balance-label" id="lbl-solde">SOLDE DISPONIBLE</span>
-        <span class="balance-digits" id="solde-val">0</span>
-      </div>
-      <div class="controls-selectors">
-        <select class="custom-select premium" id="graphics-select">
-          <option value="4k">Ultra 4K</option>
-          <option value="high" selected>High 1080p</option>
-          <option value="perf">Performance</option>
-        </select>
-        <select class="custom-select" id="lang-select" onchange="toggleSystemLanguage()">
-          <option value="fr">Français</option>
-          <option value="ar">العربية</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="versus-radar player-active" id="radar-hull">
-      <div class="radar-user player">
-        <div class="avatar-ring">🇲🇦</div>
-        <div class="profile-info">
-          <span class="u-name">Vous</span>
-          <span class="u-group" id="p-target">Table Ouverte</span>
-          <div class="pocketed-row" id="p-pockets"></div>
-        </div>
-      </div>
-
-      <div class="center-core"><span class="core-vs">VS</span></div>
-
-      <div class="radar-user opp">
-        <div class="profile-info">
-          <span class="u-name" id="opp-name-lbl">En attente...</span>
-          <span class="u-group" id="o-target">Table Ouverte</span>
-          <div class="pocketed-row" id="o-pockets"></div>
-        </div>
-        <div class="avatar-ring" id="opp-avatar">👤</div>
-      </div>
-    </div>
-
-    <div class="arena-box">
-      <div class="power-track" id="p-slider-zone">
-        <span style="font-size:10px; font-weight:900; color:var(--cyber-red); font-family:'Orbitron';">MAX</span>
-        <div style="flex:1; width:14px; background:#000; border-radius:7px; margin:12px 0; position:relative; min-height: 180px;">
-          <div class="power-fill-bar" id="p-fill"></div>
-        </div>
-        <span style="font-size:10px; font-weight:900; color:var(--neon-emerald); font-family:'Orbitron';">MIN</span>
-      </div>
-
-      <div class="table-frame">
-        <canvas id="billiards-canvas" width="800" height="400"></canvas>
-      </div>
-    </div>
-
-    <div class="fine-tune-controls">
-      <button class="tune-btn" onclick="adjustAimAngle(-0.005)">◀️ <span id="lbl-fine-neg">Fine -</span></button>
-      <button class="tune-btn" onclick="adjustAimAngle(0.005)"><span id="lbl-fine-pos">Fine +</span> ▶️</button>
-    </div>
-
-    <div class="footer-status" id="game-status">Moteur prêt. En attente de visée...</div>
-  </div>
-
-  <div class="side-lounge">
-    <div class="panel-headline" id="lbl-lounge">Elite Live Lounge</div>
-    <div class="leader-board" id="leaderboard-view"></div>
-
-    <div class="spin-wrapper">
-      <span style="font-size:12px; font-weight:800; text-transform:uppercase; color:#64748b; letter-spacing: 1px;" id="lbl-spin">Contrôle d'effet</span>
-      <div class="spin-disc" id="spin-board">
-        <div class="spin-pointer" id="spin-dot"></div>
-      </div>
-    </div>
-
-    <div class="shop-deck">
-      <div class="cue-card selected" id="cue-classic" onclick="selectCue('classic', 0)">
-        <span>Standard Carbon 🎱</span><span>0</span>
-      </div>
-      <div class="cue-card" id="cue-cyber" onclick="selectCue('cyber', 200)">
-        <span>Laser Matrix ⚡</span><span>200</span>
-      </div>
-      <div class="cue-card" id="cue-gold" onclick="selectCue('gold', 500)">
-        <span>Royal Aurum 👑</span><span>500</span>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
-  authDomain: "poolcash-6692c.firebaseapp.com",
-  databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
-  projectId: "poolcash-6692c",
-  storageBucket: "poolcash-6692c.appspot.com",
-  messagingSenderId: "866544389541",
-  appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
-};
-firebase.initializeApp(firebaseConfig);
-
-const Dictionary = {
-  fr: { solde: "SOLDE DISPONIBLE", open: "Table Ouverte", solid: "Pleines", striped: "Rayées", ready: "Moteur prêt. À votre tour !", thinking: "réfléchit...", insf: "⚠️ SOLDE INSUFFISANT !", win: "🏆 VICTOIRE !", lose: "❌ DÉFAITE !", foul: "❌ FAUTE !", lounge: "Elite Live Lounge", spin: "Contrôle d'effet", ballInHand: "🔮 Balle en main ! Déplacez la blanche." },
-  ar: { solde: "الرصيد المتاح", open: "طاولة مفتوحة", solid: "الكرات المصمتة", striped: "الكرات المخططة", ready: "المحرك جاهز. دورك الآن !", thinking: "يفكر الآن...", insf: "⚠️ الرصيد غير كافي !", win: "🏆 انتصار رائع !", lose: "❌ خسارة !", foul: "❌ خطأ قانوني !", lounge: "صالة النخبة الحية", spin: "توجيه الدوران والملامسة", ballInHand: "🔮 كرة حرة في يدك! حرك البيضاء." }
-};
-let currentLang = "fr";
-
-const VaultSecure = {
-  _k: "Secure_VectorKey2026_Core", _v: "0",
-  lock(n) { this._v = btoa((n * 4.3).toString() + this._k); },
-  unlock() { try { return parseFloat(atob(this._v).replace(this._k, '')) / 4.3 || 0; } catch(e) { return 0; } }
-};
-
-let balanceRef; let currentBet = 100; let hasDeductedBet = false;
-
-// 🔥 محرك الصوت الديناميكي الكوانتي ثلاثي الأبعاد والستيريو (3M Advanced Audio Engine)
-const SpatialAudio = {
-  ctx: null,
-  init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
-  
-  // دالة تحديد موقع الصوت يميناً ويساراً تلقائياً بناءً على إحداثيات الكرة على الطاولة
-  getPanner(x) {
-    this.init();
-    if (!this.ctx.createStereoPanner) return null;
-    let panner = this.ctx.createStereoPanner();
-    let panVal = (x / 800) * 2 - 1; // تحويل الإحداثيات من 0-800 إلى نطاق -1 إلى 1 ستيريو
-    panner.pan.setValueAtTime(Math.min(1, Math.max(-1, panVal)), this.ctx.currentTime);
-    return panner;
-  },
-
-  // صوت اصطدام الكرات ببعضها (تردد حاد يحاكي الفينوليك)
-  ballHit(x, force) {
-    try {
-      this.init();
-      let vol = Math.min(1, Math.max(0.05, force / 6));
-      let osc = this.ctx.createOscillator();
-      let gain = this.ctx.createGain();
-      let panner = this.getPanner(x);
-
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(220, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.06);
-
-      gain.gain.setValueAtTime(vol * 0.5, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
-
-      if (panner) { osc.connect(panner); panner.connect(gain); } else { osc.connect(gain); }
-      gain.connect(this.ctx.destination);
-      osc.start(); osc.stop(this.ctx.currentTime + 0.06);
-    } catch(e){}
-  },
-
-  // صوت الاصطدام بحواف الطاولة الخشبية (تردد منخفض وعميق Thud)
-  wallBounce(x, force) {
-    try {
-      this.init();
-      let vol = Math.min(1, Math.max(0.05, force / 4));
-      let osc = this.ctx.createOscillator();
-      let gain = this.ctx.createGain();
-      let panner = this.getPanner(x);
-
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(90, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.1);
-
-      gain.gain.setValueAtTime(vol * 0.4, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
-
-      if (panner) { osc.connect(panner); panner.connect(gain); } else { osc.connect(gain); }
-      gain.connect(this.ctx.destination);
-      osc.start(); osc.stop(this.ctx.currentTime + 0.1);
-    } catch(e){}
-  },
-
-  // صوت دخول الكرات في الحفرة
-  pocketIn() {
-    try {
-      this.init();
-      let osc = this.ctx.createOscillator();
-      let gain = this.ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(180, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(50, this.ctx.currentTime + 0.22);
-      gain.gain.setValueAtTime(0.6, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.22);
-      osc.connect(gain); gain.connect(this.ctx.destination);
-      osc.start(); osc.stop(this.ctx.currentTime + 0.22);
-    } catch(e){}
-  },
-
-  // صوت احتكاك العصا عند السحب والقوة
-  cueDrag(power) {
-    try {
-      this.init();
-      let osc = this.ctx.createOscillator();
-      let gain = this.ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(60 + power * 1.5, this.ctx.currentTime);
-      gain.gain.setValueAtTime((power / 100) * 0.05, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
-      osc.connect(gain); gain.connect(this.ctx.destination);
-      osc.start(); osc.stop(this.ctx.currentTime + 0.04);
-    } catch(e){}
-  }
-};
-
-function toggleSystemLanguage() {
-  currentLang = document.getElementById("lang-select").value;
-  document.getElementById("lbl-solde").innerText = Dictionary[currentLang].solde;
-  document.getElementById("lbl-lounge").innerText = Dictionary[currentLang].lounge;
-  document.getElementById("lbl-spin").innerText = Dictionary[currentLang].spin;
-  updateStatusUI(); refreshLeaderboardView();
-}
-
-function updateStatusUI() {
-  const s = document.getElementById("game-status");
-  if (gameState === "aiming" && currentTurn === "player") s.innerText = Dictionary[currentLang].ready;
-  else if (currentTurn === "opp") s.innerText = `${activeOpponent.name} ${Dictionary[currentLang].thinking}`;
-}
-
-function syncLiveBalance() {
-  const activeUser = localStorage.getItem('username') || "Ayoube";
-  if (balanceRef) balanceRef.off();
-  balanceRef = firebase.database().ref('users/' + activeUser + '/balance');
-  balanceRef.on('value', (snap) => {
-    let freshVal = snap.val() || 0;
-    VaultSecure.lock(freshVal);
-    document.getElementById("solde-val").innerText = freshVal;
-    refreshLeaderboardView();
-  });
-}
-
-function commitBalanceUpdate(delta) {
-  const activeUser = localStorage.getItem('username') || "Ayoube";
-  if (activeUser) return firebase.database().ref('users/' + activeUser + '/balance').transaction(c => (c || 0) + delta);
-  return Promise.reject();
-}
-
-function extractMatchMise() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const betVal = urlParams.get('bet') || urlParams.get('mise');
-  if (betVal && !isNaN(betVal)) currentBet = parseInt(betVal);
-}
-
-firebase.auth().onAuthStateChanged(() => { extractMatchMise(); syncLiveBalance(); buildArena(); });
-
-const canvas = document.getElementById("billiards-canvas");
-const ctx = canvas.getContext("2d");
-
-const FRICTION = 0.986; const BALL_RADIUS = 12; const POCKET_RADIUS = 23; const TABLE_PADDING = 24;
-let cueStyle = "classic"; let spinX = 0; let spinY = 0;
-let balls = []; let particles = []; let cueBall = null; let gameState = "aiming"; let currentTurn = "player";
-let isAimDragging = false; let isPowerDragging = false; let isBallInHandDragging = false;
-let aimAngle = 0; let aimPower = 15;
-let tableAssigned = false; let playerGroup = null; let oppGroup = null; let playerPocketed = []; let oppPocketed = [];
-let ballsPocketedThisTurn = []; let firstBallHitThisTurn = null; let isBallInHand = false;
-
-const pockets = [
-  { x: 24, y: 24 }, { x: 400, y: 17 }, { x: 776, y: 24 },
-  { x: 24, y: 376 }, { x: 400, y: 383 }, { x: 776, y: 376 }
-];
-
-const dynamicOpponents = [
-  { name: "Alex 🇺🇸", skill: 0.78, avatar: "👨‍💻" },
-  { name: "Amine 🇲🇦", skill: 0.92, avatar: "🥷" },
-  { name: "Chloe 🇫🇷", skill: 0.84, avatar: "👩‍🎤" },
-  { name: "Zayd 🇸🇦", skill: 0.88, avatar: "👑" }
-];
-let activeOpponent = dynamicOpponents[0];
-
-let dynamicLeaderboard = [
-  { name: "Amine 🇲🇦", score: 2800 }, { name: "Vous", score: 0 }, { name: "Alex 🇺🇸", score: 1200 }, { name: "Chloe 🇫🇷", score: 600 }
-];
-
-function triggerToast(txt) { const b = document.getElementById("toast-box"); b.innerHTML = `<div class="quantum-toast">${txt}</div>`; setTimeout(() => b.innerHTML = "", 3000); }
-
-function refreshLeaderboardView() {
-  let p = dynamicLeaderboard.find(i => i.name === "Vous");
-  if(p) p.score = VaultSecure.unlock();
-  dynamicLeaderboard.sort((a,b) => b.score - a.score);
-  const container = document.getElementById("leaderboard-view");
-  container.innerHTML = "";
-  dynamicLeaderboard.forEach((item, idx) => {
-    container.innerHTML += `<div class="leader-row ${item.name === "Vous" ? 'highlight' : ''}"><span>#${idx+1} ${item.name}</span><span>${item.score}</span></div>`;
-  });
-}
-
-function adjustAimAngle(val) { aimAngle += val; }
-
-function selectCue(style, cost) {
-  if (cueStyle === style) return;
-  let s = VaultSecure.unlock();
-  if (s < cost && style !== 'classic') { triggerToast(Dictionary[currentLang].insf); return; }
-  if (style !== 'classic' && cueStyle === 'classic') commitBalanceUpdate(-cost);
-  cueStyle = style;
-  document.querySelectorAll('.cue-card').forEach(c => c.classList.remove('selected'));
-  document.getElementById(`cue-${style}`).classList.add('selected');
-}
-
-function spawnShockwaveParticles(x, y, color, amt=20) {
-  for(let i=0; i<amt; i++) {
-    particles.push({
-      x: x, y: y,
-      vx: (Math.random() - 0.5) * 6,
-      vy: (Math.random() - 0.5) * 6,
-      radius: Math.random() * 3 + 1,
-      color: color, alpha: 1,
-      decay: Math.random() * 0.04 + 0.02
-    });
-  }
-}
-
-class Ball {
-  constructor(x, y, color, num, type) { this.x = x; this.y = y; this.vx = 0; this.vy = 0; this.color = color; this.num = num; this.type = type; this.isPocketed = false; this.pulse = Math.random()*5; }
-  update() {
-    if (this.isPocketed) return;
-    this.x += this.vx; this.y += this.vy; this.vx *= FRICTION; this.vy *= FRICTION;
-    
-    // محاكاة فيزيائية لانحراف ودوران الكرة البيضاء الناتجة عن الـ Spin
-    if (this.type === "cue") { 
-      this.vx += spinX * 0.05; this.vy += spinY * 0.05; 
-      spinX *= 0.94; spinY *= 0.94; 
-    }
-    if (Math.abs(this.vx) < 0.015) this.vx = 0; if (Math.abs(this.vy) < 0.015) this.vy = 0;
-
-    const minX = TABLE_PADDING + BALL_RADIUS; const maxX = canvas.width - TABLE_PADDING - BALL_RADIUS;
-    const minY = TABLE_PADDING + BALL_RADIUS; const maxY = canvas.height - TABLE_PADDING - BALL_RADIUS;
-    let hitWall = false;
-    if (this.x < minX) { this.x = minX; this.vx *= -0.96; hitWall = true; }
-    if (this.x > maxX) { this.x = maxX; this.vx *= -0.96; hitWall = true; }
-    if (this.y < minY) { this.y = minY; this.vy *= -0.96; hitWall = true; }
-    if (this.y > maxY) { this.y = maxY; this.vy *= -0.96; hitWall = true; }
-    
-    if (hitWall) { 
-      SpatialAudio.wallBounce(this.x, Math.hypot(this.vx, this.vy)); 
-      spawnShockwaveParticles(this.x, this.y, "#ffffff", 6); 
-    }
-
-    for (let p of pockets) {
-      if (Math.hypot(this.x - p.x, this.y - p.y) < POCKET_RADIUS - 1) {
-        this.isPocketed = true; this.vx = 0; this.vy = 0;
-        spawnShockwaveParticles(p.x, p.y, this.color, 25); 
-        SpatialAudio.pocketIn();
-        handleScoreProcessing(this); break;
-      }
-    }
-    this.pulse += 0.08;
-  }
-  draw() {
-    if (this.isPocketed) return;
-    
-    // رسم ظلال ديناميكية واقعية أسفل الكرات للإيحاء بالعمق ثلاثي الأبعاد
-    ctx.save(); 
-    ctx.beginPath(); 
-    ctx.arc(this.x + 4, this.y + 4, BALL_RADIUS, 0, Math.PI * 2); 
-    ctx.fillStyle = "rgba(0,0,0,0.4)"; 
-    ctx.fill(); 
-    ctx.restore();
-
-    if (gameState === "aiming" && currentTurn === "player" && tableAssigned) {
-      if (this.type === playerGroup || (playerGroup && this.type === "black" && balls.filter(b => !b.isPocketed && b.type === playerGroup).length === 0)) {
-        ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS + 6, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(0, 255, 135, 0.05)"; ctx.strokeStyle = "var(--neon-emerald)"; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
-      }
-    }
-
-    if (this.type === "cue" && isBallInHand && currentTurn === "player") {
-      ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS + 7 + Math.sin(this.pulse)*2.5, 0, Math.PI * 2);
-      ctx.strokeStyle = "var(--neon-cyan)"; ctx.lineWidth = 2.5; ctx.stroke(); ctx.restore();
-    }
-
-    ctx.save();
-    let grad = ctx.createRadialGradient(this.x - BALL_RADIUS*0.35, this.y - BALL_RADIUS*0.35, 1, this.x, this.y, BALL_RADIUS);
-    grad.addColorStop(0, "#ffffff"); grad.addColorStop(0.3, this.color); grad.addColorStop(1, "#000000");
-    ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS, 0, Math.PI * 2); ctx.fillStyle = grad; ctx.fill(); ctx.restore();
-
-    if (this.type === "striped") {
-      ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS, -Math.PI/3, Math.PI/3); ctx.lineTo(this.x, this.y); ctx.fillStyle = "rgba(255,255,255,0.35)"; ctx.fill(); ctx.restore();
-      ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS, Math.PI - Math.PI/3, Math.PI + Math.PI/3); ctx.lineTo(this.x, this.y); ctx.fillStyle = "rgba(255,255,255,0.35)"; ctx.fill(); ctx.restore();
-    }
-    if (this.type !== "cue") {
-      ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS*0.38, 0, Math.PI*2); ctx.fillStyle = "#fff"; ctx.fill();
-      ctx.font = "900 9px Arial"; ctx.fillStyle = "#000"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(this.num, this.x, this.y); ctx.restore();
-    }
-  }
-}
-
-function buildArena() {
-  balls = []; particles = []; playerPocketed = []; oppPocketed = []; tableAssigned = false; playerGroup = null; oppGroup = null; hasDeductedBet = false; isBallInHand = false;
-  document.getElementById("p-target").innerText = Dictionary[currentLang].open; document.getElementById("p-target").className = "u-group";
-  document.getElementById("o-target").innerText = Dictionary[currentLang].open; document.getElementById("o-target").className = "u-group";
-  
-  activeOpponent = dynamicOpponents[Math.floor(Math.random() * dynamicOpponents.length)];
-  document.getElementById("opp-name-lbl").innerText = activeOpponent.name;
-  document.getElementById("opp-avatar").innerText = activeOpponent.avatar;
-
-  cueBall = new Ball(220, 200, "#ffffff", 0, "cue"); balls.push(cueBall);
-  let startX = 540; let startY = 200;
-  let layout = [
-    { n: 1, c: "#ffcc00", t: "solid" }, { n: 9, c: "#ffcc00", t: "striped" },
-    { n: 2, c: "#0066ff", t: "solid" }, { n: 8, c: "#111111", t: "black" },
-    { n: 10, c: "#0066ff", t: "striped" }, { n: 3, c: "#ff3333", t: "solid" },
-    { n: 11, c: "#ff3333", t: "striped" }, { n: 4, c: "#9933ff", t: "solid" },
-    { n: 12, c: "#9933ff", t: "striped" }, { n: 5, c: "#ff6600", t: "solid" },
-    { n: 13, c: "#ff6600", t: "striped" }, { n: 6, c: "#00cc44", t: "solid" },
-    { n: 14, c: "#00cc44", t: "striped" }, { n: 7, c: "#994d00", t: "solid" }, { n: 15, c: "#994d00", t: "striped" }
-  ];
-  let idx = 0;
-  for (let i = 0; i < 5; i++) {
-    for (let j = 0; j <= i; j++) {
-      let x = startX + i * (BALL_RADIUS * 1.76); let y = startY + (j - i / 2) * (BALL_RADIUS * 2.05);
-      if(layout[idx]) balls.push(new Ball(x, y, layout[idx].c, layout[idx].n, layout[idx].t));
-      idx++;
-    }
-  }
-  refreshPocketsDisplay(); gameState = "aiming"; currentTurn = "player"; updateStatusUI();
-}
-
-function refreshPocketsDisplay() {
-  document.getElementById("p-pockets").innerHTML = playerPocketed.map(c => `<div class="pocket-dot" style="background:${c}"></div>`).join('');
-  document.getElementById("o-pockets").innerHTML = oppPocketed.map(c => `<div class="pocket-dot" style="background:${c}"></div>`).join('');
-}
-
-function handleScoreProcessing(ball) {
-  if (ball.type === "cue") {
-    ballsPocketedThisTurn.push("cue");
-    isBallInHand = true; 
-    setTimeout(() => { ball.isPocketed = false; ball.x = 220; ball.y = 200; ball.vx = 0; ball.vy = 0; }, 1000);
-  } else if (ball.type === "black") {
-    ballsPocketedThisTurn.push("black");
-    let currentGrp = currentTurn === "player" ? playerGroup : oppGroup;
-    if (balls.filter(b => !b.isPocketed && b.type === currentGrp).length === 0) {
-      if(currentTurn === "player") { commitBalanceUpdate(currentBet * 2); triggerToast(Dictionary[currentLang].win); }
-      else { triggerToast(Dictionary[currentLang].lose); }
-    } else {
-      if(currentTurn === "player") triggerToast(Dictionary[currentLang].foul);
-      else { commitBalanceUpdate(currentBet * 2); triggerToast(Dictionary[currentLang].win); }
-    }
-    setTimeout(buildArena, 2500);
-  } else {
-    ballsPocketedThisTurn.push(ball);
-    if (currentTurn === "player") playerPocketed.push(ball.color); else oppPocketed.push(ball.color);
-    refreshPocketsDisplay();
-  }
-}
-
-function computeCollisions() {
-  for (let i = 0; i < balls.length; i++) {
-    for (let j = i + 1; j < balls.length; j++) {
-      let b1 = balls[i]; let b2 = balls[j];
-      if (b1.isPocketed || b2.isPocketed) continue;
-      let dx = b2.x - b1.x; let dy = b2.y - b1.y; let dist = Math.hypot(dx, dy);
-      if (dist < BALL_RADIUS * 2) {
-        if (b1.type === "cue" && !firstBallHitThisTurn) firstBallHitThisTurn = b2;
-        if (b2.type === "cue" && !firstBallHitThisTurn) firstBallHitThisTurn = b1;
-        let overlap = (BALL_RADIUS * 2) - dist; let nx = dx / dist; let ny = dy / dist;
-        b1.x -= nx * overlap * 0.51; b1.y -= ny * overlap * 0.51; b2.x += nx * overlap * 0.51; b2.y += ny * overlap * 0.51;
-        let kx = b1.vx - b2.vx; let ky = b1.vy - b2.vy; let p = 2 * (nx * kx + ny * ky) / 2;
-        if (p > 0) {
-          b1.vx -= p * nx; b1.vy -= p * ny; b2.vx += p * nx; b2.vy += p * ny;
-          let force = Math.hypot(b1.vx - b2.vx, b1.vy - b2.vy);
-          
-          // تشغيل صوت اصطدام الكرات الديناميكي المجسم ستيريو
-          SpatialAudio.ballHit(b1.x, force);
-          if(force > 1.2) spawnShockwaveParticles((b1.x+b2.x)/2, (b1.y+b2.y)/2, "#ffbb00", 8);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8POOLCASH | المنصة الرسمية للألعاب والمواجهات</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: #08090c; 
+            color: #f3f4f6; 
+            overflow-x: hidden;
         }
-      }
-    }
-  }
-}
 
-function runOpponentAI() {
-  gameState = "opp_thinking"; updateStatusUI();
-  setTimeout(() => {
-    let targetGrp = oppGroup || "solid"; let targets = balls.filter(b => !b.isPocketed && b.type === targetGrp);
-    if(targets.length === 0) targets = balls.filter(b => !b.isPocketed && b.type === "black");
-    let bestShot = null; let bestScore = -Infinity;
-    for (let ball of targets) {
-      for (let pocket of pockets) {
-        let angleToPocket = Math.atan2(pocket.y - ball.y, pocket.x - ball.x);
-        let ghostX = ball.x - Math.cos(angleToPocket) * (BALL_RADIUS * 2); let ghostY = ball.y - Math.sin(angleToPocket) * (BALL_RADIUS * 2);
-        let angleCue = Math.atan2(ghostY - cueBall.y, ghostX - cueBall.x); let dist = Math.hypot(ghostX - cueBall.x, ghostY - cueBall.y);
-        let score = 1000 - dist;
-        if (Math.random() > activeOpponent.skill) angleCue += (Math.random() - 0.5) * 0.04;
-        if (score > bestScore) { bestScore = score; bestShot = { angle: angleCue, power: Math.min(14, Math.max(5, dist / 11)) }; }
-      }
-    }
-    if (bestShot) {
-      aimAngle = bestShot.angle; let targetPower = bestShot.power * 6;
-      let step = () => {
-        if(aimPower < targetPower) { aimPower += 4; updateSliderUI(); requestAnimationFrame(step); }
-        else { cueBall.vx = Math.cos(bestShot.angle) * bestShot.power; cueBall.vy = Math.sin(bestShot.angle) * bestShot.power; gameState = "moving"; }
+        .brand-bg {
+            background: radial-gradient(circle at 50% 0%, #121620 0%, #08090c 80%);
+        }
+
+        .premium-card {
+            background: linear-gradient(145deg, rgba(18, 22, 32, 0.85) 0%, rgba(11, 14, 20, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .brand-glow-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 20px rgba(217, 119, 6, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .brand-glow-btn:hover {
+            transform: translateY(-1.5px);
+            box-shadow: 0 8px 25px rgba(217, 119, 6, 0.45);
+            filter: brightness(1.08);
+        }
+
+        .live-table-row {
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+        .live-table-row:hover {
+            background: rgba(245, 158, 11, 0.03);
+            border-color: rgba(245, 158, 11, 0.25);
+            transform: translateY(-1px);
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #08090c; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
+
+        .amount-tab {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #9ca3af;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .amount-tab.active {
+            background: #f59e0b;
+            border-color: #f59e0b;
+            color: #08090c;
+            font-weight: 900;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.35);
+        }
+        
+        .main-action-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #08090c;
+            box-shadow: 0 4px 20px rgba(217, 119, 6, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .main-action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 25px rgba(217, 119, 6, 0.45);
+            filter: brightness(1.05);
+        }
+    </style>
+</head>
+<body class="brand-bg min-h-screen pb-20">
+
+    <header class="bg-[#0b0e14]/90 sticky top-0 z-50 px-4 py-3 border-b border-white/5 backdrop-blur-md">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg">
+                    <span class="text-[#08090c] font-black text-base italic">8</span>
+                </div>
+                <h1 class="text-xl font-black italic tracking-tight text-white uppercase">8POOL<span class="text-amber-400">CASH</span></h1>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button onclick="openSupportModal()" class="bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-bold px-3.5 py-2 rounded-xl border border-white/5 transition-all flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M5.636 18.364l3.536-3.536m5.656 0l3.536 3.536M5.636 5.636l3.536 3.536m0 5.656l-3.536 3.536M9.172 9.172a4 4 0 115.656 5.656 4 4 0 01-5.656-5.656z"></path>
+                    </svg>
+                    <span>الدعم</span>
+                </button>
+                <button onclick="goToDeposit()" class="brand-glow-btn text-[#08090c] text-xs font-black px-4 py-2 rounded-xl flex items-center gap-1">
+                    <span>إيداع</span>
+                </button>
+                <button onclick="goToWithdraw()" class="bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-bold px-3.5 py-2 rounded-xl border border-white/5 transition-all">
+                    سحب
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 mt-5 space-y-5">
+
+        <div class="premium-card rounded-2xl p-6 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-36 h-36 bg-amber-500/[0.04] blur-[45px] rounded-full pointer-events-none"></div>
+            
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <span class="text-xs text-gray-400 font-bold">الحساب الرسمي:</span>
+                    <span id="userDisplay" dir="ltr" class="text-sm font-bold text-white tracking-wide">Ayoube</span>
+                </div>
+                <span class="text-[10px] bg-amber-400/10 text-amber-400 px-2.5 py-1 rounded-md font-bold uppercase tracking-wider border border-amber-400/20">المستوى المعتمد 1</span>
+            </div>
+
+            <div class="text-center py-3">
+                <span class="text-xs text-gray-400 block mb-1 font-semibold tracking-wide">الرصيد المتاح حالياً</span>
+                <div class="text-5xl font-black text-white flex items-center justify-center gap-2">
+                    <span class="text-2xl font-bold text-amber-400">DH</span>
+                    <span id="balanceDisplay" class="tracking-tight">0</span>
+                </div>
+            </div>
+
+            <div id="warningBox" class="mt-5 bg-amber-500/[0.02] border border-amber-500/15 rounded-2xl p-4 flex justify-between items-center relative overflow-hidden">
+                <div class="flex items-center gap-3.5 relative z-10">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0 shadow-inner">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                    <div class="text-right">
+                        <h4 class="text-xs font-black text-amber-400 tracking-wide">رصيدك الحالي غير كافي</h4>
+                        <p class="text-[10px] text-gray-400 mt-0.5 leading-relaxed">يرجى شحن حسابك لتتمكن من دخول غرف اللعب والمواجهة المباشرة.</p>
+                    </div>
+                </div>
+                <button onclick="goToDeposit()" class="bg-amber-400 hover:bg-amber-500 text-[#08090c] font-black text-[11px] px-4 py-2.5 rounded-xl transition-all duration-200 shrink-0 shadow-md shadow-amber-500/5 relative z-10">
+                    شحن الآن
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+            <div class="premium-card rounded-xl p-3.5 text-center">
+                <span class="text-[11px] text-gray-500 font-bold block mb-1">الانتصارات</span>
+                <span class="text-lg font-black text-white">0</span>
+            </div>
+            <div class="premium-card rounded-xl p-3.5 text-center">
+                <span class="text-[11px] text-gray-500 font-bold block mb-1">المباريات</span>
+                <span class="text-lg font-black text-white">0</span>
+            </div>
+            <div class="premium-card rounded-xl p-3.5 text-center">
+                <span class="text-[11px] text-gray-500 font-bold block mb-1">إجمالي الأرباح</span>
+                <span id="totalEarningsDisplay" class="text-lg font-black text-emerald-400">0 DH</span>
+            </div>
+        </div>
+
+        <div class="premium-card rounded-2xl p-6 space-y-5">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xs font-bold text-gray-300 flex items-center gap-2">
+                    <span class="w-1.5 h-3.5 bg-amber-400 rounded-full"></span>
+                    <span>اختر مبلغ الرهان</span>
+                </h3>
+                <span class="text-[10px] text-gray-400 font-bold">مواجهة لاعب ضد لاعب</span>
+            </div>
+
+            <div class="py-1">
+                <div class="flex overflow-x-auto gap-2 pb-2 scrollbar-none" style="scrollbar-width: none; -ms-overflow-style: none;">
+                    <style> .flex::-webkit-scrollbar { display: none; } </style>
+                    <button onclick="selectAmount(0)" class="amount-tab py-3 px-6 rounded-xl text-xs font-bold text-center whitespace-nowrap min-w-[90px]">DH 150</button>
+                    <button onclick="selectAmount(1)" class="amount-tab py-3 px-6 rounded-xl text-xs font-bold text-center whitespace-nowrap min-w-[90px]">DH 200</button>
+                    <button onclick="selectAmount(2)" class="amount-tab py-3 px-6 rounded-xl text-xs font-bold text-center whitespace-nowrap min-w-[90px]">DH 300</button>
+                    <button onclick="selectAmount(3)" class="amount-tab py-3 px-6 rounded-xl text-xs font-bold text-center whitespace-nowrap min-w-[90px]">DH 500</button>
+                    <button onclick="selectAmount(4)" class="amount-tab py-3 px-6 rounded-xl text-xs font-bold text-center whitespace-nowrap min-w-[90px]">DH 1,000</button>
+                    <button onclick="selectAmount(5)" class="amount-tab py-3 px-6 rounded-xl text-xs font-bold text-center whitespace-nowrap min-w-[90px]">DH 2,500</button>
+                    <button onclick="selectAmount(6)" class="amount-tab py-3 px-6 rounded-xl text-xs font-bold text-center whitespace-nowrap min-w-[90px]">DH 5,000</button>
+                </div>
+            </div>
+
+            <button id="join-table-btn" onclick="handlePlayClick()" class="w-full main-action-btn font-black py-4 rounded-xl text-sm flex items-center justify-center gap-2 tracking-wide">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                <span>العب الآن - DH 150</span>
+            </button>
+        </div>
+
+        <div class="space-y-3">
+            <div class="flex justify-between items-center px-1">
+                <h3 class="text-xs font-bold text-white flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                    <span>المباريات الحية الجارية الآن</span>
+                </h3>
+                <span id="active-count" class="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded font-bold">142 active</span>
+            </div>
+
+            <div id="live-matches-container" class="space-y-2"></div>
+        </div>
+
+        <div class="premium-card rounded-2xl p-5">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 00.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138z"></path>
+                    </svg>
+                    <span>قائمة متصدري الأسبوع</span>
+                </h3>
+            </div>
+            <div id="leaderboard-container" class="divide-y divide-white/5 text-xs"></div>
+        </div>
+
+    </main>
+
+    <div id="support-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm hidden">
+        <div class="premium-card w-full max-w-sm rounded-2xl p-6 relative border border-white/10">
+            <button onclick="closeSupportModal()" class="absolute top-4 left-4 text-gray-400 hover:text-white transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/xl">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <div class="text-center space-y-4">
+                <div class="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto text-amber-400 shadow-inner">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M5.636 18.364l3.536-3.536m5.656 0l3.536 3.536M5.636 5.636l3.536 3.536m0 5.656l-3.536 3.536M9.172 9.172a4 4 0 115.656 5.656 4 4 0 01-5.656-5.656z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-md font-black text-white">مركز الدعم والمساعدة المباشر</h3>
+                    <p class="text-xs text-gray-400 mt-1 leading-relaxed">إذا واجهتك أي مشكلة في عمليتي الشحن أو السحب، يمكنك التواصل معنا فوراً عبر البريد الإلكتروني المعتمد للمنصة.</p>
+                </div>
+                <div class="bg-white/5 border border-white/5 rounded-xl p-3 flex items-center justify-between">
+                    <span class="text-xs font-semibold text-gray-300 select-all">support@8poolcash.com</span>
+                    <a href="mailto:support@8poolcash.com" class="text-xs font-black text-amber-400 hover:underline">مراسلة الآن</a>
+                </div>
+                <div class="mt-2">
+                     <button onclick="closeSupportModal()" class="w-full bg-white/5 hover:bg-white/10 text-gray-300 font-bold py-2.5 rounded-xl text-xs border border-white/5 transition-all">إغلاق النافذة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-8 text-center px-6">
+        <p class="text-[9px] text-gray-600 font-medium leading-relaxed uppercase">جميع العمليات مشفرة ومحمية بالكامل بموجب معايير الأمان العالمية لمنصة 8POOLCASH الحصرية</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
+        authDomain: "poolcash-6692c.firebaseapp.com",
+        databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
+        projectId: "poolcash-6692c",
+        storageBucket: "poolcash-6692c.firebasestorage.app",
+        messagingSenderId: "866544389541",
+        appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
       };
-      step();
-    } else { finalizeTurn(); }
-  }, 1200);
-}
 
-function finalizeTurn() {
-  let nextTurn = currentTurn; let currentGroup = currentTurn === "player" ? playerGroup : oppGroup;
-  
-  if (ballsPocketedThisTurn.includes("cue")) {
-    isBallInHand = true;
-    nextTurn = currentTurn === "player" ? "opp" : "player";
-    triggerToast(Dictionary[currentLang].ballInHand);
-  } else if (!tableAssigned && ballsPocketedThisTurn.length > 0) {
-    let f = ballsPocketedThisTurn.find(b => b !== "black");
-    if (f) {
-      tableAssigned = true;
-      if (currentTurn === "player") { playerGroup = f.type; oppGroup = f.type === "solid" ? "striped" : "solid"; }
-      else { oppGroup = f.type; playerGroup = f.type === "solid" ? "striped" : "solid"; }
-      
-      document.getElementById("p-target").innerText = Dictionary[currentLang][playerGroup];
-      document.getElementById("p-target").className = `u-group ${playerGroup}`;
-      document.getElementById("o-target").innerText = Dictionary[currentLang][oppGroup];
-      document.getElementById("o-target").className = `u-group ${oppGroup}`;
-    }
-  } else if (tableAssigned) {
-    let hitOwn = firstBallHitThisTurn && firstBallHitThisTurn.type === currentGroup;
-    let pocketedOwn = ballsPocketedThisTurn.some(b => b.type === currentGroup);
-    if (hitOwn && pocketedOwn) {} else { nextTurn = currentTurn === "player" ? "opp" : "player"; }
-  } else {
-    nextTurn = currentTurn === "player" ? "opp" : "player";
-  }
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
 
-  ballsPocketedThisTurn = []; firstBallHitThisTurn = null; currentTurn = nextTurn;
-  
-  let hull = document.getElementById("radar-hull");
-  if(currentTurn === "player") { hull.className = "versus-radar player-active"; isBallInHand = false; } 
-  else { hull.className = "versus-radar opp-active"; }
+      const amountValues = [150, 200, 300, 500, 1000, 2500, 5000];
+      let currentSelectedIndex = 0;
+      let globalUserBalance = 0; 
+      let currentUsername = "Ayoube"; 
 
-  aimPower = 15; updateSliderUI();
-  if (currentTurn === "opp") runOpponentAI();
-  else { gameState = "aiming"; updateStatusUI(); }
-}
+      function goToDeposit() {
+          localStorage.setItem('username', currentUsername);
+          window.location.href = 'deposit.html';
+      }
 
-function renderLaserGuides() {
-  if (gameState !== "aiming" || isBallInHand) return;
-  ctx.save();
-  let maxLen = cueStyle === "gold" ? 780 : (cueStyle === "cyber" ? 540 : 250);
-  let endX = cueBall.x + Math.cos(aimAngle) * maxLen; let endY = cueBall.y + Math.sin(aimAngle) * maxLen;
-  let targetBall = null; let tDist = maxLen;
+      function goToWithdraw() {
+          localStorage.setItem('username', currentUsername);
+          window.location.href = 'withdraw.html';
+      }
 
-  for (let ball of balls) {
-    if (ball.type === "cue" || ball.isPocketed) continue;
-    let A = endY - cueBall.y; let B = cueBall.x - endX; let C = endX * cueBall.y - cueBall.x * endY;
-    let d = Math.abs(A * ball.x + B * ball.y + C) / (Math.hypot(A, B) || 1);
-    if (d < BALL_RADIUS * 2) {
-      let dist = Math.hypot(ball.x - cueBall.x, ball.y - cueBall.y);
-      let dot = (ball.x - cueBall.x) * Math.cos(aimAngle) + (ball.y - cueBall.y) * Math.sin(aimAngle);
-      if (dot > 0 && dist < tDist) { tDist = dist; targetBall = ball; }
-    }
-  }
-  let fx = cueBall.x + Math.cos(aimAngle) * tDist; let fy = cueBall.y + Math.sin(aimAngle) * tDist;
-  ctx.beginPath(); ctx.setLineDash([6, 4]); ctx.moveTo(cueBall.x, cueBall.y); ctx.lineTo(fx, fy);
-  ctx.strokeStyle = cueStyle === "cyber" ? "rgba(0, 243, 255, 0.95)" : (cueStyle === "gold" ? "rgba(255,183,0,0.85)" : "rgba(255, 255, 255, 0.45)");
-  ctx.lineWidth = 2; ctx.stroke();
+      function checkWarningBoxVisibility() {
+          const warningBox = document.getElementById('warningBox');
+          if (warningBox) {
+              if (globalUserBalance > 0) {
+                  warningBox.classList.add('hidden'); 
+              } else {
+                  warningBox.classList.remove('hidden'); 
+              }
+          }
+      }
 
-  if (targetBall) {
-    ctx.beginPath(); ctx.arc(fx, fy, BALL_RADIUS, 0, Math.PI*2); ctx.strokeStyle = "rgba(255,255,255,0.55)"; ctx.setLineDash([]); ctx.stroke();
-    let bAngle = Math.atan2(targetBall.y - fy, targetBall.x - fx);
-    ctx.beginPath(); ctx.moveTo(targetBall.x, targetBall.y); ctx.lineTo(targetBall.x + Math.cos(bAngle)*80, targetBall.y + Math.sin(bAngle)*80);
-    ctx.strokeStyle = "var(--neon-gold)"; ctx.lineWidth = 2; ctx.stroke();
-  }
+      function selectAmount(index) {
+          currentSelectedIndex = index;
+          const currentAmount = amountValues[index];
+          
+          const tabs = document.querySelectorAll('.amount-tab');
+          tabs.forEach((tab, i) => {
+              if(i === index) {
+                  tab.classList.add('active');
+              } else {
+                  tab.classList.remove('active');
+              }
+          });
 
-  let cueDist = BALL_RADIUS + 14 + (aimPower * 0.35);
-  ctx.beginPath(); ctx.strokeStyle = cueStyle === "gold" ? "var(--neon-gold)" : (cueStyle === "cyber" ? "var(--neon-cyan)" : "#42220d");
-  ctx.lineWidth = 5.5; ctx.lineCap = "round";
-  ctx.moveTo(cueBall.x - Math.cos(aimAngle)*cueDist, cueBall.y - Math.sin(aimAngle)*cueDist);
-  ctx.lineTo(cueBall.x - Math.cos(aimAngle)*(cueDist+170), cueBall.y - Math.sin(aimAngle)*(cueDist+170));
-  ctx.stroke(); ctx.restore();
-}
+          const joinBtn = document.getElementById('join-table-btn');
+          if(joinBtn) {
+              joinBtn.innerHTML = `
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  </svg>
+                  <span>العب الآن - DH ${currentAmount.toLocaleString()}</span>
+              `;
+          }
+      }
 
-function drawFXParticles() {
-  for(let i = particles.length - 1; i >= 0; i--) {
-    let p = particles[i]; p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
-    if(p.alpha <= 0) { particles.splice(i, 1); continue; }
-    ctx.save(); ctx.globalAlpha = p.alpha; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2); ctx.fillStyle = p.color; ctx.fill(); ctx.restore();
-  }
-}
+      function handlePlayClick() {
+          const requiredAmount = amountValues[currentSelectedIndex];
+          if (globalUserBalance < requiredAmount) {
+              const warningModal = document.createElement('div');
+              warningModal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm';
+              warningModal.innerHTML = `
+                  <div class="premium-card w-full max-w-sm rounded-2xl p-6 border border-amber-500/20 text-center shadow-2xl">
+                      <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20">
+                          <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                      </div>
+                      <h3 class="text-white font-black text-lg mb-2">رصيد غير كافٍ</h3>
+                      <p class="text-gray-400 text-sm mb-6">عذراً، رصيدك الحالي (${globalUserBalance.toLocaleString()} DH) لا يكفي لدخول هذه الغرفة. يرجى الشحن أولاً.</p>
+                      <button onclick="this.parentElement.parentElement.remove(); goToDeposit()" class="w-full bg-amber-500 text-[#08090c] font-black py-3 rounded-xl hover:bg-amber-400 transition-all">شحن الرصيد الآن</button>
+                      <button onclick="this.parentElement.parentElement.remove()" class="w-full text-gray-500 font-bold text-xs mt-4 hover:text-white">إغلاق</button>
+                  </div>
+              `;
+              document.body.appendChild(warningModal);
+          } else {
+              localStorage.setItem('pendingBet', requiredAmount);
+              
+              const nextBalance = globalUserBalance - requiredAmount;
+              database.ref('users/' + currentUsername).update({
+                  balance: nextBalance
+              }).then(() => {
+                  window.location.href = 'games.html';
+              }).catch((err) => {
+                  console.error("Error updating bet balance: ", err);
+              });
+          }
+      }
 
-function updateSliderUI() { 
-  document.getElementById("p-fill").style.height = `${aimPower}%`; 
-  // تشغيل المؤثر الصوتي التفاعلي أثناء سحب القوة
-  SpatialAudio.cueDrag(aimPower);
-}
+      function startFirebaseSync(username) {
+          if (!username) return;
+          
+          const userRef = database.ref('users/' + username);
+          
+          userRef.on('value', (snapshot) => {
+              const userData = snapshot.val();
+              if (userData) {
+                  globalUserBalance = userData.balance !== undefined ? parseFloat(userData.balance) : 0;
+                  
+                  const balanceDisplay = document.getElementById('balanceDisplay');
+                  if(balanceDisplay) balanceDisplay.innerText = globalUserBalance.toLocaleString();
+                  
+                  const totalEarningsDisplay = document.getElementById('totalEarningsDisplay');
+                  if(totalEarningsDisplay) totalEarningsDisplay.innerText = globalUserBalance.toLocaleString() + " DH";
+                  
+                  checkWarningBoxVisibility();
+              }
+          }, (error) => {
+              console.error("Firebase sync error: ", error);
+          });
+      }
 
-const sZone = document.getElementById("p-slider-zone");
-function handlePowerInput(clientY) { let r = sZone.getBoundingClientRect(); let pct = 1 - ((clientY - r.top) / r.height); aimPower = Math.min(100, Math.max(5, pct * 100)); updateSliderUI(); }
+      function openSupportModal() {
+          const modal = document.getElementById('support-modal');
+          if(modal) {
+              modal.classList.remove('hidden');
+              document.body.style.overflow = 'hidden';
+          }
+      }
 
-function handleAimInput(clientX, clientY) { 
-  let r = canvas.getBoundingClientRect(); 
-  let mx = (clientX - r.left)*(canvas.width/r.width);
-  let my = (clientY - r.top)*(canvas.height/r.height);
-  
-  if (isBallInHand && currentTurn === "player") {
-    if (mx > TABLE_PADDING + BALL_RADIUS && mx < 260 && my > TABLE_PADDING + BALL_RADIUS && my < canvas.height - TABLE_PADDING - BALL_RADIUS) {
-      cueBall.x = mx; cueBall.y = my;
-    }
-  } else { aimAngle = Math.atan2(my - cueBall.y, mx - cueBall.x); }
-}
+      function closeSupportModal() {
+          const modal = document.getElementById('support-modal');
+          if(modal) {
+              modal.classList.add('hidden');
+              document.body.style.overflow = '';
+          }
+      }
 
-sZone.addEventListener("mousedown", (e) => { isPowerDragging = true; handlePowerInput(e.clientY); });
-canvas.addEventListener("mousedown", (e) => { 
-  SpatialAudio.init(); 
-  if (gameState !== "aiming" || currentTurn !== "player") return; 
-  let r = canvas.getBoundingClientRect();
-  let mx = (e.clientX - r.left)*(canvas.width/r.width);
-  let my = (e.clientY - r.top)*(canvas.height/r.height);
-  if (isBallInHand && Math.hypot(mx - cueBall.x, my - cueBall.y) < BALL_RADIUS + 15) { isBallInHandDragging = true; } 
-  else { isAimDragging = true; handleAimInput(e.clientX, e.clientY); }
-});
+      const usernames = [
+          "simohamed", "yassine_8p", "amineraja", "mehdi_casax", "kamal_pool", 
+          "othmane_k", "hassan_pro", "tarek_88", "riad_cash", "anass_b", 
+          "marouane_v", "zakaria_pool", "badr_king", "bilal_pro", "saad_cash",
+          "hamza_8p", "fouad_pl", "ismail_k", "idriss_v", "jalal_pool"
+      ];
 
-window.addEventListener("mousemove", (e) => { 
-  if (isPowerDragging) handlePowerInput(e.clientY); 
-  else if (isAimDragging || isBallInHandDragging) handleAimInput(e.clientX, e.clientY); 
-});
+      const matchValues = [150, 200, 300, 500];
 
-window.addEventListener("mouseup", () => { 
-  isPowerDragging = false; isBallInHandDragging = false;
-  if (isAimDragging) { isAimDragging = false; fireCueBall(); } 
-});
+      function getRandomMaskedUser() {
+          const name = usernames[Math.floor(Math.random() * usernames.length)];
+          const value = matchValues[Math.floor(Math.random() * matchValues.length)];
+          return {
+              rawName: name,
+              maskedName: name.substring(0, 3) + "***" + (name.length > 5 ? name.substring(name.length - 2) : "x"),
+              value: value
+          };
+      }
 
-sZone.addEventListener("touchstart", (e) => { isPowerDragging = true; handlePowerInput(e.touches[0].clientY); }, {passive:true});
-canvas.addEventListener("touchstart", (e) => { 
-  SpatialAudio.init(); 
-  if (gameState !== "aiming" || currentTurn !== "player") return; 
-  let r = canvas.getBoundingClientRect();
-  let mx = (e.touches[0].clientX - r.left)*(canvas.width/r.width);
-  let my = (e.touches[0].clientY - r.top)*(canvas.height/r.height);
-  if (isBallInHand && Math.hypot(mx - cueBall.x, my - cueBall.y) < BALL_RADIUS + 15) { isBallInHandDragging = true; } 
-  else { isAimDragging = true; handleAimInput(e.touches[0].clientX, e.touches[0].clientY); }
-}, {passive:true});
+      let leaderData = [
+          { name: "ach***99", score: 24350 },
+          { name: "wal***_k", score: 18100 },
+          { name: "you***_v", score: 12450 }
+      ];
 
-window.addEventListener("touchmove", (e) => { 
-  if (isPowerDragging) handlePowerInput(e.touches[0].clientY); 
-  else if (isAimDragging || isBallInHandDragging) handleAimInput(e.touches[0].clientX, e.touches[0].clientY); 
-}, {passive:true});
+      function renderLeaderboard() {
+          const container = document.getElementById('leaderboard-container');
+          if(!container) return;
+          container.innerHTML = leaderData.map((user, index) => `
+              <div class="py-3.5 flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                      <div class="w-5 h-5 rounded bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 font-black text-[10px]">${index + 1}</div>
+                      <span class="font-bold text-white">${user.name}</span>
+                  </div>
+                  <span class="font-black text-amber-400 tracking-wide">${user.score.toLocaleString()} DH</span>
+              </div>
+          `).join('');
+      }
 
-window.addEventListener("touchend", () => { 
-  isPowerDragging = false; isBallInHandDragging = false;
-  if (isAimDragging) { isAimDragging = false; fireCueBall(); } 
-});
+      let liveMatches = [];
+      for(let i=0; i<4; i++) {
+          const p1 = getRandomMaskedUser();
+          const p2 = getRandomMaskedUser();
+          liveMatches.push({
+              p1: p1.maskedName,
+              p2: p2.maskedName,
+              value: p1.value
+          });
+      }
 
-function fireCueBall() {
-  if (aimPower < 6 || isBallInHand) return;
-  if (!hasDeductedBet) { if (VaultSecure.unlock() < currentBet) { triggerToast(Dictionary[currentLang].insf); return; } hasDeductedBet = true; commitBalanceUpdate(-currentBet); }
-  SpatialAudio.ballHit(cueBall.x, aimPower / 12); cueBall.vx = Math.cos(aimAngle) * (aimPower * 0.16); cueBall.vy = Math.sin(aimAngle) * (aimPower * 0.16); gameState = "moving";
-}
+      function renderLiveMatches() {
+          const container = document.getElementById('live-matches-container');
+          if(!container) return;
+          container.innerHTML = liveMatches.map(match => `
+              <div class="premium-card live-table-row rounded-xl p-3.5 flex justify-between items-center animate-fade-in">
+                  <div class="flex items-center gap-3">
+                      <div class="w-7 h-7 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center">
+                          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="12" cy="12" r="10"></circle>
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"></path>
+                          </svg>
+                      </div>
+                      <div class="text-right">
+                          <div class="text-xs font-bold text-white">${match.p1} <span class="text-[10px] text-gray-500 font-normal mx-0.5">ضد</span> ${match.p2}</div>
+                          <div class="text-[9px] text-gray-400 mt-0.5">مواجهة جارية الآن</div>
+                      </div>
+                  </div>
+                  <div class="text-right">
+                      <span class="text-xs font-black text-amber-400 block">${match.value} DH</span>
+                      <span class="text-[9px] text-emerald-400 font-medium tracking-wide">مباشر</span>
+                  </div>
+              </div>
+          `).join('');
+      }
 
-const disc = document.getElementById("spin-board"); const dot = document.getElementById("spin-dot");
-disc.addEventListener("mousedown", () => {
-  SpatialAudio.init();
-  let move = (ev) => {
-    let r = disc.getBoundingClientRect(); let dx = ev.clientX - (r.left + r.width/2); let dy = ev.clientY - (r.top + r.height/2); let dist = Math.hypot(dx, dy); let maxR = r.width/2 - 10;
-    if (dist > maxR) { dx = (dx/dist)*maxR; dy = (dy/dist)*maxR; }
-    dot.style.left = `calc(50% + ${dx}px)`; dot.style.top = `calc(50% + ${dy}px)`; spinX = dx/maxR; spinY = dy/maxR;
-  };
-  window.addEventListener("mousemove", move); window.addEventListener("mouseup", () => window.removeEventListener("mousemove", move), {once:true});
-});
+      let currentActive = 135;
+      function updateSystemDynamics() {
+          const shift = Math.floor(Math.random() * 7) - 3;
+          currentActive = Math.max(5, Math.min(230, currentActive + shift));
+          const countEl = document.getElementById('active-count');
+          if(countEl) countEl.innerText = currentActive + " active";
 
-function coreRenderLoop() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "rgba(0,0,0,0.25)"; ctx.fillRect(TABLE_PADDING, TABLE_PADDING, canvas.width-(TABLE_PADDING*2), canvas.height-(TABLE_PADDING*2));
-  ctx.fillStyle = "#010103"; for(let p of pockets) { ctx.beginPath(); ctx.arc(p.x, p.y, POCKET_RADIUS, 0, Math.PI*2); ctx.fill(); }
-  let moving = false; for (let ball of balls) { ball.update(); ball.draw(); if(Math.abs(ball.vx) > 0 || Math.abs(ball.vy) > 0) moving = true; }
-  computeCollisions(); renderLaserGuides(); drawFXParticles();
-  if(gameState === "moving" && !moving) finalizeTurn();
-  requestAnimationFrame(coreRenderLoop);
-}
-buildArena(); coreRenderLoop();
-</script>
+          if(Math.random() > 0.4) {
+              liveMatches.pop();
+              const newP1 = getRandomMaskedUser();
+              const newP2 = getRandomMaskedUser();
+              liveMatches.unshift({
+                  p1: newP1.maskedName,
+                  p2: newP2.maskedName,
+                  value: newP1.value
+              });
+              renderLiveMatches();
+          }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+          renderLiveMatches();
+          renderLeaderboard();
+          setInterval(updateSystemDynamics, 3500);
+
+          function syncLoggedUser() {
+              try {
+                  const urlParams = new URLSearchParams(window.location.search);
+                  let activeUser = urlParams.get('username') || urlParams.get('user') || urlParams.get('name');
+
+                  if (!activeUser) {
+                      activeUser = localStorage.getItem('username') || localStorage.getItem('user');
+                  }
+
+                  if (activeUser) {
+                      currentUsername = activeUser.trim();
+                      if (currentUsername.includes('@')) {
+                          currentUsername = currentUsername.split('@')[0];
+                      }
+                  }
+
+                  const userDisplayEl = document.getElementById('userDisplay');
+                  if (userDisplayEl) {
+                      userDisplayEl.innerText = currentUsername;
+                  }
+
+                  startFirebaseSync(currentUsername);
+
+              } catch (error) {
+                  console.error("Session sync failed:", error);
+              }
+          }
+
+          syncLoggedUser();
+          selectAmount(0); 
+      });
+    </script>
 </body>
 </html>
