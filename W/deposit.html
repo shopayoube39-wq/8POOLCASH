@@ -1,661 +1,755 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="fr" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>8POOLCASH - الإيداع</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            background-color: #0b0d14;
-            background-image: radial-gradient(circle at top, #121622 0%, #0b0d14 100%);
-            font-family: 'Cairo', sans-serif;
-        }
-        .pool-yellow {
-            background-color: #ffaa00;
-        }
-        .text-pool-yellow {
-            color: #ffaa00;
-        }
-        .border-pool-yellow {
-            border-color: #ffaa00;
-        }
-        .active-tab {
-            color: #ffaa00;
-            border-bottom: 2px solid #ffaa00;
-        }
-        .bank-card {
-            background-color: #111520;
-            border: 1px solid #1a2032;
-            transition: all 0.2s ease-in-out;
-        }
-        .bank-card:hover {
-            border-color: #ffaa00;
-            transform: translateY(-1px);
-        }
-        .app-logo-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 1.25rem; /* rounded-3xl لإعطائها مظهر دائري ناعم واحترافي */
-            width: 4rem;
-            height: 4rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-            overflow: hidden;
-            transition: all 0.2s ease-in-out;
-            padding: 0.25rem; /* مسافة داخلية بيضاء حول الشعار لتناسق مثالي */
-        }
-        .crypto-logo-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 9999px;
-            width: 2.25rem;
-            height: 2.25rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-            overflow: hidden;
-            transition: all 0.2s ease-in-out;
-            background-color: white;
-            border: 1px solid #1a2032;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
+<title>Pro 8-Ball Tournament Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+<style>
+:root {
+  --bg-dark: #030611;
+  --panel-bg: rgba(6, 10, 26, 0.96);
+  --accent-gold: #fbbf24;
+  --neon-cyan: #06b6d4;
+  --neon-emerald: #10b981;
+  --table-green: #011f16;
+  --wood-border: #3b2314;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background-color: var(--bg-dark);
+  background-image: radial-gradient(circle at 50% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+  color: #f8fafc; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center; padding: 10px; overflow: hidden;
+}
+
+.main-wrapper { display: flex; gap: 20px; width: 100%; max-width: 1400px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+.game-container { flex: 1; min-width: 320px; max-width: 960px; display: flex; flex-direction: column; gap: 12px; }
+
+.side-panel {
+  width: 330px; background: var(--panel-bg); border: 2px solid rgba(6, 182, 212, 0.25);
+  border-radius: 24px; padding: 20px; box-shadow: 0 0 40px rgba(6, 182, 212, 0.1); backdrop-filter: blur(25px);
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+.panel-title { font-family: 'Orbitron', sans-serif; font-size: 14px; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; text-align: center; }
+
+.leaderboard-list { display: flex; flex-direction: column; gap: 6px; }
+.leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; font-size: 13px; }
+.leaderboard-item.player-row { background: linear-gradient(90deg, rgba(6, 182, 212, 0.15), transparent); border-left: 4px solid var(--neon-cyan); font-weight: 900; }
+
+.economy-bar {
+  width: 100%; background: var(--panel-bg); padding: 14px 20px; border-radius: 20px;
+  display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(6, 182, 212, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+.solde-txt { font-weight: 900; color: var(--neon-emerald); font-size: 18px; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 6px; }
+
+.bet-display-box {
+  background: rgba(251, 191, 36, 0.05);
+  border: 1px dashed var(--accent-gold);
+  padding: 6px 16px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.bet-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.bet-value { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; color: var(--accent-gold); }
+
+.scoreboard {
+  width: 100%; background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.03);
+  padding: 12px 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center;
+}
+.player-card { display: flex; flex-direction: column; gap: 4px; align-items: center; min-width: 140px; transition: all 0.3s ease; opacity: 0.6; }
+.player-card.active { opacity: 1; transform: scale(1.03); }
+.player-name { font-size: 15px; font-weight: 900; color: #94a3b8; }
+.player-card.active .player-name { color: var(--neon-cyan); text-shadow: 0 0 10px rgba(6, 182, 212, 0.5); }
+.player-card.opp.active .player-name { color: var(--accent-gold); text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+
+.pocketed-balls-display { display: flex; gap: 4px; min-height: 14px; margin-top: 4px; }
+.pocketed-dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset -2px -2px 4px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2); }
+
+.arena-container { display: flex; width: 100%; gap: 12px; align-items: center; }
+.power-slider-container { width: 35px; height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; background: #050814; border-radius: 12px; border: 1px solid #1e293b; padding: 10px 0; }
+
+.table-wrapper { position: relative; flex: 1; background: var(--wood-border); padding: 16px; border-radius: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); border: 4px solid #23140b; }
+#billiards-canvas { display: block; width: 100%; background: var(--table-green); border-radius: 8px; cursor: crosshair; touch-action: none; }
+
+.spin-selector-container { display: flex; flex-direction: column; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
+.spin-pad { width: 85px; height: 85px; background: #ffffff; border-radius: 50%; position: relative; border: 4px solid #475569; cursor: pointer; }
+.spin-marker { width: 12px; height: 12px; background: #ef4444; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+
+.shop-buttons { display: flex; flex-direction: column; gap: 8px; }
+.shop-btn { background: #070b14; border: 1px solid #1e293b; color: #fff; padding: 12px; border-radius: 12px; font-size: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
+.shop-btn.active { border-color: var(--neon-emerald); background: rgba(16, 185, 129, 0.08); box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+
+.status-msg { font-size: 13px; font-weight: 700; color: #475569; text-align: center; min-height: 20px; }
+#toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; }
+.toast { background: #060a17; border: 2px solid var(--neon-cyan); color: #fff; padding: 12px 35px; border-radius: 14px; font-size: 13px; font-weight: 900; box-shadow: 0 0 25px rgba(6, 182, 212, 0.4); }
+</style>
 </head>
-<body class="text-gray-200 min-h-screen pb-12 select-none tracking-wide">
-
-    <header class="max-w-md mx-auto p-4 flex justify-between items-center border-b border-[#1a2032]">
-        <div class="flex items-center gap-3">
-            <button onclick="goBack()" class="bg-[#111520] hover:bg-[#1a2032] text-white w-9 h-9 rounded-xl flex justify-center items-center border border-[#1a2032] transition">
-                <i class="fas fa-arrow-right text-sm"></i>
-            </button>
-            <h1 class="text-base font-black">الإيداع</h1>
-        </div>
-        <div></div>
-    </header>
-
-    <main class="max-w-md mx-auto px-4 mt-5 space-y-4">
-
-        <div class="bg-[#111520] border border-[#1a2032] rounded-xl p-3.5 flex justify-between items-center text-xs">
-            <span class="text-gray-400 font-medium">هل تحتاج مساعدة؟</span>
-            <a href="mailto:support@8poolcash.com" class="text-[#ffaa00] font-bold font-mono hover:underline">support@8poolcash.com</a>
-        </div>
-
-        <div onclick="openBonusModal()" class="border border-[#ffaa00]/20 bg-[#111520] rounded-2xl p-4 flex justify-between items-center shadow-md cursor-pointer hover:border-[#ffaa00]/50 transition">
-            <div class="space-y-1">
-                <h4 class="text-xs font-black text-[#ffaa00]">عرض خاص — مكافأة الإيداع الثاني 🎉</h4>
-                <p class="text-gray-400 text-[11px] font-medium">عند إيداعك الثاني تحصل على <span class="text-white font-bold font-mono">100 DH</span> مجاناً 🎁</p>
-            </div>
-            <div class="w-9 h-9 rounded-xl bg-[#ffaa00]/10 flex justify-center items-center text-[#ffaa00] border border-[#ffaa00]/20 text-base">
-                <i class="fas fa-gift"></i>
-            </div>
-        </div>
-
-        <div class="flex border-b border-[#1a2032] text-center font-bold text-xs">
-            <button onclick="switchTab('deposit')" id="tab-deposit" class="flex-1 py-3 active-tab transition-all">إيداع</button>
-            <button onclick="switchTab('history')" id="tab-history" class="flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all">السجل</button>
-        </div>
-
-        <div id="deposit-section" class="space-y-4">
-
-            <div id="crypto-methods-main" class="space-y-4">
-                <div onclick="showCryptoStep1()" class="bank-card rounded-2xl p-4 flex justify-between items-center cursor-pointer">
-                    <div class="flex items-center gap-3">
-                        <div class="w-14 h-14 rounded-2xl bg-[#ffaa00]/10 text-[#ffaa00] border border-[#ffaa00]/20 flex justify-center items-center text-xl shadow-inner">
-                            <i class="fab fa-bitcoin"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xs font-bold text-gray-200">الدفع بالعملات الرقمية</h3>
-                            <p class="text-[10px] text-gray-500 mt-0.5">Bitcoin, USDT, ETH... متاح لكل الدول 🌍</p>
-                        </div>
-                    </div>
-                    <i class="fas fa-chevron-left text-[10px] text-gray-600"></i>
-                </div>
-
-                <p class="text-[11px] text-gray-500 text-center font-bold my-2">أو اختر بنك مغربي 🇲🇦</p>
-
-                <div class="grid grid-cols-2 gap-3">
-                    
-                    <div onclick="selectMethod('cih', 'CIH Bank')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-[#1a2032] group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/S7yJ3PD2/IMG-3730.png" alt="CIH Bank" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">CIH Bank</span>
-                    </div>
-
-                    <div onclick="selectMethod('attijari', 'Attijariwafa Bank')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-[#1a2032] group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/0ysK3ySQ/IMG-3731.png" alt="Attijariwafa Bank" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">التجاري وفا بنك</span>
-                    </div>
-
-                    <div onclick="selectMethod('lbankalik', 'L\'bankalik')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-[#1a2032] group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/tMR8tVky/IMG-3733.png" alt="L'bankalik" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">لبنك اليك</span>
-                    </div>
-
-                    <div onclick="selectMethod('albarid', 'Al Barid Bank')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-[#1a2032] group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/Jjy3FRRK/IMG-3980.webp" alt="Al Barid Bank" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">البريد بنك</span>
-                    </div>
-
-                    <div onclick="selectMethod('cashplus', 'Cash Plus')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-[#1a2032] group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/JFn2cfLM/IMG-3737.jpg" alt="Cash Plus" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">كاش بلوس</span>
-                    </div>
-
-                    <div onclick="selectMethod('bmce', 'BMCE Bank of Africa')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-[#1a2032] group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/LDWFNTWR/IMG-3736.png" alt="BMCE Bank of Africa" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">BMCE بنك أفريقيا</span>
-                    </div>
-
-                    <div onclick="selectMethod('chaabi', 'Chaabi Bank')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-[#1a2032] group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/S7xtn8Vk/IMG-3738.png" alt="Chaabi Bank" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">البنك الشعبي</span>
-                    </div>
-                </div>
-            </div>
-
-            <div id="crypto-step-1" class="hidden space-y-4">
-                <div onclick="hideCryptoSteps()" class="text-xs font-bold text-[#ffaa00] flex items-center gap-1 cursor-pointer hover:underline mb-2">
-                    <i class="fas fa-arrow-right text-[10px]"></i>
-                    <span>رجوع إلى البنوك</span>
-                </div>
-
-                <div class="bank-card rounded-2xl p-4 flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-[#ffaa00]/10 text-[#ffaa00] border border-[#ffaa00]/20 flex justify-center items-center text-lg">
-                            <i class="fas fa-wallet"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xs font-black text-gray-200">الإيداع بالعملات الرقمية</h3>
-                            <p class="text-[10px] text-gray-500 mt-0.5">الخطوة 1 من 3: المبلغ</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-right text-xs space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label class="text-gray-400 font-medium">المبلغ بالدولار ($1,000 - $20)</label>
-                    </div>
-                    <div class="relative flex items-center bg-[#111520] border border-[#1a2032] rounded-xl p-1 focus-within:border-[#ffaa00]">
-                        <span class="text-[#ffaa00] font-black font-mono px-3 text-sm">$</span>
-                        <input type="number" id="cryptoAmountInput" value="20" oninput="updateCryptoBonusText()" class="w-full p-2.5 bg-transparent text-white font-black text-left outline-none font-mono text-sm">
-                    </div>
-                    <p class="text-[11px] text-[#ffaa00] font-bold" id="cryptoBonusText">ستحصل على 200 رصيد</p>
-                </div>
-
-                <div class="grid grid-cols-4 gap-2">
-                    <button onclick="setCryptoAmount(20)" class="bg-[#111520] border border-[#1a2032] hover:border-[#ffaa00] focus:border-[#ffaa00] text-gray-300 font-black py-2.5 rounded-xl text-xs font-mono transition">$20</button>
-                    <button onclick="setCryptoAmount(50)" class="bg-[#111520] border border-[#1a2032] hover:border-[#ffaa00] focus:border-[#ffaa00] text-gray-300 font-black py-2.5 rounded-xl text-xs font-mono transition">$50</button>
-                    <button onclick="setCryptoAmount(100)" class="bg-[#111520] border border-[#1a2032] hover:border-[#ffaa00] focus:border-[#ffaa00] text-gray-300 font-black py-2.5 rounded-xl text-xs font-mono transition">$100</button>
-                    <button onclick="setCryptoAmount(500)" class="bg-[#111520] border border-[#1a2032] hover:border-[#ffaa00] focus:border-[#ffaa00] text-gray-300 font-black py-2.5 rounded-xl text-xs font-mono transition">$500</button>
-                </div>
-
-                <button onclick="showCryptoStep2()" class="w-full pool-yellow text-black font-black py-3.5 rounded-xl text-xs transition shadow-lg shadow-[#ffaa00]/5 flex justify-center items-center gap-1.5 active:scale-[0.99]">
-                    متابعة ← اختيار العملة
-                </button>
-            </div>
-
-            <div id="crypto-step-2" class="hidden space-y-4">
-                <div onclick="showCryptoStep1()" class="text-xs font-bold text-[#ffaa00] flex items-center gap-1 cursor-pointer hover:underline mb-2">
-                    <i class="fas fa-arrow-right text-[10px]"></i>
-                    <span id="cryptoBackToStep1Text">تغيير المبلغ ($20)</span>
-                </div>
-
-                <div class="bank-card rounded-2xl p-4 flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-[#ffaa00]/10 text-[#ffaa00] border border-[#ffaa00]/20 flex justify-center items-center text-lg">
-                            <i class="fas fa-coins"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xs font-black text-gray-200">الإيداع بالعملات الرقمية</h3>
-                            <p class="text-[10px] text-gray-500 mt-0.5">الخطوة 2 من 3: اختر العملة</p>
-                        </div>
-                    </div>
-                </div>
-
-                <p class="text-[11px] text-gray-400 font-medium text-right px-1">اختر العملة الرقمية للدفع</p>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div onclick="selectCryptoCurrency('USDT (TRC20)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ffaa00]">USDT</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">TRC20</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/hxshTnYD/IMG-4007.png" alt="USDT" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('BTC (Bitcoin)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ffaa00]">BTC</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">Bitcoin</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/tMHCD2p7/IMG-4006.png" alt="BTC" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('TRX (Tron)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ffaa00]">TRX</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">Tron</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/wZJ29Zvn/IMG-4005.png" alt="TRX" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('LTC (Litecoin)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ffaa00]">LTC</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">Litecoin</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/7d6PNpq9/IMG-4009.png" alt="LTC" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('BNB (BSC)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ffaa00]">BNB</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">BSC</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/S439n4VG/IMG-4010.png" alt="BNB" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('ETH (Ethereum)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ffaa00]">ETH</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">Ethereum</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/8km1Myr/IMG-4011.png" alt="ETH" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('TON (Toncoin)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ffaa00]">TON</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">Toncoin</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/PGVhrYn7/IMG-4012.png" alt="TON" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('SOL (Solana)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-[#ffaa00]">SOL</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">Solana</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-[#ffaa00]">
-                            <img src="https://i.ibb.co/tw4VQSJk/IMG-4013.png" alt="SOL" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-center text-[11px] text-gray-400 flex items-center justify-center gap-1 py-1">
-                    <span class="text-[#ffaa00]">💡</span>
-                    <span><strong class="text-[#ffaa00] font-mono">USDT TRC20</strong> هي الأرخص والأسرع</span>
-                </div>
-            </div>
-
-        </div>
-
-        <div id="paymentModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-end justify-center">
-            <div class="bg-[#111520] w-full max-w-md rounded-t-3xl border-t border-[#1a2032] p-5 space-y-4">
-                
-                <div class="flex justify-between items-center">
-                    <h3 class="text-xs font-bold text-gray-200">الدفع عبر: <span id="modalMethodName" class="text-[#ffaa00]"></span></h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-white text-base"><i class="fas fa-times"></i></button>
-                </div>
-
-                <div class="bg-[#0b0d14] p-4 rounded-xl border border-[#1a2032] text-xs space-y-2.5">
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">إسم المستلم:</span>
-                        <span class="font-bold text-white" id="adminName">أيوب العايدي</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-400" id="numberLabel">رقم الحساب / RIB:</span>
-                        <div class="flex items-center gap-2">
-                            <span class="font-mono font-bold text-[#ffaa00]" id="adminNumber">00000000000000</span>
-                            <button onclick="copyAdminInfo()" class="bg-[#1a2032] text-[10px] px-2.5 py-1 rounded-lg border border-[#252f4a] hover:bg-[#252f4a] text-white transition font-bold">نسخ</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-3 text-right text-xs">
-                    <div>
-                        <label class="block text-gray-400 mb-1.5 font-medium">المبلغ المراد شحنه (بالدرهم DH):</label>
-                        <input type="number" id="amountInput" placeholder="مثال: 150" class="w-full p-3 bg-[#0b0d14] border border-[#1a2032] rounded-xl text-white font-bold outline-none focus:border-[#ffaa00] font-mono">
-                    </div>
-                    <div>
-                        <label class="block text-gray-400 mb-1.5 font-medium">تحميل صورة وصل التحويل (Reçu):</label>
-                        <div class="relative w-full bg-[#0b0d14] border border-dashed border-[#1a2032] rounded-xl p-4 text-center cursor-pointer hover:border-[#ffaa00]/40 transition">
-                            <input type="file" id="receiptFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="fileUploaded()">
-                            <p id="uploadText" class="text-gray-500 font-medium"><i class="fas fa-cloud-upload-alt ml-1 text-sm"></i> اضغط لرفع صورة التوصيل</p>
-                            <p id="uploadSuccess" class="text-emerald-400 font-bold hidden"><i class="fas fa-check-circle ml-1"></i> تم إرفاق الوصل بنجاح</p>
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="sendDepositRequest()" id="submitBtn" class="w-full pool-yellow text-black font-black py-3.5 rounded-xl text-xs transition shadow-lg shadow-[#ffaa00]/5 active:scale-[0.99]">
-                    إرسال الطلب للمراجعة 🚀
-                </button>
-            </div>
-        </div>
-
-        <div id="bonusModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-            <div class="bg-[#111520] w-full max-w-sm rounded-3xl border border-[#1a2032] p-6 text-center space-y-5 relative shadow-2xl">
-                <button onclick="closeBonusModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white bg-[#0b0d14] w-8 h-8 rounded-full flex justify-center items-center border border-[#1a2032] text-sm transition">
-                    <i class="fas fa-times"></i>
-                </button>
-                
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-[#ffaa00]/10 text-[#ffaa00] border border-[#ffaa00]/20 flex justify-center items-center text-2xl shadow-lg shadow-[#ffaa00]/5 animate-pulse">
-                    <i class="fas fa-gift"></i>
-                </div>
-
-                <div class="space-y-2">
-                    <h3 class="text-sm font-black text-white flex items-center justify-center gap-1.5">
-                        <span>مكافأة الإيداع الثاني</span>
-                        <span>🎁</span>
-                    </h3>
-                    <p class="text-gray-400 text-xs leading-relaxed px-2">
-                        عند إيداعك الثاني ستحصل على مكافأة هدية مجانية تُضاف مباشرة إلى رصيدك
-                    </p>
-                </div>
-
-                <div class="bg-[#0b0d14] border border-dashed border-[#ffaa00]/30 rounded-2xl p-4 my-2">
-                    <span class="text-gray-500 text-[10px] block font-bold mb-1">مكافأتك</span>
-                    <span class="text-xl font-black text-[#ffaa00] font-mono tracking-wider">+ 100 DH</span>
-                    <span class="text-[11px] text-[#ffaa00] font-bold block mt-1">مجاناً 🎉</span>
-                </div>
-
-                <button onclick="closeBonusModal()" class="w-full pool-yellow text-black font-black py-3 rounded-xl text-xs transition shadow-lg shadow-[#ffaa00]/10 active:scale-[0.99]">
-                    فهمت — شكراً لك
-                </button>
-            </div>
-        </div>
-
-        <div id="history-section" class="hidden space-y-3">
-            <p class="text-xs text-gray-500 text-center py-6 font-medium" id="noHistoryText">لا توجد أي عمليات شحن سابقة حالياً.</p>
-            <div id="historyList" class="space-y-2"></div>
-        </div>
-
-    </main>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
-            authDomain: "poolcash-6692c.firebaseapp.com",
-            databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
-            projectId: "poolcash-6692c",
-            storageBucket: "poolcash-6692c.firebasestorage.app",
-            messagingSenderId: "866544389541",
-            appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        const currentUsername = localStorage.getItem('username') || "Ayoub_Player";
-
-        window.selectedBankId = "";
-        window.selectedBankName = "";
-
-        // دوال نظام العملات الرقمية الجديد المتناسق مع ألوان الموقع
-        window.showCryptoStep1 = function() {
-            document.getElementById('crypto-methods-main').classList.add('hidden');
-            document.getElementById('crypto-step-2').classList.add('hidden');
-            document.getElementById('crypto-step-1').classList.remove('hidden');
-            window.updateCryptoBonusText();
-        };
-
-        window.hideCryptoSteps = function() {
-            document.getElementById('crypto-step-1').classList.add('hidden');
-            document.getElementById('crypto-step-2').classList.add('hidden');
-            document.getElementById('crypto-methods-main').classList.remove('hidden');
-        };
-
-        window.setCryptoAmount = function(amount) {
-            document.getElementById('cryptoAmountInput').value = amount;
-            window.updateCryptoBonusText();
-        };
-
-        window.updateCryptoBonusText = function() {
-            const val = document.getElementById('cryptoAmountInput').value || 0;
-            const coins = val * 10;
-            document.getElementById('cryptoBonusText').innerText = `ستحصل على ${coins} رصيد`;
-        };
-
-        window.showCryptoStep2 = function() {
-            const amount = document.getElementById('cryptoAmountInput').value;
-            if(!amount || parseFloat(amount) <= 0) {
-                alert('الرجاء إدخال مبلغ صحيح بالدولار!');
-                return;
-            }
-            document.getElementById('cryptoBackToStep1Text').innerText = `تغيير المبلغ ($${amount})`;
-            document.getElementById('crypto-step-1').classList.add('hidden');
-            document.getElementById('crypto-step-2').classList.remove('hidden');
-        };
-
-        window.selectCryptoCurrency = function(cryptoName) {
-            const amountInDollars = document.getElementById('cryptoAmountInput').value;
-            // تحويل القيمة تقريبياً للدرهم للعرض في واجهة رفع الوصل القياسية
-            const amountInDh = parseFloat(amountInDollars) * 10; 
-            
-            document.getElementById('crypto-step-2').classList.add('hidden');
-            document.getElementById('crypto-methods-main').classList.remove('hidden');
-            
-            window.selectMethod('crypto', cryptoName);
-            document.getElementById('amountInput').value = amountInDh;
-        };
-
-        window.selectMethod = function(id, name) {
-            window.selectedBankId = id;
-            window.selectedBankName = name;
-            
-            document.getElementById('modalMethodName').innerText = name;
-            document.getElementById('paymentModal').classList.remove('hidden');
-
-            const nameEl = document.getElementById('adminName');
-            const labelEl = document.getElementById('numberLabel');
-            const numEl = document.getElementById('adminNumber');
-
-            if(id === 'cih') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "رقم الحساب (RIB):";
-                numEl.innerText = "230123456789012345678901"; 
-            } else if(id === 'attijari') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "حساب التجاري وفا:";
-                numEl.innerText = "00712345678901234567"; 
-            } else if(id === 'cashplus') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "رقم البطاقة الوطنية (CIN):";
-                numEl.innerText = "AB123456"; 
-            } else if(id === 'albarid') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "رقم حساب البريد بنك:";
-                numEl.innerText = "3501234567890123"; 
-            } else if(id === 'lbankalik') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "رقم حساب L'bankalik:";
-                numEl.innerText = "4401234567890123"; 
-            } else if(id === 'bmce') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "رقم حساب بنك أفريقيا:";
-                numEl.innerText = "1901234567890123"; 
-            } else if(id === 'chaabi') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "رقم حساب البنك الشعبي:";
-                numEl.innerText = "211112345678901234567890"; 
-            } else if(id === 'crypto') {
-                nameEl.innerText = "محفظة " + name;
-                labelEl.innerText = "عنوان المحفظة:";
-                numEl.innerText = "TY7xxxxxxxxxxxxxxxxxxxxxx"; 
-            }
-        };
-
-        window.closeModal = function() {
-            document.getElementById('paymentModal').classList.add('hidden');
-            document.getElementById('amountInput').value = "";
-            document.getElementById('receiptFile').value = "";
-            document.getElementById('uploadText').classList.remove('hidden');
-            document.getElementById('uploadSuccess').classList.add('hidden');
-        };
-
-        window.fileUploaded = function() {
-            document.getElementById('uploadText').classList.add('hidden');
-            document.getElementById('uploadSuccess').classList.remove('hidden');
-        };
-
-        window.sendDepositRequest = function() {
-            const amount = document.getElementById('amountInput').value.trim();
-            const fileInput = document.getElementById('receiptFile');
-
-            if(!amount || parseFloat(amount) <= 0) {
-                alert('الرجاء كتابة مبلغ شحن صحيح!');
-                return;
-            }
-            if(fileInput.files.length === 0) {
-                alert('من فضلك قم برفع صورة الوصل أولاً لتأكيد الدفع!');
-                return;
-            }
-
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerText = "جاري إرسال طلبك...";
-
-            const requestsRef = ref(db, 'deposit_requests');
-            const newRequestRef = push(requestsRef);
-
-            set(newRequestRef, {
-                username: currentUsername,
-                bankName: window.selectedBankName,
-                amount: parseFloat(amount),
-                status: "pending",
-                timestamp: Date.now()
-            }).then(() => {
-                alert('تم إرسال طلب الشحن بنجاح! سيتم التحقق من الوصل وتفعيل رصيدك خلال دقائق.');
-                window.closeModal();
-                window.switchTab('history'); 
-            }).catch((err) => {
-                alert('حدث خطأ: ' + err.message);
-                btn.disabled = false;
-                btn.innerText = "إرسال الطلب للمراجعة 🚀";
-            });
-        };
-
-        window.loadDepositHistory = async function() {
-            const requestsRef = ref(db, 'deposit_requests');
-            const snapshot = await get(requestsRef);
-            const listEl = document.getElementById('historyList');
-            listEl.innerHTML = "";
-            
-            let hasHistory = false;
-
-            if(snapshot.exists()) {
-                const data = snapshot.val();
-                for(let key in data) {
-                    if(data[key].username === currentUsername) {
-                        hasHistory = true;
-                        const req = data[key];
-                        
-                        let statusColor = "text-amber-400 bg-amber-500/5 border-amber-500/20";
-                        let statusText = "قيد الانتظار";
-                        if(req.status === "approved") {
-                            statusColor = "text-emerald-400 bg-emerald-500/5 border-emerald-500/20";
-                            statusText = "مقبول ✅";
-                        } else if(req.status === "rejected") {
-                            statusColor = "text-rose-400 bg-rose-500/5 border-rose-500/20";
-                            statusText = "مرفوض ❌";
-                        }
-
-                        const itemHtml = `
-                            <div class="bg-[#111520] border border-[#1a2032] p-4 rounded-xl flex justify-between items-center text-xs">
-                                <div class="space-y-1">
-                                    <p class="font-bold text-gray-200">${req.bankName}</p>
-                                    <p class="text-gray-500 font-mono">${new Date(req.timestamp).toLocaleString('ar-MA')}</p>
-                                </div>
-                                <div class="text-right space-y-1.5">
-                                    <p class="font-bold text-[#ffaa00] font-mono">${req.amount} DH</p>
-                                    <span class="inline-block px-2 py-0.5 border rounded text-[10px] ${statusColor}">${statusText}</span>
-                                </div>
-                            </div>
-                        `;
-                        listEl.insertAdjacentHTML('afterbegin', itemHtml);
-                    }
-                }
-            }
-
-            if(hasHistory) {
-                document.getElementById('noHistoryText').classList.add('hidden');
-            } else {
-                document.getElementById('noHistoryText').classList.remove('hidden');
-            }
-        };
-
-        window.switchTab = function(type) {
-            const depTab = document.getElementById('tab-deposit');
-            const hisTab = document.getElementById('tab-history');
-            const depSec = document.getElementById('deposit-section');
-            const hisSec = document.getElementById('history-section');
-
-            if(type === 'deposit') {
-                depTab.className = "flex-1 py-3 active-tab transition-all";
-                hisTab.className = "flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all";
-                depSec.classList.remove('hidden');
-                hisSec.classList.add('hidden');
-                window.hideCryptoSteps();
-            } else {
-                hisTab.className = "flex-1 py-3 active-tab transition-all";
-                depTab.className = "flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all";
-                hisSec.classList.remove('hidden');
-                depSec.classList.add('hidden');
-                window.loadDepositHistory(); 
-            }
-        };
-    </script>
-
-    <script>
-        function openBonusModal() {
-            document.getElementById('bonusModal').classList.remove('hidden');
-        }
-        function closeBonusModal() {
-            document.getElementById('bonusModal').classList.add('hidden');
-        }
-        function copyAdminInfo() {
-            const text = document.getElementById('adminNumber').innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('تم نسخ الرقم بنجاح! 📋');
-            });
-        }
-        function goBack() {
-            window.location.href = "ar.html";
-        }
-    </script>
+<body>
+
+<div id="toast-container"></div>
+
+<div class="main-wrapper">
+  <div class="game-container">
+    <div class="economy-bar">
+      <div class="solde-txt">SOLDE: <span id="solde-val">0 DH</span></div>
+      
+      <div class="bet-display-box">
+        <span class="bet-label">Mise Actuelle</span>
+        <span class="bet-value" id="current-bet-display">100 DH</span>
+      </div>
+    </div>
+
+    <div class="scoreboard">
+      <div class="player-card active" id="card-player">
+        <span class="player-name">Vous</span>
+        <span style="font-size:11px; color:#64748b;" id="player-target">Table Ouverte</span>
+        <div class="pocketed-balls-display" id="player-pockets"></div>
+      </div>
+      <div style="font-family:'Orbitron'; font-weight:900; color:#1e293b; font-size:18px;">VS</div>
+      <div class="player-card opp" id="card-opp">
+        <span class="player-name" id="opp-name-label">Lucas 🇫🇷</span>
+        <span style="font-size:11px; color:#64748b;" id="opp-target">Table Ouverte</span>
+        <div class="pocketed-balls-display" id="opp-pockets"></div>
+      </div>
+    </div>
+
+    <div class="arena-container">
+      <div class="power-slider-container">
+        <span style="font-size:9px; font-weight:bold; color:#ef4444;">MAX</span>
+        <svg width="20" height="320" style="background:#02040a; border-radius:6px;">
+          <rect id="power-fill" x="0" y="320" width="20" height="0" fill="url(#pGrad)"/>
+          <defs>
+            <linearGradient id="pGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stop-color="#10b981"/><stop offset="70%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#ef4444"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span style="font-size:9px; font-weight:bold; color:#10b981;">MIN</span>
+      </div>
+      
+      <div class="table-wrapper">
+        <canvas id="billiards-canvas" width="800" height="400"></canvas>
+      </div>
+    </div>
+
+    <div class="status-msg" id="game-status">Choisissez votre angle et tirez...</div>
+  </div>
+
+  <div class="side-panel">
+    <div class="panel-title">Elite Lounge</div>
+    <div class="leaderboard-list" id="leaderboard-list"></div>
+
+    <div class="spin-selector-container">
+      <span style="font-size:11px; font-weight:900; text-transform:uppercase; color:#94a3b8; font-family:'Orbitron';">Effet (Spin)</span>
+      <div class="spin-pad" id="spin-pad">
+        <div class="spin-marker" id="spin-marker"></div>
+      </div>
+    </div>
+
+    <div class="shop-buttons">
+      <div style="font-family:'Orbitron'; font-size:11px; color:#64748b; text-align:center; text-transform:uppercase;">Boutique Queues</div>
+      <button class="shop-btn active" id="cue-classic" onclick="buyCue('classic', 0)">
+        <span>Standard</span><span>Gratuit</span>
+      </button>
+      <button class="shop-btn" id="cue-cyber" onclick="buyCue('cyber', 200)">
+        <span>Cyber Laser ⚡</span><span>200 DH</span>
+      </button>
+      <button class="shop-btn" id="cue-gold" onclick="buyCue('gold', 500)">
+        <span>Or Impérial 👑</span><span>500 DH</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
+  authDomain: "poolcash-6692c.firebaseapp.com",
+  databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
+  projectId: "poolcash-6692c",
+  storageBucket: "poolcash-6692c.appspot.com",
+  messagingSenderId: "866544389541",
+  appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
+};
+firebase.initializeApp(firebaseConfig);
+
+let balanceRef;
+let userSolde = 0;
+
+function updateBalance(amount) {
+  const activeUser = localStorage.getItem('username') || "Ayoube";
+  if (activeUser) {
+    const dbRef = firebase.database().ref('users/' + activeUser + '/balance');
+    dbRef.transaction((current) => (current || 0) + amount);
+  }
+}
+
+function syncBalanceNode() {
+  const activeUser = localStorage.getItem('username') || "Ayoube";
+  if (balanceRef) balanceRef.off();
+  balanceRef = firebase.database().ref('users/' + activeUser + '/balance');
+  balanceRef.on('value', (snapshot) => {
+    userSolde = snapshot.val() || 0;
+    document.getElementById("solde-val").innerText = userSolde + " DH";
+    updateLeaderboardUI();
+  });
+}
+
+// تم إصلاح التكرار هنا: استدعاء loop() لمرة واحدة فقط لمنع التجميد وتسريع اللعبة بشكل جنوني
+firebase.auth().onAuthStateChanged((user) => {
+  syncBalanceNode();
+  initGame();
+});
+
+const canvas = document.getElementById("billiards-canvas");
+const ctx = canvas.getContext("2d");
+
+const FRICTION = 0.985; // تم تعديل الاحتكاك لتقف الكرات بسلاسة أكبر بدون تجميد
+const BALL_RADIUS = 11;
+const POCKET_RADIUS = 22;
+const TABLE_PADDING = 14;
+
+let currentBet = 100; 
+let cueStyle = "classic";
+let spinX = 0; let spinY = 0; 
+
+let balls = [];
+let cueBall = null;
+let gameState = "aiming"; 
+let currentTurn = "player";
+
+let isDraggingAim = false;
+let aimAngle = 0;
+let aimPower = 0;
+
+let tableAssigned = false;
+let playerGroup = null; 
+let oppGroup = null;
+let playerPocketed = [];
+let oppPocketed = [];
+
+let ballsPocketedThisTurn = [];
+let firstBallHitThisTurn = null;
+
+const pockets = [
+  { x: 14, y: 14 }, { x: 400, y: 10 }, { x: 786, y: 14 },
+  { x: 14, y: 386 }, { x: 400, y: 390 }, { x: 786, y: 386 }
+];
+
+const onlineOpponents = [
+  { name: "Lucas 🇫🇷", skill: 0.85 }, { name: "Karim 🇩🇿", skill: 0.90 }, { name: "Mehdi 🇹🇳", skill: 0.88 }
+];
+let currentOpponent = onlineOpponents[0];
+
+let leaderboardData = [
+  { name: "Youssef 🇲🇦", score: 1900 }, { name: "Vous", score: 0 },
+  { name: "Lucas 🇫🇷", score: 750 }, { name: "Karim 🇩🇿", score: 400 }
+];
+
+const AudioEngine = {
+  ctx: null,
+  init() {
+    if (!this.ctx) {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  },
+  playHit(volume) {
+    try {
+      this.init();
+      if (!this.ctx) return;
+      let vol = Math.min(1, Math.max(0.1, volume));
+      let osc = this.ctx.createOscillator();
+      let gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(120, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(vol * 0.6, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.08);
+    } catch(e){}
+  },
+  playBounce(volume) {
+    try {
+      this.init();
+      if (!this.ctx) return;
+      let vol = Math.min(1, Math.max(0.1, volume));
+      let osc = this.ctx.createOscillator();
+      let gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(75, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(vol * 0.4, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.1);
+    } catch(e){}
+  },
+  playPocket() {
+    try {
+      this.init();
+      if (!this.ctx) return;
+      let osc = this.ctx.createOscillator();
+      let gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(180, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(60, this.ctx.currentTime + 0.25);
+      gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.25);
+    } catch(e){}
+  }
+};
+
+function setExternalBet(amount) {
+  currentBet = parseInt(amount);
+  document.getElementById("current-bet-display").innerText = currentBet + " DH";
+}
+
+function showToast(msg) {
+  const container = document.getElementById("toast-container");
+  container.innerHTML = `<div class="toast">${msg}</div>`;
+  setTimeout(() => container.innerHTML = "", 2500);
+}
+
+function updateLeaderboardUI() {
+  let playerRow = leaderboardData.find(i => i.name === "Vous");
+  if(playerRow) playerRow.score = userSolde;
+  leaderboardData.sort((a,b) => b.score - a.score);
+  const container = document.getElementById("leaderboard-list");
+  container.innerHTML = "";
+  leaderboardData.forEach((item, index) => {
+    let isPlayer = item.name === "Vous";
+    container.innerHTML += `<div class="leaderboard-item ${isPlayer ? 'player-row' : ''}">
+      <span>#${index+1} ${item.name}</span><span>${item.score} DH</span>
+    </div>`;
+  });
+}
+
+function buyCue(style, price) {
+  if (cueStyle === style) return;
+  if (userSolde < price && style !== 'classic') { showToast("❌ Solde insuffisant !"); return; }
+  if (style !== 'classic' && cueStyle === 'classic') { 
+      updateBalance(-price);
+  }
+  cueStyle = style;
+  document.querySelectorAll('.shop-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`cue-${style}`).classList.add('active');
+  showToast("🔥 Queue équipée !");
+}
+
+class Ball {
+  constructor(x, y, color, number, type) {
+    this.x = x; this.y = y; this.vx = 0; this.vy = 0;
+    this.color = color; this.number = number; this.type = type;
+    this.isPocketed = false;
+    this.spinX = 0; this.spinY = 0;
+  }
+
+  update() {
+    if (this.isPocketed) return;
+
+    this.x += this.vx; this.y += this.vy;
+    this.vx *= FRICTION; this.vy *= FRICTION;
+
+    if (this.type === "cue") {
+      this.vx += this.spinX * 0.03; this.vy += this.spinY * 0.03;
+      this.spinX *= 0.95; this.spinY *= 0.95;
+    }
+
+    // تعديل العتبة لإنهاء الحركة بشكل حاسم ومنع بقاء الكرات في حركة لانهائية بقيم صغيرة جداً
+    if (Math.abs(this.vx) < 0.05) this.vx = 0;
+    if (Math.abs(this.vy) < 0.05) this.vy = 0;
+
+    const minX = TABLE_PADDING + BALL_RADIUS; const maxX = canvas.width - TABLE_PADDING - BALL_RADIUS;
+    const minY = TABLE_PADDING + BALL_RADIUS; const maxY = canvas.height - TABLE_PADDING - BALL_RADIUS;
+
+    let bounced = false;
+    if (this.x < minX) { this.x = minX; this.vx *= -1; bounced = true; }
+    if (this.x > maxX) { this.x = maxX; this.vx *= -1; bounced = true; }
+    if (this.y < minY) { this.y = minY; this.vy *= -1; bounced = true; }
+    if (this.y > maxY) { this.y = maxY; this.vy *= -1; bounced = true; }
+
+    if (bounced) {
+      let speed = Math.hypot(this.vx, this.vy);
+      AudioEngine.playBounce(speed / 10);
+    }
+
+    for (let pocket of pockets) {
+      let dist = Math.hypot(this.x - pocket.x, this.y - pocket.y);
+      if (dist < POCKET_RADIUS) {
+        this.isPocketed = true; this.vx = 0; this.vy = 0;
+        AudioEngine.playPocket();
+        onBallPocketed(this); break;
+      }
+    }
+  }
+
+  draw() {
+    if (this.isPocketed) return;
+    ctx.save();
+    let grad = ctx.createRadialGradient(this.x - BALL_RADIUS*0.3, this.y - BALL_RADIUS*0.3, 1, this.x, this.y, BALL_RADIUS);
+    grad.addColorStop(0, "#ffffff"); grad.addColorStop(0.3, this.color); grad.addColorStop(1, "#000000");
+    ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS, 0, Math.PI * 2);
+    ctx.fillStyle = grad; ctx.fill(); ctx.restore();
+
+    if (this.type === "striped") {
+      ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS, -Math.PI/3, Math.PI/3); ctx.lineTo(this.x, this.y); ctx.fillStyle = "rgba(255,255,255,0.25)"; ctx.fill(); ctx.restore();
+    }
+    if (this.type !== "cue") {
+      ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS*0.35, 0, Math.PI*2); ctx.fillStyle = "#fff"; ctx.fill();
+      ctx.font = "bold 8px Arial"; ctx.fillStyle = "#000"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(this.number, this.x, this.y); ctx.restore();
+    }
+  }
+}
+
+function initGame() {
+  balls = []; playerPocketed = []; oppPocketed = []; tableAssigned = false;
+  playerGroup = null; oppGroup = null;
+  document.getElementById("player-target").innerText = "Table Ouverte";
+  document.getElementById("opp-target").innerText = "Table Ouverte";
+
+  currentOpponent = onlineOpponents[Math.floor(Math.random() * onlineOpponents.length)];
+  document.getElementById("opp-name-label").innerText = currentOpponent.name;
+
+  cueBall = new Ball(220, 200, "#ffffff", 0, "cue"); balls.push(cueBall);
+
+  let startX = 530; let startY = 200;
+  let layout = [
+    { n: 1, c: "#fbbf24", t: "solid" },   { n: 9, c: "#fbbf24", t: "striped" },
+    { n: 2, c: "#2563eb", t: "solid" },   { n: 8, c: "#111111", t: "black" },
+    { n: 10, c: "#2563eb", t: "striped" }, { n: 3, c: "#dc2626", t: "solid" },
+    { n: 11, c: "#dc2626", t: "striped" }, { n: 4, c: "#7c3aed", t: "solid" },
+    { n: 12, c: "#7c3aed", t: "striped" }, { n: 5, c: "#ea580c", t: "solid" },
+    { n: 13, c: "#ea580c", t: "striped" }, { n: 6, c: "#16a34a", t: "solid" },
+    { n: 14, c: "#16a34a", t: "striped" }, { n: 7, c: "#9a3412", t: "solid" },
+    { n: 15, c: "#9a3412", t: "striped" }
+  ];
+
+  let idx = 0;
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j <= i; j++) {
+      let x = startX + i * (BALL_RADIUS * 1.74); let y = startY + (j - i / 2) * (BALL_RADIUS * 2.05);
+      if(layout[idx]) balls.push(new Ball(x, y, layout[idx].c, layout[idx].n, layout[idx].t));
+      idx++;
+    }
+  }
+  renderPocketsUI();
+  gameState = "aiming"; currentTurn = "player";
+}
+
+function renderPocketsUI() {
+  document.getElementById("player-pockets").innerHTML = playerPocketed.map(c => `<div class="pocketed-dot" style="background:${c}"></div>`).join('');
+  document.getElementById("opp-pockets").innerHTML = oppPocketed.map(c => `<div class="pocketed-dot" style="background:${c}"></div>`).join('');
+}
+
+function onBallPocketed(ball) {
+  if (ball.type === "cue") {
+    ballsPocketedThisTurn.push("cue");
+    setTimeout(() => { ball.isPocketed = false; ball.x = 220; ball.y = 200; ball.vx = 0; ball.vy = 0; }, 1200);
+  } else if (ball.type === "black") {
+    ballsPocketedThisTurn.push("black");
+    let currentGrp = currentTurn === "player" ? playerGroup : oppGroup;
+    let rem = balls.filter(b => !b.isPocketed && b.type === currentGrp);
+    
+    if (rem.length === 0) {
+      if(currentTurn === "player") { 
+        updateBalance(currentBet);
+        showToast(`🏆 ربحت: +${currentBet} DH`); 
+      } else { 
+        updateBalance(-currentBet);
+        showToast(`❌ خسرت: -${currentBet} DH`); 
+      }
+    } else {
+      if(currentTurn === "player") { 
+        updateBalance(-currentBet);
+        showToast("❌ خسارة! السوداء دخلت مبكراً."); 
+      } else { 
+        updateBalance(currentBet);
+        showToast("🏆 ربحت! الخصم أخطأ."); 
+      }
+    }
+    setTimeout(initGame, 3000);
+  } else {
+    ballsPocketedThisTurn.push(ball);
+    if (currentTurn === "player") playerPocketed.push(ball.color); else oppPocketed.push(ball.color);
+    renderPocketsUI();
+  }
+}
+
+function resolveCollisions() {
+  for (let i = 0; i < balls.length; i++) {
+    for (let j = i + 1; j < balls.length; j++) {
+      let b1 = balls[i]; let b2 = balls[j];
+      if (b1.isPocketed || b2.isPocketed) continue;
+
+      let dx = b2.x - b1.x; let dy = b2.y - b1.y;
+      let dist = Math.hypot(dx, dy);
+
+      if (dist < BALL_RADIUS * 2) {
+        if (dist === 0) continue;
+
+        if (b1.type === "cue" && !firstBallHitThisTurn) firstBallHitThisTurn = b2;
+        if (b2.type === "cue" && !firstBallHitThisTurn) firstBallHitThisTurn = b1;
+
+        let overlap = (BALL_RADIUS * 2) - dist;
+        let nx = dx / dist; let ny = dy / dist;
+        b1.x -= nx * overlap * 0.5; b1.y -= ny * overlap * 0.5;
+        b2.x += nx * overlap * 0.5; b2.y += ny * overlap * 0.5;
+
+        let kx = b1.vx - b2.vx; let ky = b1.vy - b2.vy;
+        let p = 2 * (nx * kx + ny * ky) / 2;
+        
+        b1.vx -= p * nx; b1.vy -= p * ny;
+        b2.vx += p * nx; b2.vy += p * ny;
+
+        let strikeSpeed = Math.hypot(b1.vx - b2.vx, b1.vy - b2.vy);
+        AudioEngine.playHit(strikeSpeed / 8);
+      }
+    }
+  }
+}
+
+function executeOpponentLogic() {
+  gameState = "opp_thinking";
+  document.getElementById("game-status").innerText = `${currentOpponent.name} joue...`;
+
+  setTimeout(() => {
+    let targetGrp = oppGroup || "solid";
+    let targets = balls.filter(b => !b.isPocketed && b.type === targetGrp);
+    if(targets.length === 0) targets = balls.filter(b => !b.isPocketed && b.type === "black");
+
+    let bestShot = null; let bestScore = -Infinity;
+    for (let ball of targets) {
+      for (let pocket of pockets) {
+        let angleToPocket = Math.atan2(pocket.y - ball.y, pocket.x - ball.x);
+        let ghostX = ball.x - Math.cos(angleToPocket) * (BALL_RADIUS * 2);
+        let ghostY = ball.y - Math.sin(angleToPocket) * (BALL_RADIUS * 2);
+        let angleCue = Math.atan2(ghostY - cueBall.y, ghostX - cueBall.x);
+        let dist = Math.hypot(ghostX - cueBall.x, ghostY - cueBall.y);
+        let score = 800 - dist;
+        if (score > bestScore) { bestScore = score; bestShot = { angle: angleCue, power: Math.min(12, Math.max(5, dist / 15)) }; }
+      }
+    }
+
+    if (bestShot) {
+      AudioEngine.playHit(bestShot.power / 10);
+      cueBall.vx = Math.cos(bestShot.angle) * bestShot.power;
+      cueBall.vy = Math.sin(bestShot.angle) * bestShot.power;
+      gameState = "moving";
+    } else {
+      switchTurn();
+    }
+  }, 1200);
+}
+
+function judgeTurnOutcome() {
+  let nextTurn = currentTurn; 
+  let currentGroup = currentTurn === "player" ? playerGroup : oppGroup;
+
+  if (!tableAssigned && ballsPocketedThisTurn.length > 0 && !ballsPocketedThisTurn.includes("cue")) {
+    let firstPocketed = ballsPocketedThisTurn.find(b => b !== "cue" && b !== "black");
+    if (firstPocketed) {
+      tableAssigned = true;
+      if (currentTurn === "player") {
+        playerGroup = firstPocketed.type;
+        oppGroup = firstPocketed.type === "solid" ? "striped" : "solid";
+      } else {
+        oppGroup = firstPocketed.type;
+        playerGroup = firstPocketed.type === "solid" ? "striped" : "solid";
+      }
+      document.getElementById("player-target").innerText = playerGroup === "solid" ? "Pleines (ملساء)" : "Rayées (خطوط)";
+      document.getElementById("opp-target").innerText = oppGroup === "solid" ? "Pleines (ملساء)" : "Rayées (خطوط)";
+      showToast(`🎯 Groupes définis ! Vous jouez les ${playerGroup === "solid" ? "Pleines" : "Rayées"}`);
+      nextTurn = currentTurn; 
+    }
+  } 
+  else if (tableAssigned) {
+    let hitOwnBallFirst = firstBallHitThisTurn && firstBallHitThisTurn.type === currentGroup;
+    let pocketedOwnBall = ballsPocketedThisTurn.some(b => b.type === currentGroup);
+    let pocketedOppBall = ballsPocketedThisTurn.some(b => b.type === (currentGroup === "solid" ? "striped" : "solid"));
+
+    if (hitOwnBallFirst && pocketedOwnBall && !pocketedOppBall && !ballsPocketedThisTurn.includes("cue")) {
+      showToast("⚡ Bien joué ! Rejouez.");
+      nextTurn = currentTurn; 
+    } else {
+      if (pocketedOppBall) showToast("⚠️ Bille adverse empochée ! Changement de tour.");
+      else if (ballsPocketedThisTurn.includes("cue")) showToast("❌ Faute blanche ! Tour adverse.");
+      else showToast("Changement de tour.");
+      
+      nextTurn = currentTurn === "player" ? "opp" : "player"; 
+    }
+  } else {
+    nextTurn = currentTurn === "player" ? "opp" : "player";
+  }
+
+  ballsPocketedThisTurn = [];
+  firstBallHitThisTurn = null;
+
+  currentTurn = nextTurn;
+  document.getElementById("card-player").classList.toggle("active", currentTurn === "player");
+  document.getElementById("card-opp").classList.toggle("active", currentTurn === "opp");
+
+  if (currentTurn === "opp") executeOpponentLogic();
+  else { gameState = "aiming"; document.getElementById("game-status").innerText = "À votre tour !"; }
+}
+
+function switchTurn() {
+  if (balls.some(b => b.vx !== 0 || b.vy !== 0)) return;
+  judgeTurnOutcome();
+}
+
+function drawGuidelines() {
+  if (gameState !== "aiming" || currentTurn !== "player") return;
+  ctx.save();
+  let maxGuideLen = cueStyle === "gold" ? 500 : (cueStyle === "cyber" ? 300 : 140);
+  let endX = cueBall.x + Math.cos(aimAngle) * maxGuideLen;
+  let endY = cueBall.y + Math.sin(aimAngle) * maxGuideLen;
+  let closestBall = null; let closestDist = maxGuideLen;
+
+  for (let ball of balls) {
+    if (ball.type === "cue" || ball.isPocketed) continue;
+    let A = endY - cueBall.y; let B = cueBall.x - endX; let C = endX * cueBall.y - cueBall.x * endY;
+    let distToLine = Math.abs(A * ball.x + B * ball.y + C) / (Math.hypot(A, B) || 1);
+    if (distToLine < BALL_RADIUS * 2) {
+      let dist = Math.hypot(ball.x - cueBall.x, ball.y - cueBall.y);
+      let dot = (ball.x - cueBall.x) * Math.cos(aimAngle) + (ball.y - cueBall.y) * Math.sin(aimAngle);
+      if (dot > 0 && dist < closestDist) { closestDist = dist; closestBall = ball; }
+    }
+  }
+
+  let finalTargetX = cueBall.x + Math.cos(aimAngle) * closestDist;
+  let finalTargetY = cueBall.y + Math.sin(aimAngle) * closestDist;
+
+  ctx.beginPath(); ctx.setLineDash([4, 3]);
+  ctx.moveTo(cueBall.x, cueBall.y); ctx.lineTo(finalTargetX, finalTargetY);
+  ctx.strokeStyle = "rgba(6, 182, 212, 0.6)"; ctx.lineWidth = 1.5; ctx.stroke();
+
+  if (closestBall) {
+    ctx.beginPath(); ctx.arc(finalTargetX, finalTargetY, BALL_RADIUS, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.setLineDash([]); ctx.stroke();
+
+    let ballAngle = Math.atan2(closestBall.y - finalTargetY, closestBall.x - finalTargetX);
+    ctx.beginPath(); ctx.moveTo(closestBall.x, closestBall.y);
+    ctx.lineTo(closestBall.x + Math.cos(ballAngle) * 60, closestBall.y + Math.sin(ballAngle) * 60);
+    ctx.strokeStyle = "var(--accent-gold)"; ctx.lineWidth = 2; ctx.stroke();
+  }
+
+  let cueDist = BALL_RADIUS + 8 + (aimPower * 0.15);
+  let cX = cueBall.x - Math.cos(aimAngle) * cueDist; let cY = cueBall.y - Math.sin(aimAngle) * cueDist;
+  let eX = cueBall.x - Math.cos(aimAngle) * (cueDist + 160); let eY = cueBall.y - Math.sin(aimAngle) * (cueDist + 170);
+
+  ctx.beginPath();
+  ctx.strokeStyle = cueStyle === "gold" ? "var(--accent-gold)" : (cueStyle === "cyber" ? "var(--neon-cyan)" : "#522e1b");
+  ctx.lineWidth = 5; ctx.lineCap = "round"; ctx.moveTo(cX, cY); ctx.lineTo(eX, eY); strokeStyle = ctx.stroke();
+  ctx.restore();
+}
+
+// تم عزل وتحسين ميكانيكية الـ Touch والموس لمنع التداخل والتجمد أثناء السحب والإفلات
+canvas.addEventListener("mousedown", (e) => { 
+  AudioEngine.init(); 
+  if (gameState !== "aiming" || currentTurn !== "player") return; 
+  isDraggingAim = true; handleAimMove(e); 
+});
+window.addEventListener("mousemove", (e) => { if (isDraggingAim) handleAimMove(e); });
+window.addEventListener("mouseup", () => { if (isDraggingAim) { isDraggingAim = false; launchBall(); } });
+
+canvas.addEventListener("touchstart", (e) => { 
+  AudioEngine.init(); 
+  if (gameState !== "aiming" || currentTurn !== "player") return; 
+  isDraggingAim = true; 
+  handleAimMove(e.touches[0]); 
+}, {passive:true});
+window.addEventListener("touchmove", (e) => { if (isDraggingAim) handleAimMove(e.touches[0]); }, {passive:true});
+window.addEventListener("touchend", () => { if (isDraggingAim) { isDraggingAim = false; launchBall(); } });
+
+function handleAimMove(e) {
+  let r = canvas.getBoundingClientRect();
+  let x = (e.clientX - r.left) * (canvas.width / r.width);
+  let y = (e.clientY - r.top) * (canvas.height / r.height);
+  aimAngle = Math.atan2(y - cueBall.y, x - cueBall.x);
+  let d = Math.hypot(x - cueBall.x, y - cueBall.y);
+  aimPower = Math.min(100, Math.max(10, d * 0.6));
+
+  let fillH = (aimPower / 100) * 320;
+  let powerFillEl = document.getElementById("power-fill");
+  if(powerFillEl) {
+    powerFillEl.setAttribute("y", 320 - fillH);
+    powerFillEl.setAttribute("height", fillH);
+  }
+}
+
+function launchBall() {
+  if (aimPower < 12) return;
+  AudioEngine.playHit(aimPower / 100);
+  cueBall.vx = Math.cos(aimAngle) * (aimPower * 0.15); cueBall.vy = Math.sin(aimAngle) * (aimPower * 0.15);
+  cueBall.spinX = spinX * 3; cueBall.spinY = spinY * 3;
+  gameState = "moving";
+}
+
+const pad = document.getElementById("spin-pad");
+const marker = document.getElementById("spin-marker");
+function updateSpin(e) {
+  let r = pad.getBoundingClientRect();
+  let cx = r.left + r.width/2; let cy = r.top + r.height/2;
+  let dx = e.clientX - cx; let dy = e.clientY - cy;
+  let dist = Math.hypot(dx, dy); let maxR = r.width / 2 - 8;
+  if (dist > maxR) { dx = (dx / dist) * maxR; dy = (dy / dist) * maxR; }
+  marker.style.left = `calc(50% + ${dx}px)`; marker.style.top = `calc(50% + ${dy}px)`;
+  spinX = dx / maxR; spinY = dy / maxR;
+}
+pad.addEventListener("mousedown", (e) => {
+  AudioEngine.init();
+  let move = (ev) => updateSpin(ev);
+  window.addEventListener("mousemove", move);
+  window.addEventListener("mouseup", () => window.removeEventListener("mousemove", move), {once:true});
+});
+
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "rgba(0,0,0,0.2)"; ctx.fillRect(TABLE_PADDING, TABLE_PADDING, canvas.width-(TABLE_PADDING*2), canvas.height-(TABLE_PADDING*2));
+
+  ctx.fillStyle = "#030408";
+  for(let p of pockets) { ctx.beginPath(); ctx.arc(p.x, p.y, POCKET_RADIUS, 0, Math.PI*2); ctx.fill(); }
+
+  let anyMoving = false;
+  for (let ball of balls) {
+    if(!ball.isPocketed) {
+      ctx.save(); ctx.beginPath(); ctx.arc(ball.x+2, ball.y+3, BALL_RADIUS, 0, Math.PI*2); ctx.fillStyle = "rgba(0,0,0,0.4)"; ctx.fill(); ctx.restore();
+    }
+    ball.update(); ball.draw();
+    if(Math.abs(ball.vx) > 0 || Math.abs(ball.vy) > 0) anyMoving = true;
+  }
+
+  resolveCollisions(); drawGuidelines();
+  if(gameState === "moving" && !anyMoving) switchTurn();
+  requestAnimationFrame(loop);
+}
+
+// تشغيل الـ Loop الأساسي هنا مرة واحدة بشكل مستقل ونظيف تماماً
+initGame(); 
+loop();
+</script>
 </body>
 </html>
