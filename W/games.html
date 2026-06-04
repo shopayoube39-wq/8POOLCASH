@@ -293,6 +293,25 @@
                 </div>
             </div>
 
+            <div class="game-card card-roulette" onclick="playGame('roulette')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#f59e0b" stroke-width="4"/>
+                        <circle cx="50" cy="50" r="8" fill="#f59e0b"/>
+                        <line x1="50" y1="10" x2="50" y2="25" stroke="#f59e0b" stroke-width="3"/>
+                        <line x1="50" y1="75" x2="50" y2="90" stroke="#f59e0b" stroke-width="3"/>
+                        <line x1="10" y1="50" x2="25" y2="50" stroke="#f59e0b" stroke-width="3"/>
+                        <line x1="75" y1="50" x2="90" y2="50" stroke="#f59e0b" stroke-width="3"/>
+                    </svg>
+                </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-roulette">CASINO PREMIUM</span>
+                    <h3 class="game-title">Roulette Royale</h3>
+                    <p class="game-desc" id="desc-roulette">راهن على الأرقام أو الألوان، اختبر حظك في عجلة الروليت الملكية واربح مضاعفات كبيرة.</p>
+                    <button class="btn-play" id="btn-roulette">إبدأ اللعب</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -324,7 +343,9 @@
                 chickenTag: "VIP • موصى به",
                 chickenDesc: "ارفع أغطية الأطباق بحذر، اعثر على الدجاج وتجنب العظام لمضاعفة رصيدك فوراً.",
                 billiardsTag: "بطولات لايف",
-                billiardsDesc: "أظهر مهاراتك الفائقة في توجيه الكرات، وسجل ضربات احترافية لربح الجولة فوراً."
+                billiardsDesc: "أظهر مهاراتك الفائقة في توجيه الكرات، وسجل ضربات احترافية لربح الجولة فوراً.",
+                rouletteTag: "CASINO PREMIUM",
+                rouletteDesc: "راهن على الأرقام أو الألوان، اختبر حظك في عجلة الروليت الملكية واربح مضاعفات كبيرة."
             },
             fr: {
                 title: "Jeux Principaux",
@@ -333,7 +354,9 @@
                 chickenTag: "VIP • Recommandé",
                 chickenDesc: "Soulevez les cloches avec soin, trouvez les poulets et évitez les os pour multiplier votre solde.",
                 billiardsTag: "Tournois Live",
-                billiardsDesc: "Montrez vos compétences de visée et réussissez des coups pros pour gagner instantanément."
+                billiardsDesc: "Montrez vos compétences de visée et réussissez des coups pros pour gagner instantanément.",
+                rouletteTag: "CASINO PREMIUM",
+                rouletteDesc: "Pariez sur des chiffres ou des couleurs, testez votre chance sur la roulette royale et gagnez gros."
             }
         };
 
@@ -353,6 +376,9 @@
                 document.getElementById('tag-billiards').innerText = translations.fr.billiardsTag;
                 document.getElementById('desc-billiards').innerText = translations.fr.billiardsDesc;
                 document.getElementById('btn-billiards').innerText = translations.fr.btnPlay;
+                document.getElementById('tag-roulette').innerText = translations.fr.rouletteTag;
+                document.getElementById('desc-roulette').innerText = translations.fr.rouletteDesc;
+                document.getElementById('btn-roulette').innerText = translations.fr.btnPlay;
             } else {
                 currentLang = 'ar';
                 htmlEl.setAttribute('lang', 'ar');
@@ -366,6 +392,9 @@
                 document.getElementById('tag-billiards').innerText = translations.ar.billiardsTag;
                 document.getElementById('desc-billiards').innerText = translations.ar.billiardsDesc;
                 document.getElementById('btn-billiards').innerText = translations.ar.btnPlay;
+                document.getElementById('tag-roulette').innerText = translations.ar.rouletteTag;
+                document.getElementById('desc-roulette').innerText = translations.ar.rouletteDesc;
+                document.getElementById('btn-roulette').innerText = translations.ar.btnPlay;
             }
         }
 
@@ -393,6 +422,8 @@
                 window.location.href = 'Chicken.html';
             } else if (game === 'billiards') {
                 window.location.href = '8POOL.html'; 
+            } else if (game === 'roulette') {
+                window.location.href = 'Roulette.html'; 
             }
         }
 
