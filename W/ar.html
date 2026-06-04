@@ -273,13 +273,11 @@
       let globalUserBalance = 0; 
       let currentUsername = "Ayoube"; 
 
-      // دالة التوجيه لصفحة الإيداع مع الاحتفاظ بالممستخدم الحالي
       function goToDeposit() {
           localStorage.setItem('username', currentUsername);
           window.location.href = 'deposit.html';
       }
 
-      // دالة التوجيه لصفحة السحب مع الاحتفاظ بالمستخدم الحالي
       function goToWithdraw() {
           localStorage.setItem('username', currentUsername);
           window.location.href = 'withdraw.html';
@@ -326,7 +324,16 @@
               alert(`عذراً، رصيدك الحالي (${globalUserBalance} DH) غير كافي! يرجى الشحن.`);
           } else {
               localStorage.setItem('pendingBet', requiredAmount);
-              window.location.href = 'games.html';
+              
+              // سحب قيمة الرهان مباشرة من الـ Firebase عند الضغط على زر اللعب
+              const nextBalance = globalUserBalance - requiredAmount;
+              database.ref('users/' + currentUsername).update({
+                  balance: nextBalance
+              }).then(() => {
+                  window.location.href = 'games.html';
+              }).catch((err) => {
+                  console.error("Error updating bet balance: ", err);
+              });
           }
       }
 
