@@ -154,10 +154,9 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        .game-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .game-preview svg {
+            width: 90px;
+            height: 90px;
         }
 
         .game-info {
@@ -207,10 +206,34 @@
         }
 
         .game-card:hover .btn-play {
-            background: linear-gradient(135deg, #ff1e27 0%, #d97706 100%);
+            background: linear-gradient(135deg, #ff1e27 0%, #d97706 100%); /* تنويه بسيط متناسق */
             filter: brightness(1.1);
             box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
             color: #ffffff;
+        }
+
+        @keyframes chicken-move {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.08) rotate(-5deg); }
+        }
+        .card-chicken:hover svg {
+            animation: chicken-move 0.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes cue-hit {
+            0% { transform: translateX(0); }
+            30% { transform: translateX(-10px); }
+            100% { transform: translateX(15px); }
+        }
+        @keyframes white-ball {
+            0%, 30% { transform: translateX(0); }
+            100% { transform: translateX(40px); opacity: 0.8; }
+        }
+        .card-billiards:hover .cue-stick {
+            animation: cue-hit 0.8s infinite alternate ease-in-out;
+        }
+        .card-billiards:hover .white-ball {
+            animation: white-ball 0.8s infinite alternate ease-in-out;
         }
     </style>
 </head>
@@ -237,7 +260,13 @@
 
             <div class="game-card card-chicken" onclick="playGame('chicken')">
                 <div class="game-preview">
-                    <img src="https://i.ibb.co/gbqtWvz9/6753-D2-AB-5759-41-C9-97-FE-B02-C51510-A36.png" alt="Chicken Adventure">
+                    <svg viewBox="0 0 64 64">
+                        <circle cx="32" cy="32" r="28" fill="#141414" stroke="#f59e0b" stroke-width="2"/>
+                        <path d="M22 40 C22 25, 42 25, 42 40 Z" fill="#ffffff"/>
+                        <circle cx="36" cy="30" r="3" fill="#000"/>
+                        <polygon points="42,30 48,33 42,36" fill="#f59e0b"/>
+                        <path d="M28 25 Q 32 18, 36 25" fill="none" stroke="#f59e0b" stroke-width="3"/>
+                    </svg>
                 </div>
                 <div class="game-info">
                     <span class="game-tag" id="tag-chicken">VIP • موصى به</span>
@@ -249,7 +278,12 @@
 
             <div class="game-card card-billiards" onclick="playGame('billiards')">
                 <div class="game-preview">
-                    <img src="https://i.ibb.co/gbqtWvz9/6753-D2-AB-5759-41-C9-97-FE-B02-C51510-A36.png" alt="Billiards 2D Pro">
+                    <svg viewBox="0 0 100 100">
+                        <rect x="10" y="25" width="80" height="50" rx="4" fill="#1a1a1a" stroke="#222" stroke-width="2"/>
+                        <circle cx="65" cy="50" r="6" fill="#f59e0b"/>
+                        <circle class="white-ball" cx="40" cy="50" r="6" fill="#ffffff"/>
+                        <line class="cue-stick" x1="15" y1="50" x2="32" y2="50" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
                 </div>
                 <div class="game-info">
                     <span class="game-tag" id="tag-billiards">بطولات لايف</span>
