@@ -321,10 +321,11 @@
 
         </div>
 
-        <div id="cashplus-alert-modal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
-            <div class="bg-[#111520] w-full max-w-sm rounded-3xl border border-[#ffaa00]/30 p-6 space-y-4">
+        <div id="cashplus-alert-modal" class="hidden fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4">
+            <div class="bg-[#111520] w-full max-w-sm rounded-3xl border border-[#ffaa00]/30 p-6 space-y-4 shadow-2xl">
                 <div class="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl text-center">
                     <i class="fas fa-exclamation-triangle text-yellow-500 text-3xl mb-3"></i>
+                    <h3 class="text-white font-black mb-2">تنبيه مهم ⚠️</h3>
                     <p class="text-xs text-gray-300 leading-relaxed font-bold">
                         يرجى إرسال المال باستخدام هذا الخيار فقط<br>
                         في تطبيق CashPlus اختر: <span class="text-yellow-500">"Envoi d'argent vers un mobile"</span> ثم <span class="text-yellow-500">"Confrère"</span> فقط.<br>
@@ -332,7 +333,7 @@
                     </p>
                     <img src="https://i.ibb.co/xtjrh5hd/IMG-4400.jpg" alt="تنبيه" class="mt-4 rounded-lg border border-yellow-500/20 w-full">
                 </div>
-                <button onclick="proceedToCashPlus()" class="w-full pool-yellow text-black font-black py-3.5 rounded-xl text-xs transition active:scale-[0.99]">
+                <button onclick="closeCashPlusAlert()" class="w-full pool-yellow text-black font-black py-3.5 rounded-xl text-xs transition active:scale-[0.99]">
                     فهمت — متابعة الإيداع
                 </button>
             </div>
@@ -491,8 +492,8 @@
         window.showCashPlusAlert = function() {
             document.getElementById('cashplus-alert-modal').classList.remove('hidden');
         };
-
-        window.proceedToCashPlus = function() {
+        
+        window.closeCashPlusAlert = function() {
             document.getElementById('cashplus-alert-modal').classList.add('hidden');
             window.selectMethod('cashplus', 'Cash Plus');
         };
