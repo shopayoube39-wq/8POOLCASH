@@ -6,15 +6,16 @@
     <title>VIP PLAY | Dashboard</title>
     <style>
         :root {
-            --bg-main: #0a0a0a; /* أسود فخم */
-            --bg-card: #141414; /* كروت سوداء مغايرة */
-            --accent-red: #ff1e27; /* أحمر ناري */
-            --accent-red-hover: #d6121a;
-            --text-white: #ffffff; /* أبيض ناصع */
-            --text-muted: #a0a0a0;
-            --gold: #d4af37; /* ذهبي ملكي للرصيد */
-            --gold-glow: rgba(212, 175, 55, 0.2);
-            --border-color: #222222;
+            /* الألوان متطابقة تماماً مع منصة 8POOLCASH في image.png */
+            --bg-main: #08090c; 
+            --bg-gradient: radial-gradient(circle at 50% 0%, #121620 0%, #08090c 80%);
+            --bg-card: linear-gradient(145deg, rgba(18, 22, 32, 0.85) 0%, rgba(11, 14, 20, 0.95) 100%);
+            --accent-gold: #f59e0b; /* الأصفر الذهبي الرسمي للمنصة */
+            --accent-gold-hover: #d97706;
+            --text-white: #ffffff;
+            --text-muted: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --gold-glow: rgba(245, 158, 11, 0.25);
         }
 
         * {
@@ -27,7 +28,8 @@
         }
 
         body {
-            background-color: var(--bg-main);
+            background: var(--bg-main);
+            background-image: var(--bg-gradient);
             color: var(--text-white);
             overflow-x: hidden;
             min-height: 100vh;
@@ -38,12 +40,13 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 4%;
-            background: #000000;
-            border-bottom: 2px solid var(--accent-red);
+            background: #0b0e14;
+            border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 20px rgba(255, 30, 39, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
 
         .logo-area {
@@ -53,10 +56,11 @@
             font-size: 22px;
             font-weight: 900;
             letter-spacing: 1px;
+            font-style: italic;
         }
 
         .logo-area span {
-            color: var(--accent-red);
+            color: var(--accent-gold);
         }
 
         .right-section {
@@ -66,7 +70,7 @@
         }
 
         .lang-btn {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-color);
             color: var(--text-white);
             padding: 6px 14px;
@@ -77,19 +81,18 @@
         }
 
         .lang-btn:hover {
-            border-color: var(--gold);
-            color: var(--gold);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
         }
 
-        /* الرصيد أرقام نقية تماماً بدون رموز */
         .balance-container {
             background: #111111;
-            border: 1px solid var(--gold);
+            border: 1px solid var(--accent-gold);
             padding: 8px 18px;
             border-radius: 8px;
             font-weight: 800;
             font-size: 18px;
-            color: var(--gold);
+            color: var(--accent-gold);
             box-shadow: 0 0 10px var(--gold-glow);
         }
 
@@ -101,13 +104,13 @@
 
         .section-header {
             margin-bottom: 40px;
-            border-right: 4px solid var(--accent-red);
+            border-right: 4px solid var(--accent-gold);
             padding-right: 15px;
         }
         
         html[dir="ltr"] .section-header {
             border-right: none;
-            border-left: 4px solid var(--accent-red);
+            border-left: 4px solid var(--accent-gold);
             padding-left: 15px;
         }
 
@@ -124,23 +127,25 @@
 
         .game-card {
             background: var(--bg-card);
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
             position: relative;
             border: 1px solid var(--border-color);
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
 
         .game-card:hover {
             transform: translateY(-8px);
-            border-color: var(--accent-red);
-            box-shadow: 0 15px 30px rgba(255, 30, 39, 0.15);
+            border-color: rgba(245, 158, 11, 0.4);
+            box-shadow: 0 15px 30px rgba(245, 158, 11, 0.15);
         }
 
         .game-preview {
             height: 180px;
-            background: #181818;
+            background: rgba(0, 0, 0, 0.2);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -162,13 +167,13 @@
             font-size: 11px;
             font-weight: bold;
             text-transform: uppercase;
-            background: rgba(214, 175, 55, 0.1);
-            color: var(--gold);
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-gold);
             padding: 4px 10px;
             border-radius: 4px;
             display: inline-block;
             margin-bottom: 12px;
-            border: 1px solid rgba(214, 175, 55, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.2);
         }
 
         .game-title {
@@ -188,23 +193,25 @@
 
         .btn-play {
             width: 100%;
-            background: var(--accent-red);
-            color: var(--text-white);
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #08090c;
             border: none;
             padding: 14px;
-            border-radius: 6px;
-            font-weight: bold;
+            border-radius: 12px;
+            font-weight: 900;
             font-size: 16px;
             cursor: pointer;
             text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.2);
         }
 
         .game-card:hover .btn-play {
-            background: var(--accent-red-hover);
-            box-shadow: 0 0 15px rgba(255, 30, 39, 0.4);
+            background: linear-gradient(135deg, #ff1e27 0%, #d97706 100%); /* تنويه بسيط متناسق */
+            filter: brightness(1.1);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+            color: #ffffff;
         }
 
-        /* أنيميشن الدجاجة */
         @keyframes chicken-move {
             0%, 100% { transform: scale(1) rotate(0deg); }
             50% { transform: scale(1.08) rotate(-5deg); }
@@ -213,7 +220,6 @@
             animation: chicken-move 0.5s infinite alternate ease-in-out;
         }
 
-        /* أنيميشن البلياردو */
         @keyframes cue-hit {
             0% { transform: translateX(0); }
             30% { transform: translateX(-10px); }
@@ -256,11 +262,11 @@
             <div class="game-card card-chicken" onclick="playGame('chicken')">
                 <div class="game-preview">
                     <svg viewBox="0 0 64 64">
-                        <circle cx="32" cy="32" r="28" fill="#141414" stroke="#d4af37" stroke-width="2"/>
+                        <circle cx="32" cy="32" r="28" fill="#141414" stroke="#f59e0b" stroke-width="2"/>
                         <path d="M22 40 C22 25, 42 25, 42 40 Z" fill="#ffffff"/>
                         <circle cx="36" cy="30" r="3" fill="#000"/>
-                        <polygon points="42,30 48,33 42,36" fill="#ff1e27"/>
-                        <path d="M28 25 Q 32 18, 36 25" fill="none" stroke="#ff1e27" stroke-width="3"/>
+                        <polygon points="42,30 48,33 42,36" fill="#f59e0b"/>
+                        <path d="M28 25 Q 32 18, 36 25" fill="none" stroke="#f59e0b" stroke-width="3"/>
                     </svg>
                 </div>
                 <div class="game-info">
@@ -276,9 +282,9 @@
                 <div class="game-preview">
                     <svg viewBox="0 0 100 100">
                         <rect x="10" y="25" width="80" height="50" rx="4" fill="#1a1a1a" stroke="#222" stroke-width="2"/>
-                        <circle cx="65" cy="50" r="6" fill="#ff1e27"/>
+                        <circle cx="65" cy="50" r="6" fill="#f59e0b"/>
                         <circle class="white-ball" cx="40" cy="50" r="6" fill="#ffffff"/>
-                        <line class="cue-stick" x1="15" y1="50" x2="32" y2="50" stroke="#d4af37" stroke-width="4" stroke-linecap="round"/>
+                        <line class="cue-stick" x1="15" y1="50" x2="32" y2="50" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
                     </svg>
                 </div>
                 <div class="game-info">
@@ -292,12 +298,10 @@
         </div>
     </div>
 
-    <!-- استدعاء مكتبات الـ Firebase المتوافقة مع الكود الأساسي الخاص بك -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <script>
-        // تكوين الـ Firebase المتزامن مع المنصة بالكامل
         const firebaseConfig = {
             apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
             authDomain: "poolcash-6692c.firebaseapp.com",
@@ -308,12 +312,11 @@
             appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
         };
 
-        // تهيئة الـ Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
         let currentLang = 'ar';
-        let currentUsername = "Ayoube"; // الحساب الافتراضي في حال عدم وجود حساب بالرابط أو الكاش
+        let currentUsername = "Ayoube"; 
 
         const translations = {
             ar: {
@@ -368,7 +371,6 @@
             }
         }
 
-        // دالة ربط وبدء مزامنة رصيد اللاعب من الـ Firebase فوراّ
         function startBalanceSync(username) {
             if (!username) return;
             
@@ -376,11 +378,10 @@
             userRef.on('value', (snapshot) => {
                 const userData = snapshot.val();
                 if (userData) {
-                    // سحب الرصيد وتحديث الواجهة مباشرة بدون رموز إضافية وبأرقام نقية كما طلبت
                     let balance = userData.balance !== undefined ? parseFloat(userData.balance) : 0;
                     const balanceEl = document.getElementById('user-balance');
                     if(balanceEl) {
-                        balanceEl.innerText = balance.toFixed(2);
+                        balanceEl.innerText = balance.toLocaleString() + " DH";
                     }
                 }
             }, (error) => {
@@ -388,19 +389,15 @@
             });
         }
 
-        // دالة الدخول ولعب اللعبة
         function playGame(game) {
-            console.log(`Lancement de la table: ${game}`);
-            // توجيه اللاعب لصفحة اللعبة مع الاحتفاظ باسم الحساب المسجل
             localStorage.setItem('username', currentUsername);
             if (game === 'chicken') {
                 window.location.href = 'chicken.html';
             } else if (game === 'billiards') {
-                window.location.href = 'games.html'; // أو الصفحة المرتبطة بالبلياردو لديك
+                window.location.href = 'games.html'; 
             }
         }
 
-        // تشغيل التحقق عند تحميل الصفحة بالكامل واكتشاف الحساب النشط
         document.addEventListener("DOMContentLoaded", () => {
             try {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -417,7 +414,6 @@
                     }
                 }
 
-                // بدء جلب وعرض الرصيد فورياً بناءً على الحساب
                 startBalanceSync(currentUsername);
 
             } catch (e) {
