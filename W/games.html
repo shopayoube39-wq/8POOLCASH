@@ -239,7 +239,6 @@ body {
   <div class="side-lounge">
     <div class="panel-headline" id="lbl-lounge">صالة النخبة الحية</div>
     
-    <!-- كارت الإحصائيات الجديد لمعرفة الأرباح، الخسائر ونسبة الجودة -->
     <div class="stats-card">
       <div class="stats-row">
         <span id="lbl-stat-ratio">نسبة مهارة اللاعب:</span>
@@ -704,18 +703,13 @@ canvas.addEventListener("touchstart", (e) => {
 window.addEventListener("touchmove", (e) => { if (isPowerDragging) handlePowerInput(e.touches[0].clientY); else if (isAimDragging || isBallInHandDragging) handleAimInput(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
 window.addEventListener("touchend", () => { isPowerDragging = false; isBallInHandDragging = false; if (isAimDragging) { isAimDragging = false; fireCueBall(); } });
 
-// 🔥 تعديل معادلة الإطلاق الفوري وحساب الاقتطاع دون تكرار وبمنتهى الدقة والاتساق مع خط الليزر
+// 🔥 تم إزالة كود الاقتطاع من هنا نهائياً لمنع الخصم المزدوج لأن المنصة الأولى قامت بالخصم مسبقاً عند الدخول
 function fireCueBall() {
   if (aimPower < 5 || isBallInHand) return;
-  if (!hasDeductedBet) { 
-     let s = VaultSecure.unlock();
-     if (s < currentBet) { triggerToast(Dictionary[currentLang].insf); return; } 
-     hasDeductedBet = true; 
-     commitBalanceUpdate(-currentBet); // اقتطاع فوري فور الإطلاق 
-  }
+  
+  hasDeductedBet = true; // نضعها True مباشرة دون القيام بأي طلب لـ Firebase لمنع تكرار الخصم
   SpatialAudio.ballHit(cueBall.x, aimPower / 10); 
   
-  // دقة متناهية مطابقة للاتجاه البصري تماماً
   let velocityMagnitude = aimPower * 0.15;
   cueBall.vx = Math.cos(aimAngle) * velocityMagnitude; 
   cueBall.vy = Math.sin(aimAngle) * velocityMagnitude; 
