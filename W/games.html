@@ -3,98 +3,101 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
-<title>Pro 8-Ball Tournament Edition</title>
+<title>Pro 8-Ball Tournament Edition - World Class</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght=700;900&family=Poppins:wght=400;600;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
 <style>
 :root {
-  --bg-dark: #030611;
-  --panel-bg: rgba(6, 10, 26, 0.96);
-  --accent-gold: #fbbf24;
+  --bg-dark: #030712;
+  --panel-bg: rgba(8, 13, 31, 0.96);
+  --accent-gold: #f59e0b;
   --neon-cyan: #06b6d4;
   --neon-emerald: #10b981;
-  --table-green: #011f16;
-  --wood-border: #3b2314;
+  --table-green: #0d523c;
+  --wood-border: #3b1401;
+  --glow-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
 
 body {
   background-color: var(--bg-dark);
-  background-image: radial-gradient(circle at 50% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
-  color: #f8fafc; min-height: 100vh;
-  display: flex; align-items: center; justify-content: center; padding: 10px; overflow: hidden;
+  background-image: 
+    radial-gradient(circle at 50% 10%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 10% 90%, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
+  color: #f1f5f9; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center; padding: 15px; overflow: hidden;
 }
 
-.main-wrapper { display: flex; gap: 20px; width: 100%; max-width: 1400px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
-.game-container { flex: 1; min-width: 320px; max-width: 960px; display: flex; flex-direction: column; gap: 12px; }
+.main-wrapper { display: flex; gap: 24px; width: 100%; max-width: 1450px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+.game-container { flex: 1; min-width: 320px; max-width: 1000px; display: flex; flex-direction: column; gap: 16px; }
 
 .side-panel {
-  width: 330px; background: var(--panel-bg); border: 2px solid rgba(6, 182, 212, 0.25);
-  border-radius: 24px; padding: 20px; box-shadow: 0 0 40px rgba(6, 182, 212, 0.1); backdrop-filter: blur(25px);
-  display: flex; flex-direction: column; gap: 20px;
+  width: 340px; background: var(--panel-bg); border: 1px solid rgba(6, 182, 212, 0.2);
+  border-radius: 24px; padding: 24px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8); backdrop-filter: blur(30px);
+  display: flex; flex-direction: column; gap: 24px;
 }
 
-.panel-title { font-family: 'Orbitron', sans-serif; font-size: 14px; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 2px; text-align: center; }
+.panel-title { font-family: 'Orbitron', sans-serif; font-size: 15px; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 3px; text-align: center; text-shadow: 0 0 10px rgba(245, 158, 11, 0.4); font-weight: 900; }
 
-.leaderboard-list { display: flex; flex-direction: column; gap: 6px; }
-.leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; font-size: 13px; }
-.leaderboard-item.player-row { background: linear-gradient(90deg, rgba(6, 182, 212, 0.15), transparent); border-left: 4px solid var(--neon-cyan); font-weight: 900; }
+.leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
+.leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; font-size: 13px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.leaderboard-item.player-row { background: linear-gradient(90deg, rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.02)); border-left: 4px solid var(--neon-cyan); font-weight: 900; box-shadow: inset 15px 0 30px rgba(6, 182, 212, 0.05); color: #fff; }
 
 .economy-bar {
-  width: 100%; background: var(--panel-bg); padding: 14px 20px; border-radius: 20px;
+  width: 100%; background: var(--panel-bg); padding: 16px 24px; border-radius: 24px;
   display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(6, 182, 212, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
 }
-.solde-txt { font-weight: 900; color: var(--neon-emerald); font-size: 18px; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 6px; }
+.solde-txt { font-weight: 900; color: var(--neon-emerald); font-size: 20px; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
 
 .bet-display-box {
-  background: rgba(251, 191, 36, 0.05);
-  border: 1px dashed var(--accent-gold);
-  padding: 6px 16px;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  background: rgba(245, 158, 11, 0.05);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  padding: 8px 20px; border-radius: 14px; display: flex; flex-direction: column; align-items: flex-end;
 }
-.bet-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-.bet-value { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; color: var(--accent-gold); }
+.bet-label { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+.bet-value { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 900; color: var(--accent-gold); text-shadow: 0 0 10px rgba(245, 158, 11, 0.2); }
 
 .scoreboard {
-  width: 100%; background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.03);
-  padding: 12px 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center;
+  width: 100%; background: var(--panel-bg); border: 1px solid rgba(6, 182, 212, 0.1);
+  padding: 18px 28px; border-radius: 24px; display: flex; justify-content: space-between; align-items: center;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.4); position: relative; overflow: hidden;
 }
-.player-card { display: flex; flex-direction: column; gap: 4px; align-items: center; min-width: 140px; transition: all 0.3s ease; opacity: 0.6; }
-.player-card.active { opacity: 1; transform: scale(1.03); }
-.player-name { font-size: 15px; font-weight: 900; color: #94a3b8; }
-.player-card.active .player-name { color: var(--neon-cyan); text-shadow: 0 0 10px rgba(6, 182, 212, 0.5); }
-.player-card.opp.active .player-name { color: var(--accent-gold); text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+.player-card { display: flex; flex-direction: column; gap: 8px; align-items: center; min-width: 160px; transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); opacity: 0.35; transform: scale(0.94); }
+.player-card.active { opacity: 1; transform: scale(1.04); }
+.player-name { font-size: 17px; font-weight: 900; color: #cbd5e1; transition: color 0.3s; }
+.player-card.active .player-name { color: var(--neon-cyan); text-shadow: 0 0 15px rgba(6, 182, 212, 0.7); }
+.player-card.opp.active .player-name { color: var(--accent-gold); text-shadow: 0 0 15px rgba(245, 158, 11, 0.7); }
 
-.pocketed-balls-display { display: flex; gap: 4px; min-height: 14px; margin-top: 4px; }
-.pocketed-dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset -2px -2px 4px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2); }
+.pocketed-balls-display { display: flex; gap: 6px; min-height: 24px; align-items: center; margin-top: 6px; background: rgba(0,0,0,0.4); padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
+.pocketed-dot { width: 16px; height: 16px; border-radius: 50%; box-shadow: inset -3px -3px 6px rgba(0,0,0,0.8), 0 3px 6px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.3); position: relative; }
 
-.arena-container { display: flex; width: 100%; gap: 12px; align-items: center; }
-.power-slider-container { width: 35px; height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; background: #050814; border-radius: 12px; border: 1px solid #1e293b; padding: 10px 0; }
+.arena-container { display: flex; width: 100%; gap: 20px; align-items: center; }
+.power-slider-container { width: 45px; height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; background: #060b18; border-radius: 16px; border: 1px solid rgba(6, 182, 212, 0.15); padding: 16px 0; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
 
-.table-wrapper { position: relative; flex: 1; background: var(--wood-border); padding: 16px; border-radius: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); border: 4px solid #23140b; }
-#billiards-canvas { display: block; width: 100%; background: var(--table-green); border-radius: 8px; cursor: crosshair; touch-action: none; }
+.table-wrapper { position: relative; flex: 1; background: var(--wood-border); padding: 22px; border-radius: 32px; box-shadow: 0 40px 90px rgba(0,0,0,0.95), inset 0 4px 15px rgba(255,255,255,0.15); border: 6px solid #230b01; }
+#billiards-canvas { display: block; width: 100%; background: var(--table-green); border-radius: 14px; cursor: crosshair; touch-action: none; box-shadow: inset 0 0 60px rgba(0,0,0,0.9); }
 
-.spin-selector-container { display: flex; flex-direction: column; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
-.spin-pad { width: 85px; height: 85px; background: #ffffff; border-radius: 50%; position: relative; border: 4px solid #475569; cursor: pointer; }
-.spin-marker { width: 12px; height: 12px; background: #ef4444; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+.spin-selector-container { display: flex; flex-direction: column; align-items: center; gap: 12px; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); }
+.spin-pad { width: 96px; height: 96px; background: radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 65%, #64748b 100%); border-radius: 50%; position: relative; border: 5px solid #1e293b; cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.5), inset 0 2px 6px rgba(255,255,255,0.6); }
+.spin-marker { width: 14px; height: 14px; background: radial-gradient(circle at 40% 40%, #ff4d4d, #b91c1c); border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; box-shadow: 0 3px 6px rgba(0,0,0,0.6); }
 
-.shop-buttons { display: flex; flex-direction: column; gap: 8px; }
-.shop-btn { background: #070b14; border: 1px solid #1e293b; color: #fff; padding: 12px; border-radius: 12px; font-size: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
-.shop-btn.active { border-color: var(--neon-emerald); background: rgba(16, 185, 129, 0.08); box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+.shop-buttons { display: flex; flex-direction: column; gap: 10px; }
+.shop-btn { background: #050a17; border: 1px solid #1e293b; color: #f1f5f9; padding: 16px; border-radius: 16px; font-size: 13px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+.shop-btn:hover { border-color: rgba(6, 182, 212, 0.6); background: rgba(6, 182, 212, 0.03); transform: translateY(-1px); }
+.shop-btn.active { border-color: var(--neon-emerald); background: rgba(16, 185, 129, 0.08); box-shadow: 0 0 20px rgba(16, 185, 129, 0.25); font-weight: 900; }
 
-.status-msg { font-size: 13px; font-weight: 700; color: #475569; text-align: center; min-height: 20px; }
-#toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; }
-.toast { background: #060a17; border: 2px solid var(--neon-cyan); color: #fff; padding: 12px 35px; border-radius: 14px; font-size: 13px; font-weight: 900; box-shadow: 0 0 25px rgba(6, 182, 212, 0.4); }
+.status-msg { font-size: 15px; font-weight: 700; color: #94a3b8; text-align: center; min-height: 26px; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; text-transform: uppercase; }
+#toast-container { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; pointer-events: none; }
+.toast { background: rgba(5, 11, 28, 0.98); border: 2px solid var(--neon-cyan); color: #fff; padding: 16px 45px; border-radius: 20px; font-size: 14px; font-weight: 900; box-shadow: 0 15px 50px rgba(6, 182, 212, 0.4); animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); letter-spacing: 0.5px; }
+
+@keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 </style>
 </head>
 <body>
@@ -104,40 +107,40 @@ body {
 <div class="main-wrapper">
   <div class="game-container">
     <div class="economy-bar">
-      <div class="solde-txt">SOLDE: <span id="solde-val">0 DH</span></div>
+      <div class="solde-txt">SOLDE: <span id="solde-val">0</span></div>
       
       <div class="bet-display-box">
         <span class="bet-label">Mise Actuelle</span>
-        <span class="bet-value" id="current-bet-display">100 DH</span>
+        <span class="bet-value" id="current-bet-display">100</span>
       </div>
     </div>
 
     <div class="scoreboard">
       <div class="player-card active" id="card-player">
         <span class="player-name">Vous</span>
-        <span style="font-size:11px; color:#64748b;" id="player-target">Table Ouverte</span>
+        <span style="font-size:11px; color:#94a3b8; font-weight: 600;" id="player-target">Table Ouverte</span>
         <div class="pocketed-balls-display" id="player-pockets"></div>
       </div>
-      <div style="font-family:'Orbitron'; font-weight:900; color:#1e293b; font-size:18px;">VS</div>
+      <div style="font-family:'Orbitron'; font-weight:900; color:#1e293b; font-size:24px; letter-spacing: 3px; text-shadow: 0 0 10px rgba(255,255,255,0.05)">VS</div>
       <div class="player-card opp" id="card-opp">
         <span class="player-name" id="opp-name-label">Lucas 🇫🇷</span>
-        <span style="font-size:11px; color:#64748b;" id="opp-target">Table Ouverte</span>
+        <span style="font-size:11px; color:#94a3b8; font-weight: 600;" id="opp-target">Table Ouverte</span>
         <div class="pocketed-balls-display" id="opp-pockets"></div>
       </div>
     </div>
 
     <div class="arena-container">
       <div class="power-slider-container">
-        <span style="font-size:9px; font-weight:bold; color:#ef4444;">MAX</span>
-        <svg width="20" height="320" style="background:#02040a; border-radius:6px;">
-          <rect id="power-fill" x="0" y="320" width="20" height="0" fill="url(#pGrad)"/>
+        <span style="font-size:9px; font-weight:900; color:#ef4444; font-family:'Orbitron';">MAX</span>
+        <svg width="24" height="340" style="background:#02050e; border-radius:8px; border: 1px solid rgba(6, 182, 212, 0.15);">
+          <rect id="power-fill" x="0" y="340" width="24" height="0" fill="url(#pGrad)" style="transition: all 0.05s ease;"/>
           <defs>
             <linearGradient id="pGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-              <stop offset="0%" stop-color="#10b981"/><stop offset="70%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#ef4444"/>
+              <stop offset="0%" stop-color="#10b981"/><stop offset="60%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#ef4444"/>
             </linearGradient>
           </defs>
         </svg>
-        <span style="font-size:9px; font-weight:bold; color:#10b981;">MIN</span>
+        <span style="font-size:9px; font-weight:900; color:#10b981; font-family:'Orbitron';">MIN</span>
       </div>
       
       <div class="table-wrapper">
@@ -153,22 +156,22 @@ body {
     <div class="leaderboard-list" id="leaderboard-list"></div>
 
     <div class="spin-selector-container">
-      <span style="font-size:11px; font-weight:900; text-transform:uppercase; color:#94a3b8; font-family:'Orbitron';">Effet (Spin)</span>
+      <span style="font-size:11px; font-weight:900; text-transform:uppercase; color:#94a3b8; font-family:'Orbitron'; letter-spacing: 1.5px;">Effet (Spin)</span>
       <div class="spin-pad" id="spin-pad">
         <div class="spin-marker" id="spin-marker"></div>
       </div>
     </div>
 
     <div class="shop-buttons">
-      <div style="font-family:'Orbitron'; font-size:11px; color:#64748b; text-align:center; text-transform:uppercase;">Boutique Queues</div>
+      <div style="font-family:'Orbitron'; font-size:11px; color:#64748b; text-align:center; text-transform:uppercase; letter-spacing: 1.5px; margin-bottom: 6px; font-weight:900;">Boutique Queues</div>
       <button class="shop-btn active" id="cue-classic" onclick="buyCue('classic', 0)">
-        <span>Standard</span><span>Gratuit</span>
+        <span>Standard 🎱</span><span>Gratuit</span>
       </button>
       <button class="shop-btn" id="cue-cyber" onclick="buyCue('cyber', 200)">
-        <span>Cyber Laser ⚡</span><span>200 DH</span>
+        <span>Cyber Laser ⚡</span><span>200</span>
       </button>
       <button class="shop-btn" id="cue-gold" onclick="buyCue('gold', 500)">
-        <span>Or Impérial 👑</span><span>500 DH</span>
+        <span>Or Impérial 👑</span><span>500</span>
       </button>
     </div>
   </div>
@@ -188,13 +191,16 @@ firebase.initializeApp(firebaseConfig);
 
 let balanceRef;
 let userSolde = 0;
+let currentBet = 100; 
+let hasDeductedBet = false; 
 
 function updateBalance(amount) {
   const activeUser = localStorage.getItem('username') || "Ayoube";
   if (activeUser) {
     const dbRef = firebase.database().ref('users/' + activeUser + '/balance');
-    dbRef.transaction((current) => (current || 0) + amount);
+    return dbRef.transaction((current) => (current || 0) + amount);
   }
+  return Promise.reject("No user found");
 }
 
 function syncBalanceNode() {
@@ -203,13 +209,22 @@ function syncBalanceNode() {
   balanceRef = firebase.database().ref('users/' + activeUser + '/balance');
   balanceRef.on('value', (snapshot) => {
     userSolde = snapshot.val() || 0;
-    document.getElementById("solde-val").innerText = userSolde + " DH";
+    document.getElementById("solde-val").innerText = userSolde;
     updateLeaderboardUI();
   });
 }
 
-// تم إصلاح التكرار هنا: استدعاء loop() لمرة واحدة فقط لمنع التجميد وتسريع اللعبة بشكل جنوني
+function fetchInitialBet() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const betParam = urlParams.get('bet') || urlParams.get('mise');
+  if (betParam && !isNaN(betParam)) {
+    currentBet = parseInt(betParam);
+  }
+  document.getElementById("current-bet-display").innerText = currentBet;
+}
+
 firebase.auth().onAuthStateChanged((user) => {
+  fetchInitialBet();
   syncBalanceNode();
   initGame();
 });
@@ -217,16 +232,16 @@ firebase.auth().onAuthStateChanged((user) => {
 const canvas = document.getElementById("billiards-canvas");
 const ctx = canvas.getContext("2d");
 
-const FRICTION = 0.985; // تم تعديل الاحتكاك لتقف الكرات بسلاسة أكبر بدون تجميد
-const BALL_RADIUS = 11;
-const POCKET_RADIUS = 22;
-const TABLE_PADDING = 14;
+const FRICTION = 0.988; 
+const BALL_RADIUS = 11.5;
+const POCKET_RADIUS = 21; 
+const TABLE_PADDING = 18;
 
-let currentBet = 100; 
 let cueStyle = "classic";
 let spinX = 0; let spinY = 0; 
 
 let balls = [];
+let particles = [];
 let cueBall = null;
 let gameState = "aiming"; 
 let currentTurn = "player";
@@ -245,12 +260,12 @@ let ballsPocketedThisTurn = [];
 let firstBallHitThisTurn = null;
 
 const pockets = [
-  { x: 14, y: 14 }, { x: 400, y: 10 }, { x: 786, y: 14 },
-  { x: 14, y: 386 }, { x: 400, y: 390 }, { x: 786, y: 386 }
+  { x: 18, y: 18 }, { x: 400, y: 14 }, { x: 782, y: 18 },
+  { x: 18, y: 382 }, { x: 400, y: 386 }, { x: 782, y: 382 }
 ];
 
 const onlineOpponents = [
-  { name: "Lucas 🇫🇷", skill: 0.85 }, { name: "Karim 🇩🇿", skill: 0.90 }, { name: "Mehdi 🇹🇳", skill: 0.88 }
+  { name: "Lucas 🇫🇷", skill: 0.78 }, { name: "Karim 🇩🇿", skill: 0.86 }, { name: "Mehdi 🇹🇳", skill: 0.82 }, { name: "Youssef 🇲🇦", skill: 0.96 }
 ];
 let currentOpponent = onlineOpponents[0];
 
@@ -261,75 +276,48 @@ let leaderboardData = [
 
 const AudioEngine = {
   ctx: null,
-  init() {
-    if (!this.ctx) {
-      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-  },
+  init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
   playHit(volume) {
     try {
-      this.init();
-      if (!this.ctx) return;
-      let vol = Math.min(1, Math.max(0.1, volume));
-      let osc = this.ctx.createOscillator();
-      let gain = this.ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(120, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.08);
-      gain.gain.setValueAtTime(vol * 0.6, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.08);
+      this.init(); let vol = Math.min(1, Math.max(0.05, volume));
+      let osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
+      osc.type = 'triangle'; osc.frequency.setValueAtTime(160, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(35, this.ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(vol * 0.4, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+      osc.connect(gain); gain.connect(this.ctx.destination);
+      osc.start(); osc.stop(this.ctx.currentTime + 0.08);
     } catch(e){}
   },
   playBounce(volume) {
     try {
-      this.init();
-      if (!this.ctx) return;
-      let vol = Math.min(1, Math.max(0.1, volume));
-      let osc = this.ctx.createOscillator();
-      let gain = this.ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(75, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.1);
-      gain.gain.setValueAtTime(vol * 0.4, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.1);
+      this.init(); let vol = Math.min(1, Math.max(0.05, volume));
+      let osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
+      osc.type = 'sine'; osc.frequency.setValueAtTime(95, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(45, this.ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(vol * 0.25, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
+      osc.connect(gain); gain.connect(this.ctx.destination);
+      osc.start(); osc.stop(this.ctx.currentTime + 0.1);
     } catch(e){}
   },
   playPocket() {
     try {
-      this.init();
-      if (!this.ctx) return;
-      let osc = this.ctx.createOscillator();
-      let gain = this.ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(180, this.ctx.currentTime);
+      this.init(); let osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
+      osc.type = 'sine'; osc.frequency.setValueAtTime(220, this.ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(60, this.ctx.currentTime + 0.25);
       gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.25);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+      osc.connect(gain); gain.connect(this.ctx.destination);
+      osc.start(); osc.stop(this.ctx.currentTime + 0.25);
     } catch(e){}
   }
 };
 
-function setExternalBet(amount) {
-  currentBet = parseInt(amount);
-  document.getElementById("current-bet-display").innerText = currentBet + " DH";
-}
-
 function showToast(msg) {
   const container = document.getElementById("toast-container");
   container.innerHTML = `<div class="toast">${msg}</div>`;
-  setTimeout(() => container.innerHTML = "", 2500);
+  setTimeout(() => container.innerHTML = "", 3000);
 }
 
 function updateLeaderboardUI() {
@@ -341,7 +329,7 @@ function updateLeaderboardUI() {
   leaderboardData.forEach((item, index) => {
     let isPlayer = item.name === "Vous";
     container.innerHTML += `<div class="leaderboard-item ${isPlayer ? 'player-row' : ''}">
-      <span>#${index+1} ${item.name}</span><span>${item.score} DH</span>
+      <span>#${index+1} ${item.name}</span><span>${item.score}</span>
     </div>`;
   });
 }
@@ -349,13 +337,24 @@ function updateLeaderboardUI() {
 function buyCue(style, price) {
   if (cueStyle === style) return;
   if (userSolde < price && style !== 'classic') { showToast("❌ Solde insuffisant !"); return; }
-  if (style !== 'classic' && cueStyle === 'classic') { 
-      updateBalance(-price);
-  }
+  if (style !== 'classic' && cueStyle === 'classic') { updateBalance(-price); }
   cueStyle = style;
   document.querySelectorAll('.shop-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(`cue-${style}`).classList.add('active');
   showToast("🔥 Queue équipée !");
+}
+
+function createPocketParticles(x, y, color) {
+  for(let i=0; i<12; i++) {
+    particles.push({
+      x: x, y: y,
+      vx: (Math.random() - 0.5) * 4,
+      vy: (Math.random() - 0.5) * 4,
+      radius: Math.random() * 3 + 1,
+      color: color, alpha: 1,
+      life: 1
+    });
+  }
 }
 
 class Ball {
@@ -364,6 +363,7 @@ class Ball {
     this.color = color; this.number = number; this.type = type;
     this.isPocketed = false;
     this.spinX = 0; this.spinY = 0;
+    this.pulseTimer = Math.random() * 5; 
   }
 
   update() {
@@ -373,60 +373,76 @@ class Ball {
     this.vx *= FRICTION; this.vy *= FRICTION;
 
     if (this.type === "cue") {
-      this.vx += this.spinX * 0.03; this.vy += this.spinY * 0.03;
+      this.vx += this.spinX * 0.05; this.vy += this.spinY * 0.05;
       this.spinX *= 0.95; this.spinY *= 0.95;
     }
 
-    // تعديل العتبة لإنهاء الحركة بشكل حاسم ومنع بقاء الكرات في حركة لانهائية بقيم صغيرة جداً
-    if (Math.abs(this.vx) < 0.05) this.vx = 0;
-    if (Math.abs(this.vy) < 0.05) this.vy = 0;
+    if (Math.abs(this.vx) < 0.03) this.vx = 0;
+    if (Math.abs(this.vy) < 0.03) this.vy = 0;
 
     const minX = TABLE_PADDING + BALL_RADIUS; const maxX = canvas.width - TABLE_PADDING - BALL_RADIUS;
     const minY = TABLE_PADDING + BALL_RADIUS; const maxY = canvas.height - TABLE_PADDING - BALL_RADIUS;
 
     let bounced = false;
-    if (this.x < minX) { this.x = minX; this.vx *= -1; bounced = true; }
-    if (this.x > maxX) { this.x = maxX; this.vx *= -1; bounced = true; }
-    if (this.y < minY) { this.y = minY; this.vy *= -1; bounced = true; }
-    if (this.y > maxY) { this.y = maxY; this.vy *= -1; bounced = true; }
+    if (this.x < minX) { this.x = minX; this.vx *= -1; bounced = true; if(this.type === "cue") this.spinY *= -0.8; }
+    if (this.x > maxX) { this.x = maxX; this.vx *= -1; bounced = true; if(this.type === "cue") this.spinY *= -0.8; }
+    if (this.y < minY) { this.y = minY; this.vy *= -1; bounced = true; if(this.type === "cue") this.spinX *= -0.8; }
+    if (this.y > maxY) { this.y = maxY; this.vy *= -1; bounced = true; if(this.type === "cue") this.spinX *= -0.8; }
 
     if (bounced) {
       let speed = Math.hypot(this.vx, this.vy);
-      AudioEngine.playBounce(speed / 10);
+      AudioEngine.playBounce(speed / 7);
     }
 
     for (let pocket of pockets) {
       let dist = Math.hypot(this.x - pocket.x, this.y - pocket.y);
-      if (dist < POCKET_RADIUS) {
+      if (dist < POCKET_RADIUS - 1) {
         this.isPocketed = true; this.vx = 0; this.vy = 0;
+        createPocketParticles(pocket.x, pocket.y, this.color);
         AudioEngine.playPocket();
         onBallPocketed(this); break;
       }
     }
+    this.pulseTimer += 0.08;
   }
 
   draw() {
     if (this.isPocketed) return;
+
+    if (gameState === "aiming" && currentTurn === "player" && tableAssigned) {
+      if (this.type === playerGroup || (playerGroup && this.type === "black" && balls.filter(b => !b.isPocketed && b.type === playerGroup).length === 0)) {
+        ctx.save(); ctx.beginPath();
+        ctx.arc(this.x, this.y, BALL_RADIUS + 5 + Math.sin(this.pulseTimer) * 2, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(6, 182, 212, 0.15)"; ctx.fill();
+        ctx.strokeStyle = "rgba(6, 182, 212, 0.5)"; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
+      }
+    }
+
+    ctx.save();
+    let shadowGrad = ctx.createRadialGradient(this.x+3, this.y+4, 1, this.x+3, this.y+4, BALL_RADIUS);
+    ctx.restore();
+
     ctx.save();
     let grad = ctx.createRadialGradient(this.x - BALL_RADIUS*0.3, this.y - BALL_RADIUS*0.3, 1, this.x, this.y, BALL_RADIUS);
-    grad.addColorStop(0, "#ffffff"); grad.addColorStop(0.3, this.color); grad.addColorStop(1, "#000000");
+    grad.addColorStop(0, "#ffffff"); grad.addColorStop(0.2, this.color); grad.addColorStop(1, "#020202");
     ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS, 0, Math.PI * 2);
     ctx.fillStyle = grad; ctx.fill(); ctx.restore();
 
     if (this.type === "striped") {
-      ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS, -Math.PI/3, Math.PI/3); ctx.lineTo(this.x, this.y); ctx.fillStyle = "rgba(255,255,255,0.25)"; ctx.fill(); ctx.restore();
+      ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS, -Math.PI/3, Math.PI/3); ctx.lineTo(this.x, this.y); ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.fill(); ctx.restore();
+      ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS, Math.PI - Math.PI/3, Math.PI + Math.PI/3); ctx.lineTo(this.x, this.y); ctx.fillStyle = "rgba(255,255,255,0.4)"; ctx.fill(); ctx.restore();
     }
     if (this.type !== "cue") {
       ctx.save(); ctx.beginPath(); ctx.arc(this.x, this.y, BALL_RADIUS*0.35, 0, Math.PI*2); ctx.fillStyle = "#fff"; ctx.fill();
-      ctx.font = "bold 8px Arial"; ctx.fillStyle = "#000"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.font = "900 8px Arial"; ctx.fillStyle = "#000"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
       ctx.fillText(this.number, this.x, this.y); ctx.restore();
     }
   }
 }
 
 function initGame() {
-  balls = []; playerPocketed = []; oppPocketed = []; tableAssigned = false;
-  playerGroup = null; oppGroup = null;
+  balls = []; particles = []; playerPocketed = []; oppPocketed = []; tableAssigned = false;
+  playerGroup = null; oppGroup = null; hasDeductedBet = false;
   document.getElementById("player-target").innerText = "Table Ouverte";
   document.getElementById("opp-target").innerText = "Table Ouverte";
 
@@ -435,7 +451,7 @@ function initGame() {
 
   cueBall = new Ball(220, 200, "#ffffff", 0, "cue"); balls.push(cueBall);
 
-  let startX = 530; let startY = 200;
+  let startX = 540; let startY = 200;
   let layout = [
     { n: 1, c: "#fbbf24", t: "solid" },   { n: 9, c: "#fbbf24", t: "striped" },
     { n: 2, c: "#2563eb", t: "solid" },   { n: 8, c: "#111111", t: "black" },
@@ -450,7 +466,7 @@ function initGame() {
   let idx = 0;
   for (let i = 0; i < 5; i++) {
     for (let j = 0; j <= i; j++) {
-      let x = startX + i * (BALL_RADIUS * 1.74); let y = startY + (j - i / 2) * (BALL_RADIUS * 2.05);
+      let x = startX + i * (BALL_RADIUS * 1.74); let y = startY + (j - i / 2) * (BALL_RADIUS * 2.04);
       if(layout[idx]) balls.push(new Ball(x, y, layout[idx].c, layout[idx].n, layout[idx].t));
       idx++;
     }
@@ -474,21 +490,11 @@ function onBallPocketed(ball) {
     let rem = balls.filter(b => !b.isPocketed && b.type === currentGrp);
     
     if (rem.length === 0) {
-      if(currentTurn === "player") { 
-        updateBalance(currentBet);
-        showToast(`🏆 ربحت: +${currentBet} DH`); 
-      } else { 
-        updateBalance(-currentBet);
-        showToast(`❌ خسرت: -${currentBet} DH`); 
-      }
+      if(currentTurn === "player") { updateBalance(currentBet * 2); showToast(`🏆 VICTOIRE ! +${currentBet}`); } 
+      else { showToast(`❌ DÉFAITE ! L'adversaire a empoché la noire.`); }
     } else {
-      if(currentTurn === "player") { 
-        updateBalance(-currentBet);
-        showToast("❌ خسارة! السوداء دخلت مبكراً."); 
-      } else { 
-        updateBalance(currentBet);
-        showToast("🏆 ربحت! الخصم أخطأ."); 
-      }
+      if(currentTurn === "player") { showToast("❌ Faute ! La bille noire est entrée prématurément."); } 
+      else { updateBalance(currentBet * 2); showToast("🏆 Victoire ! L'adversaire a commis une erreur."); }
     }
     setTimeout(initGame, 3000);
   } else {
@@ -525,7 +531,7 @@ function resolveCollisions() {
         b2.vx += p * nx; b2.vy += p * ny;
 
         let strikeSpeed = Math.hypot(b1.vx - b2.vx, b1.vy - b2.vy);
-        AudioEngine.playHit(strikeSpeed / 8);
+        AudioEngine.playHit(strikeSpeed / 5);
       }
     }
   }
@@ -533,7 +539,7 @@ function resolveCollisions() {
 
 function executeOpponentLogic() {
   gameState = "opp_thinking";
-  document.getElementById("game-status").innerText = `${currentOpponent.name} joue...`;
+  document.getElementById("game-status").innerText = `${currentOpponent.name} réfléchit...`;
 
   setTimeout(() => {
     let targetGrp = oppGroup || "solid";
@@ -548,20 +554,28 @@ function executeOpponentLogic() {
         let ghostY = ball.y - Math.sin(angleToPocket) * (BALL_RADIUS * 2);
         let angleCue = Math.atan2(ghostY - cueBall.y, ghostX - cueBall.x);
         let dist = Math.hypot(ghostX - cueBall.x, ghostY - cueBall.y);
-        let score = 800 - dist;
-        if (score > bestScore) { bestScore = score; bestShot = { angle: angleCue, power: Math.min(12, Math.max(5, dist / 15)) }; }
+        let score = 1000 - dist;
+        
+        if (Math.random() > currentOpponent.skill) {
+          angleCue += (Math.random() - 0.5) * 0.12;
+        }
+
+        if (score > bestScore) { 
+          bestScore = score; 
+          bestShot = { angle: angleCue, power: Math.min(14, Math.max(5, dist / 12)) }; 
+        }
       }
     }
 
     if (bestShot) {
-      AudioEngine.playHit(bestShot.power / 10);
+      AudioEngine.playHit(bestShot.power / 9);
       cueBall.vx = Math.cos(bestShot.angle) * bestShot.power;
       cueBall.vy = Math.sin(bestShot.angle) * bestShot.power;
       gameState = "moving";
     } else {
       switchTurn();
     }
-  }, 1200);
+  }, 1600);
 }
 
 function judgeTurnOutcome() {
@@ -596,18 +610,15 @@ function judgeTurnOutcome() {
     } else {
       if (pocketedOppBall) showToast("⚠️ Bille adverse empochée ! Changement de tour.");
       else if (ballsPocketedThisTurn.includes("cue")) showToast("❌ Faute blanche ! Tour adverse.");
+      else if (!hitOwnBallFirst) showToast("⚠️ Faute ! Vous devez toucher votre bille en premier.");
       else showToast("Changement de tour.");
-      
       nextTurn = currentTurn === "player" ? "opp" : "player"; 
     }
   } else {
     nextTurn = currentTurn === "player" ? "opp" : "player";
   }
 
-  ballsPocketedThisTurn = [];
-  firstBallHitThisTurn = null;
-
-  currentTurn = nextTurn;
+  ballsPocketedThisTurn = []; firstBallHitThisTurn = null; currentTurn = nextTurn;
   document.getElementById("card-player").classList.toggle("active", currentTurn === "player");
   document.getElementById("card-opp").classList.toggle("active", currentTurn === "opp");
 
@@ -623,7 +634,7 @@ function switchTurn() {
 function drawGuidelines() {
   if (gameState !== "aiming" || currentTurn !== "player") return;
   ctx.save();
-  let maxGuideLen = cueStyle === "gold" ? 500 : (cueStyle === "cyber" ? 300 : 140);
+  let maxGuideLen = cueStyle === "gold" ? 650 : (cueStyle === "cyber" ? 450 : 200);
   let endX = cueBall.x + Math.cos(aimAngle) * maxGuideLen;
   let endY = cueBall.y + Math.sin(aimAngle) * maxGuideLen;
   let closestBall = null; let closestDist = maxGuideLen;
@@ -642,44 +653,52 @@ function drawGuidelines() {
   let finalTargetX = cueBall.x + Math.cos(aimAngle) * closestDist;
   let finalTargetY = cueBall.y + Math.sin(aimAngle) * closestDist;
 
-  ctx.beginPath(); ctx.setLineDash([4, 3]);
+  ctx.beginPath(); ctx.setLineDash([6, 5]);
   ctx.moveTo(cueBall.x, cueBall.y); ctx.lineTo(finalTargetX, finalTargetY);
-  ctx.strokeStyle = "rgba(6, 182, 212, 0.6)"; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.strokeStyle = cueStyle === "cyber" ? "rgba(6, 182, 212, 0.85)" : "rgba(255, 255, 255, 0.45)"; 
+  ctx.lineWidth = 1.8; ctx.stroke();
 
   if (closestBall) {
     ctx.beginPath(); ctx.arc(finalTargetX, finalTargetY, BALL_RADIUS, 0, Math.PI * 2);
-    ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.setLineDash([]); ctx.stroke();
+    ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.setLineDash([]); ctx.stroke();
 
     let ballAngle = Math.atan2(closestBall.y - finalTargetY, closestBall.x - finalTargetX);
     ctx.beginPath(); ctx.moveTo(closestBall.x, closestBall.y);
-    ctx.lineTo(closestBall.x + Math.cos(ballAngle) * 60, closestBall.y + Math.sin(ballAngle) * 60);
-    ctx.strokeStyle = "var(--accent-gold)"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.lineTo(closestBall.x + Math.cos(ballAngle) * 80, closestBall.y + Math.sin(ballAngle) * 80);
+    ctx.strokeStyle = "var(--accent-gold)"; ctx.lineWidth = 2.2; ctx.stroke();
   }
 
-  let cueDist = BALL_RADIUS + 8 + (aimPower * 0.15);
+  let cueDist = BALL_RADIUS + 12 + (aimPower * 0.25);
   let cX = cueBall.x - Math.cos(aimAngle) * cueDist; let cY = cueBall.y - Math.sin(aimAngle) * cueDist;
-  let eX = cueBall.x - Math.cos(aimAngle) * (cueDist + 160); let eY = cueBall.y - Math.sin(aimAngle) * (cueDist + 170);
+  let eX = cueBall.x - Math.cos(aimAngle) * (cueDist + 200); let eY = cueBall.y - Math.sin(aimAngle) * (cueDist + 200);
 
   ctx.beginPath();
-  ctx.strokeStyle = cueStyle === "gold" ? "var(--accent-gold)" : (cueStyle === "cyber" ? "var(--neon-cyan)" : "#522e1b");
-  ctx.lineWidth = 5; ctx.lineCap = "round"; ctx.moveTo(cX, cY); ctx.lineTo(eX, eY); strokeStyle = ctx.stroke();
+  if (cueStyle === "gold") { ctx.strokeStyle = "var(--accent-gold)"; ctx.lineWidth = 6.5; } 
+  else if (cueStyle === "cyber") { ctx.strokeStyle = "var(--neon-cyan)"; ctx.lineWidth = 5.5; } 
+  else { ctx.strokeStyle = "#5c3a21"; ctx.lineWidth = 5.5; }
+  ctx.lineCap = "round"; ctx.moveTo(cX, cY); ctx.lineTo(eX, eY); ctx.stroke();
   ctx.restore();
 }
 
-// تم عزل وتحسين ميكانيكية الـ Touch والموس لمنع التداخل والتجمد أثناء السحب والإفلات
+function drawParticles() {
+  for(let i = particles.length - 1; i >= 0; i--) {
+    let p = particles[i]; p.x += p.vx; p.y += p.vy; p.alpha -= 0.03;
+    if(p.alpha <= 0) { particles.splice(i, 1); continue; }
+    ctx.save(); ctx.globalAlpha = p.alpha; ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2); ctx.fillStyle = p.color; ctx.fill(); ctx.restore();
+  }
+}
+
 canvas.addEventListener("mousedown", (e) => { 
-  AudioEngine.init(); 
-  if (gameState !== "aiming" || currentTurn !== "player") return; 
+  AudioEngine.init(); if (gameState !== "aiming" || currentTurn !== "player") return; 
   isDraggingAim = true; handleAimMove(e); 
 });
 window.addEventListener("mousemove", (e) => { if (isDraggingAim) handleAimMove(e); });
 window.addEventListener("mouseup", () => { if (isDraggingAim) { isDraggingAim = false; launchBall(); } });
 
 canvas.addEventListener("touchstart", (e) => { 
-  AudioEngine.init(); 
-  if (gameState !== "aiming" || currentTurn !== "player") return; 
-  isDraggingAim = true; 
-  handleAimMove(e.touches[0]); 
+  AudioEngine.init(); if (gameState !== "aiming" || currentTurn !== "player") return; 
+  isDraggingAim = true; handleAimMove(e.touches[0]); 
 }, {passive:true});
 window.addEventListener("touchmove", (e) => { if (isDraggingAim) handleAimMove(e.touches[0]); }, {passive:true});
 window.addEventListener("touchend", () => { if (isDraggingAim) { isDraggingAim = false; launchBall(); } });
@@ -690,21 +709,30 @@ function handleAimMove(e) {
   let y = (e.clientY - r.top) * (canvas.height / r.height);
   aimAngle = Math.atan2(y - cueBall.y, x - cueBall.x);
   let d = Math.hypot(x - cueBall.x, y - cueBall.y);
-  aimPower = Math.min(100, Math.max(10, d * 0.6));
+  aimPower = Math.min(100, Math.max(5, d * 0.5));
 
-  let fillH = (aimPower / 100) * 320;
+  let fillH = (aimPower / 100) * 340;
   let powerFillEl = document.getElementById("power-fill");
   if(powerFillEl) {
-    powerFillEl.setAttribute("y", 320 - fillH);
+    powerFillEl.setAttribute("y", 340 - fillH);
     powerFillEl.setAttribute("height", fillH);
   }
 }
 
 function launchBall() {
-  if (aimPower < 12) return;
+  if (aimPower < 8) return;
+
+  if (!hasDeductedBet) {
+    if (userSolde < currentBet) {
+      showToast("❌ رصيدك غير كافٍ لخوض هذه المباراة !");
+      aimPower = 0; return;
+    }
+    hasDeductedBet = true; updateBalance(-currentBet);
+  }
+
   AudioEngine.playHit(aimPower / 100);
-  cueBall.vx = Math.cos(aimAngle) * (aimPower * 0.15); cueBall.vy = Math.sin(aimAngle) * (aimPower * 0.15);
-  cueBall.spinX = spinX * 3; cueBall.spinY = spinY * 3;
+  cueBall.vx = Math.cos(aimAngle) * (aimPower * 0.17); cueBall.vy = Math.sin(aimAngle) * (aimPower * 0.17);
+  cueBall.spinX = spinX * 3.8; cueBall.spinY = spinY * 3.8;
   gameState = "moving";
 }
 
@@ -714,42 +742,45 @@ function updateSpin(e) {
   let r = pad.getBoundingClientRect();
   let cx = r.left + r.width/2; let cy = r.top + r.height/2;
   let dx = e.clientX - cx; let dy = e.clientY - cy;
-  let dist = Math.hypot(dx, dy); let maxR = r.width / 2 - 8;
+  let dist = Math.hypot(dx, dy); let maxR = r.width / 2 - 10;
   if (dist > maxR) { dx = (dx / dist) * maxR; dy = (dy / dist) * maxR; }
   marker.style.left = `calc(50% + ${dx}px)`; marker.style.top = `calc(50% + ${dy}px)`;
   spinX = dx / maxR; spinY = dy / maxR;
 }
 pad.addEventListener("mousedown", (e) => {
-  AudioEngine.init();
-  let move = (ev) => updateSpin(ev);
+  AudioEngine.init(); let move = (ev) => updateSpin(ev);
   window.addEventListener("mousemove", move);
   window.addEventListener("mouseup", () => window.removeEventListener("mousemove", move), {once:true});
 });
 
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "rgba(0,0,0,0.2)"; ctx.fillRect(TABLE_PADDING, TABLE_PADDING, canvas.width-(TABLE_PADDING*2), canvas.height-(TABLE_PADDING*2));
+  
+  ctx.fillStyle = "rgba(0,0,0,0.15)"; ctx.fillRect(TABLE_PADDING, TABLE_PADDING, canvas.width-(TABLE_PADDING*2), canvas.height-(TABLE_PADDING*2));
 
-  ctx.fillStyle = "#030408";
-  for(let p of pockets) { ctx.beginPath(); ctx.arc(p.x, p.y, POCKET_RADIUS, 0, Math.PI*2); ctx.fill(); }
+  ctx.fillStyle = "#020307";
+  for(let p of pockets) { 
+    ctx.beginPath(); ctx.arc(p.x, p.y, POCKET_RADIUS + 2, 0, Math.PI*2); ctx.fill(); 
+    ctx.beginPath(); ctx.arc(p.x, p.y, POCKET_RADIUS - 1, 0, Math.PI*2); ctx.fillStyle = "#04060f"; ctx.fill();
+  }
+
+  ctx.save(); ctx.beginPath(); ctx.arc(220, 200, 1.5, 0, Math.PI*2); ctx.fillStyle = "rgba(255,255,255,0.2)"; ctx.fill(); ctx.restore();
 
   let anyMoving = false;
   for (let ball of balls) {
     if(!ball.isPocketed) {
-      ctx.save(); ctx.beginPath(); ctx.arc(ball.x+2, ball.y+3, BALL_RADIUS, 0, Math.PI*2); ctx.fillStyle = "rgba(0,0,0,0.4)"; ctx.fill(); ctx.restore();
+      ctx.save(); ctx.beginPath(); ctx.arc(ball.x+3, ball.y+4, BALL_RADIUS, 0, Math.PI*2); ctx.fillStyle = "rgba(0,0,0,0.45)"; ctx.fill(); ctx.restore();
     }
     ball.update(); ball.draw();
     if(Math.abs(ball.vx) > 0 || Math.abs(ball.vy) > 0) anyMoving = true;
   }
 
-  resolveCollisions(); drawGuidelines();
+  resolveCollisions(); drawGuidelines(); drawParticles();
   if(gameState === "moving" && !anyMoving) switchTurn();
   requestAnimationFrame(loop);
 }
 
-// تشغيل الـ Loop الأساسي هنا مرة واحدة بشكل مستقل ونظيف تماماً
-initGame(); 
-loop();
+initGame(); loop();
 </script>
 </body>
 </html>
