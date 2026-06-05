@@ -182,7 +182,7 @@
 
             <div class="space-y-2 text-right">
                 <label class="text-xs font-bold text-gray-400 block px-1">لقطة شاشة التحويل <span class="text-[10px] text-gray-600">(jpg, png, pdf)</span></label>
-                <div onclick="triggerFileSelect()" class="input-box w-full rounded-xl py-8 px-4 border-dashed border-2 border-[#1a2032] flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[#ffaa00]/30 transition-all">
+                <div id="upload-container" onclick="triggerFileSelect()" class="input-box w-full rounded-xl py-8 px-4 border-dashed border-2 border-[#1a2032] flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[#ffaa00]/30 transition-all">
                     <i class="fas fa-cloud-upload-alt text-gray-500 text-xl" id="upload-icon"></i>
                     <span id="file-upload-status" class="text-xs font-bold text-gray-500">انقر لرفع لقطة الشاشة</span>
                     <input id="file-input" type="file" accept="image/*" class="hidden" onchange="handleFileChange(event)">
@@ -213,7 +213,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
@@ -268,8 +268,29 @@
             const file = event.target.files[0];
             const statusText = document.getElementById('file-upload-status');
             const icon = document.getElementById('upload-icon');
+            const container = document.getElementById('upload-container');
+
             if (file) {
-                statusText.innerText = `تم إرفاق: ${file.name.substring(0, 20)}...`;
+                // إضافة زر الحذف إذا لم يكن موجوداً
+                if (!document.getElementById('remove-btn')) {
+                    const removeBtn = document.createElement('button');
+                    removeBtn.id = 'remove-btn';
+                    removeBtn.innerHTML = '<i class="fas fa-trash text-red-500"></i>';
+                    removeBtn.className = 'absolute top-2 left-2 p-2 bg-[#1a2032] rounded-full';
+                    removeBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        document.getElementById('file-input').value = '';
+                        statusText.innerText = 'انقر لرفع لقطة الشاشة';
+                        statusText.className = 'text-xs font-bold text-gray-500';
+                        icon.className = 'fas fa-cloud-upload-alt text-gray-500 text-xl';
+                        removeBtn.remove();
+                        checkFormValidity();
+                    };
+                    container.style.position = 'relative';
+                    container.appendChild(removeBtn);
+                }
+
+                statusText.innerText = `تم إرفاق: ${file.name.substring(0, 15)}...`;
                 statusText.className = "text-xs font-bold text-emerald-400";
                 icon.className = "fas fa-check-circle text-emerald-400 text-lg";
                 checkFormValidity();
@@ -301,15 +322,13 @@
 
             const btn = document.getElementById('submit-deposit-btn');
             btn.disabled = true;
-            btn.innerText = "جاري رفع الصورة وإرسال الطلب...";
+            btn.innerText = "جاري الإرسال...";
 
             try {
-                // Upload image to Firebase Storage
                 const storageReference = storageRef(storage, 'deposits/' + Date.now() + '_' + file.name);
                 await uploadBytes(storageReference, file);
                 const imageUrl = await getDownloadURL(storageReference);
 
-                // Save data to Realtime Database
                 const requestsRef = ref(db, 'deposit_requests');
                 const newRequestRef = push(requestsRef);
 
@@ -324,7 +343,15 @@
                     timestamp: Date.now()
                 });
 
-                alert("تم إرسال طلب الإيداع بنجاح!");
+                onValue(newRequestRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data && data.status === "approved") {
+                        alert("تم قبول الإيداع بنجاح!");
+                        window.location.reload();
+                    }
+                });
+
+                alert("تم إرسال الطلب بنجاح، يرجى الانتظار للمراجعة.");
                 window.location.href = 'deposit.html';
             } catch (err) {
                 alert("حدث خطأ: " + err.message);
