@@ -427,7 +427,7 @@
 
         // 1. الدالة ديال رفع الصورة لـ ImgBB
         async function uploadToImgBB(file) {
-            const apiKey = 'e0b37b674c57db37a7780678926f3029'; // هاد هو الكود ديالك
+            const apiKey = 'e0b37b674c57db37a7780678926f3029'; 
             const formData = new FormData();
             formData.append('image', file);
 
@@ -437,27 +437,7 @@
             });
 
             const result = await response.json();
-            return result.data.url; // كيرجع لينا رابط الصورة اللي غادي نخزنو في Firebase
-        }
-
-        // 2. الدالة ديال إرسال الطلب للـ Firebase
-        async function sendOrder() {
-            const fileInput = document.getElementById('receiptFile'); // خاص يكون عندك Input في HTML
-            const amount = document.getElementById('amountInput').value;
-            
-            if (fileInput.files.length > 0) {
-                // نرفعو الصورة أولا
-                const imageUrl = await uploadToImgBB(fileInput.files[0]);
-                
-                // ثم نكتبو في Realtime Database
-                const orderRef = ref(db, 'orders/' + Date.now()); 
-                set(orderRef, {
-                    amount: amount,
-                    receiptUrl: imageUrl, // الرابط ديال الصورة
-                    status: 'pending' // الحالة باش تخرج عندك في لوحة التحكم
-                });
-                alert('تم إرسال الطلب بنجاح!');
-            }
+            return result.data.url;
         }
 
         window.showCryptoStep1 = function() {
@@ -583,7 +563,6 @@
             btn.innerText = "جاري الرفع والارسال...";
 
             try {
-                // استخدام دالة الرفع الجديدة
                 const imageUrl = await uploadToImgBB(fileInput.files[0]);
                 
                 const requestsRef = ref(db, 'deposit_requests');
