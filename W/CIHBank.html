@@ -100,7 +100,7 @@
 
         <div class="flex border-b border-[#1a2032] text-center font-bold text-xs">
             <button class="flex-1 py-3 text-[#ffaa00] border-b-2 border-[#ffaa00] transition-all">إيداع</button>
-            <button onclick="window.location.href='records.html'" class="flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all">السجل</button>
+            <button onclick="goBack()" class="flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all">السجل</button>
         </div>
 
         <div class="text-right flex justify-start">
@@ -182,11 +182,9 @@
 
             <div class="space-y-2 text-right">
                 <label class="text-xs font-bold text-gray-400 block px-1">لقطة شاشة التحويل <span class="text-[10px] text-gray-600">(jpg, png, pdf)</span></label>
-                <div id="upload-container" class="input-box w-full rounded-xl py-8 px-4 border-dashed border-2 border-[#1a2032] flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[#ffaa00]/30 transition-all" style="position: relative;">
-                    <div id="upload-content" onclick="triggerFileSelect()" class="flex flex-col items-center">
-                        <i class="fas fa-cloud-upload-alt text-gray-500 text-xl" id="upload-icon"></i>
-                        <span id="file-upload-status" class="text-xs font-bold text-gray-500">انقر لرفع لقطة الشاشة</span>
-                    </div>
+                <div onclick="triggerFileSelect()" class="input-box w-full rounded-xl py-8 px-4 border-dashed border-2 border-[#1a2032] flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[#ffaa00]/30 transition-all">
+                    <i class="fas fa-cloud-upload-alt text-gray-500 text-xl" id="upload-icon"></i>
+                    <span id="file-upload-status" class="text-xs font-bold text-gray-500">انقر لرفع لقطة الشاشة</span>
                     <input id="file-input" type="file" accept="image/*" class="hidden" onchange="handleFileChange(event)">
                 </div>
             </div>
@@ -215,8 +213,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
@@ -230,48 +227,50 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const storage = getStorage(app);
         const currentUsername = localStorage.getItem('username') || "Ayoub_Player";
 
-        window.goBack = function() { window.history.back(); };
+        document.addEventListener("DOMContentLoaded", () => {
+            const amountInput = document.getElementById('deposit-amount');
+            amountInput.addEventListener('input', (e) => {
+                let val = e.target.value || 0;
+                document.getElementById('warning-amount-text').innerText = `${val} DH بالضبط`;
+                document.getElementById('btn-amount-text').innerText = `${val} DH`;
+                checkFormValidity();
+            });
+
+            document.getElementById('user-account-num').addEventListener('input', checkFormValidity);
+            document.getElementById('user-full-name').addEventListener('input', checkFormValidity);
+        });
+
+        window.goBack = function() {
+            window.location.href = 'deposit.html';
+        };
 
         window.copyAndSwitchIcon = function(btnElement, elementId) {
             const text = document.getElementById(elementId).innerText;
             const iconElement = btnElement.querySelector('i');
+            
             navigator.clipboard.writeText(text).then(() => {
                 iconElement.className = "fas fa-check text-base text-[#4ade80]";
-                setTimeout(() => { iconElement.className = "far fa-copy text-base"; }, 1500);
+                setTimeout(() => {
+                    iconElement.className = "far fa-copy text-base";
+                }, 1500);
             });
         };
 
-        window.triggerFileSelect = function() { document.getElementById('file-input').click(); };
+        window.triggerFileSelect = function() { 
+            document.getElementById('file-input').click(); 
+        };
 
         window.handleFileChange = function(event) {
             const file = event.target.files[0];
-            const container = document.getElementById('upload-container');
+            const statusText = document.getElementById('file-upload-status');
+            const icon = document.getElementById('upload-icon');
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    container.innerHTML = `
-                        <div class="relative w-full h-full flex flex-col items-center">
-                            <img src="${e.target.result}" class="max-h-32 object-contain rounded-lg mb-2">
-                            <button id="remove-btn" class="absolute -top-2 -left-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">×</button>
-                        </div>
-                    `;
-                    document.getElementById('remove-btn').onclick = (e) => {
-                        e.stopPropagation();
-                        container.innerHTML = `
-                            <div id="upload-content" onclick="triggerFileSelect()" class="flex flex-col items-center">
-                                <i class="fas fa-cloud-upload-alt text-gray-500 text-xl" id="upload-icon"></i>
-                                <span id="file-upload-status" class="text-xs font-bold text-gray-500">انقر لرفع لقطة الشاشة</span>
-                            </div>
-                            <input id="file-input" type="file" accept="image/*" class="hidden" onchange="handleFileChange(event)">
-                        `;
-                        checkFormValidity();
-                    };
-                    checkFormValidity();
-                };
-                reader.readAsDataURL(file);
+                statusText.innerText = `تم إرفاق: ${file.name.substring(0, 20)}...`;
+                statusText.className = "text-xs font-bold text-emerald-400";
+                icon.className = "fas fa-check-circle text-emerald-400 text-lg";
+                checkFormValidity();
             }
         };
 
@@ -280,10 +279,9 @@
             const userBankNum = document.getElementById('user-account-num').value.trim();
             const userFullName = document.getElementById('user-full-name').value.trim();
             const fileInput = document.getElementById('file-input');
-            const hasFile = !!document.querySelector('#upload-container img');
             const btn = document.getElementById('submit-deposit-btn');
 
-            if (amount && parseFloat(amount) >= 200 && userBankNum && userFullName && hasFile) {
+            if (amount && parseFloat(amount) >= 200 && userBankNum && userFullName && fileInput.files.length > 0) {
                 btn.className = "w-full pool-yellow text-black font-black py-4 rounded-xl text-xs transition shadow-lg shadow-[#ffaa00]/5 active:scale-[0.99] flex justify-center items-center gap-1.5 cursor-pointer";
                 btn.disabled = false;
             } else {
@@ -292,44 +290,34 @@
             }
         }
 
-        window.submitDepositRequest = async function() {
+        window.submitDepositRequest = function() {
             const amount = document.getElementById('deposit-amount').value;
             const userBankNum = document.getElementById('user-account-num').value.trim();
             const userFullName = document.getElementById('user-full-name').value.trim();
-            const file = document.getElementById('file-input').files[0];
+
             const btn = document.getElementById('submit-deposit-btn');
-
             btn.disabled = true;
-            btn.innerText = "جاري الإرسال...";
+            btn.innerText = "جاري إرسال طلبك الفوري...";
 
-            try {
-                const storageReference = storageRef(storage, 'deposits/' + Date.now() + '_' + file.name);
-                await uploadBytes(storageReference, file);
-                const imageUrl = await getDownloadURL(storageReference);
+            const requestsRef = ref(db, 'deposit_requests');
+            const newRequestRef = push(requestsRef);
 
-                const newRequestRef = push(ref(db, 'deposit_requests'));
-                await set(newRequestRef, {
-                    username: currentUsername,
-                    amount: parseFloat(amount),
-                    sender_bank_number: userBankNum,
-                    sender_name: userFullName,
-                    receiptUrl: imageUrl,
-                    status: "pending",
-                    timestamp: Date.now()
-                });
-                
-                alert("تم إرسال الطلب بنجاح.");
-                window.location.href = 'records.html';
-            } catch (err) {
-                alert("خطأ: " + err.message);
-                btn.disabled = false;
-                btn.innerText = "إيداع " + amount + " DH";
-            }
+            set(newRequestRef, {
+                username: currentUsername,
+                bankName: "CIH Bank",
+                amount: parseFloat(amount),
+                sender_bank_number: userBankNum,
+                sender_name: userFullName,
+                status: "pending",
+                timestamp: Date.now()
+            }).then(() => {
+                alert("تم إرسال طلب الإيداع بنجاح! سيتم التحقق وتفعيل الرصيد.");
+                window.location.href = 'deposit.html';
+            }).catch((err) => {
+                alert("حدث خطأ: " + err.message);
+                checkFormValidity();
+            });
         };
-
-        document.getElementById('deposit-amount').addEventListener('input', checkFormValidity);
-        document.getElementById('user-account-num').addEventListener('input', checkFormValidity);
-        document.getElementById('user-full-name').addEventListener('input', checkFormValidity);
     </script>
 </body>
 </html>
