@@ -109,13 +109,6 @@
                 <span>تغيير البنك</span>
             </button>
         </div>
-        
-        <div class="bg-[#111520] border border-[#1a2032] rounded-2xl p-2">
-            <div class="text-right text-[10px] text-gray-500 font-bold mb-2 pr-1">كيفية الإيداع عبر كاش بلوس 🎬</div>
-            <div class="w-full h-48 rounded-xl overflow-hidden border border-[#1a2032]">
-                <iframe class="w-full h-full" src="https://player.vimeo.com/video/1198579784" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-        </div>
 
         <div class="bg-[#0f1914] border border-[#1b3a2b] rounded-xl p-3.5 text-center text-xs text-[#4ade80] font-medium">
             قبل إرسال الطلب، حوّل المبلغ خلال <span class="font-bold text-[#4ade80]">10 دقائق</span> باستخدام البيانات أدناه.
@@ -124,18 +117,18 @@
         <div class="bank-card rounded-2xl p-5 shadow-xl">
             <div class="flex justify-between items-center pb-3 mb-2 border-b border-[#1a2032]/40">
                 <div class="w-12 h-12 bg-white rounded-xl p-1 flex items-center justify-center shadow-md">
-                    <img src="https://i.ibb.co/h1T4Wcbg/IMG-3737.jpg" alt="كاش بلوس" class="w-full h-full object-contain rounded-lg">
+                    <img src="https://i.ibb.co/S7yJ3PD2/IMG-3730.png" alt="CIH Bank" class="w-full h-full object-contain rounded-lg">
                 </div>
                 <div class="flex items-center gap-3">
-                    <span class="text-sm font-black text-white tracking-wide">كاش بلوس</span>
+                    <span class="text-sm font-black text-white tracking-wide">CIH Bank</span>
                 </div>
             </div>
 
             <div class="space-y-4 pt-2 text-right">
                 <div class="flex justify-between items-center">
-                    <span class="text-gray-500 font-bold text-xs">رقم الهاتف</span>
+                    <span class="text-gray-500 font-bold text-xs">رقم الحساب البنكي</span>
                     <div class="flex items-center gap-2">
-                        <span id="admin-rib" class="font-mono font-bold text-white text-sm tracking-wider">0627912418</span>
+                        <span id="admin-rib" class="font-mono font-bold text-white text-sm tracking-wider">2939348211014900</span>
                         <button onclick="copyAndSwitchIcon(this, 'admin-rib')" class="text-[#ffaa00] hover:text-white transition">
                             <i class="far fa-copy text-base"></i>
                         </button>
@@ -143,9 +136,19 @@
                 </div>
 
                 <div class="flex justify-between items-center">
-                    <span class="text-gray-500 font-bold text-xs">السبب / Motif</span>
+                    <span class="text-gray-500 font-bold text-xs">الاسم الكامل للمستلم</span>
                     <div class="flex items-center gap-2">
-                        <span id="transfer-reason" class="font-bold text-white text-sm">SRV</span>
+                        <span id="admin-name" class="font-bold text-white text-sm">saad sdk</span>
+                        <button onclick="copyAndSwitchIcon(this, 'admin-name')" class="text-[#ffaa00] hover:text-white transition">
+                            <i class="far fa-copy text-base"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500 font-bold text-xs">سبب التحويل</span>
+                    <div class="flex items-center gap-2">
+                        <span id="transfer-reason" class="font-bold text-white text-sm">Service</span>
                         <button onclick="copyAndSwitchIcon(this, 'transfer-reason')" class="text-[#ffaa00] hover:text-white transition">
                             <i class="far fa-copy text-base"></i>
                         </button>
@@ -164,14 +167,14 @@
             </div>
 
             <div class="space-y-2 text-right">
-                <label class="text-xs font-bold text-gray-400 block px-1">رقم هاتفك</label>
+                <label class="text-xs font-bold text-gray-400 block px-1">رقم حسابك البنكي</label>
                 <div class="input-box w-full rounded-xl p-1 flex items-center">
-                    <input id="user-account-num" type="text" placeholder="06XXXXXXXX" class="w-full bg-transparent p-3 text-xs font-bold text-right text-white placeholder-gray-600 outline-none">
+                    <input id="user-account-num" type="text" placeholder="رقم الحساب" class="w-full bg-transparent p-3 text-xs font-bold text-right text-white placeholder-gray-600 outline-none">
                 </div>
             </div>
 
             <div class="space-y-2 text-right">
-                <label class="text-xs font-bold text-gray-400 block px-1">اسمك في كاش بلوس</label>
+                <label class="text-xs font-bold text-gray-400 block px-1">الاسم الكامل لصاحب الحساب</label>
                 <div class="input-box w-full rounded-xl p-1 flex items-center">
                     <input id="user-full-name" type="text" placeholder="الاسم" class="w-full bg-transparent p-3 text-xs font-bold text-right text-white placeholder-gray-600 outline-none">
                 </div>
@@ -210,7 +213,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
@@ -224,6 +228,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const storage = getStorage(app);
         const currentUsername = localStorage.getItem('username') || "Ayoub_Player";
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -287,33 +292,53 @@
             }
         }
 
-        window.submitDepositRequest = function() {
+        window.submitDepositRequest = async function() {
             const amount = document.getElementById('deposit-amount').value;
             const userBankNum = document.getElementById('user-account-num').value.trim();
             const userFullName = document.getElementById('user-full-name').value.trim();
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
 
             const btn = document.getElementById('submit-deposit-btn');
             btn.disabled = true;
-            btn.innerText = "جاري إرسال طلبك الفوري...";
+            btn.innerText = "جاري الإرسال...";
 
-            const requestsRef = ref(db, 'deposit_requests');
-            const newRequestRef = push(requestsRef);
+            try {
+                const storageReference = storageRef(storage, 'deposits/' + Date.now() + '_' + file.name);
+                await uploadBytes(storageReference, file);
+                const imageUrl = await getDownloadURL(storageReference);
 
-            set(newRequestRef, {
-                username: currentUsername,
-                bankName: "كاش بلوس",
-                amount: parseFloat(amount),
-                sender_phone: userBankNum,
-                sender_name: userFullName,
-                status: "pending",
-                timestamp: Date.now()
-            }).then(() => {
-                alert("تم إرسال طلب الإيداع بنجاح! سيتم التحقق وتفعيل الرصيد.");
+                const requestsRef = ref(db, 'deposit_requests');
+                const newRequestRef = push(requestsRef);
+
+                await set(newRequestRef, {
+                    username: currentUsername,
+                    bankName: "CIH Bank",
+                    amount: parseFloat(amount),
+                    sender_bank_number: userBankNum,
+                    sender_name: userFullName,
+                    receiptUrl: imageUrl,
+                    status: "pending",
+                    timestamp: Date.now()
+                });
+
+                // Listen for status changes
+                onValue(newRequestRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if (data && data.status === "approved") {
+                        alert("تم قبول الإيداع بنجاح!");
+                        window.location.reload();
+                    }
+                });
+
+                alert("تم إرسال الطلب بنجاح، يرجى الانتظار للمراجعة.");
                 window.location.href = 'deposit.html';
-            }).catch((err) => {
+            } catch (err) {
                 alert("حدث خطأ: " + err.message);
+                btn.disabled = false;
+                btn.innerText = "إيداع " + amount + " DH";
                 checkFormValidity();
-            });
+            }
         };
     </script>
 </body>
