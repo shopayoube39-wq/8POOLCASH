@@ -214,6 +214,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
@@ -227,6 +228,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const storage = getStorage(app);
         const currentUsername = localStorage.getItem('username') || "Ayoub_Player";
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -290,33 +292,46 @@
             }
         }
 
-        window.submitDepositRequest = function() {
+        window.submitDepositRequest = async function() {
             const amount = document.getElementById('deposit-amount').value;
             const userBankNum = document.getElementById('user-account-num').value.trim();
             const userFullName = document.getElementById('user-full-name').value.trim();
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
 
             const btn = document.getElementById('submit-deposit-btn');
             btn.disabled = true;
-            btn.innerText = "جاري إرسال طلبك الفوري...";
+            btn.innerText = "جاري رفع الصورة وإرسال الطلب...";
 
-            const requestsRef = ref(db, 'deposit_requests');
-            const newRequestRef = push(requestsRef);
+            try {
+                // Upload image to Firebase Storage
+                const storageReference = storageRef(storage, 'deposits/' + Date.now() + '_' + file.name);
+                await uploadBytes(storageReference, file);
+                const imageUrl = await getDownloadURL(storageReference);
 
-            set(newRequestRef, {
-                username: currentUsername,
-                bankName: "CIH Bank",
-                amount: parseFloat(amount),
-                sender_bank_number: userBankNum,
-                sender_name: userFullName,
-                status: "pending",
-                timestamp: Date.now()
-            }).then(() => {
-                alert("تم إرسال طلب الإيداع بنجاح! سيتم التحقق وتفعيل الرصيد.");
+                // Save data to Realtime Database
+                const requestsRef = ref(db, 'deposit_requests');
+                const newRequestRef = push(requestsRef);
+
+                await set(newRequestRef, {
+                    username: currentUsername,
+                    bankName: "CIH Bank",
+                    amount: parseFloat(amount),
+                    sender_bank_number: userBankNum,
+                    sender_name: userFullName,
+                    receiptUrl: imageUrl,
+                    status: "pending",
+                    timestamp: Date.now()
+                });
+
+                alert("تم إرسال طلب الإيداع بنجاح!");
                 window.location.href = 'deposit.html';
-            }).catch((err) => {
+            } catch (err) {
                 alert("حدث خطأ: " + err.message);
+                btn.disabled = false;
+                btn.innerText = "إيداع " + amount + " DH";
                 checkFormValidity();
-            });
+            }
         };
     </script>
 </body>
