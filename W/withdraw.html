@@ -378,6 +378,8 @@
         const db = getDatabase(app);
 
         const currentUsername = localStorage.getItem('username') || "Ayoub_Player";
+        const savedBalance = localStorage.getItem('userBalance') || "0";
+        document.getElementById('userBalanceDisplay').innerText = `DH ${savedBalance}`;
 
         window.selectedBankId = "";
         window.selectedBankName = "";
@@ -466,6 +468,12 @@
                 return;
             }
 
+            const currentBal = parseFloat(localStorage.getItem('userBalance') || 0);
+            if(parseFloat(amount) > currentBal) {
+                alert('رصيدك غير كافٍ لإتمام عملية السحب!');
+                return;
+            }
+
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
             btn.innerText = "جاري إرسال طلبك...";
@@ -481,6 +489,10 @@
                 status: "pending",
                 timestamp: Date.now()
             }).then(() => {
+                const newBalance = currentBal - parseFloat(amount);
+                localStorage.setItem('userBalance', newBalance.toString());
+                document.getElementById('userBalanceDisplay').innerText = `DH ${newBalance}`;
+                
                 alert('تم إرسال طلب السحب بنجاح! سيتم مراجعة الطلب وتحويل الأموال إلى حسابك خلال دقائق.');
                 window.closeModal();
                 window.switchTab('history'); 
