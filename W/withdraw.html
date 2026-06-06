@@ -346,13 +346,17 @@
                     if(data[key].username === currentUsername) {
                         hasHistory = true;
                         const req = data[key];
+                        const isPending = req.status === "pending";
                         const itemHtml = `
                             <div class="bg-[#111520] border border-[#1a2032] p-4 rounded-xl flex justify-between items-center text-xs">
                                 <div class="space-y-1">
                                     <p class="font-bold text-gray-200">${req.bankName}</p>
                                     <p class="text-gray-500 font-mono">${new Date(req.timestamp).toLocaleDateString()}</p>
                                 </div>
-                                <div class="text-right font-bold text-[#ffaa00] font-mono">${req.amount} DH</div>
+                                <div class="text-right space-y-1">
+                                    <p class="font-bold text-[#ffaa00] font-mono">${req.amount} DH</p>
+                                    ${isPending ? '<p class="text-[10px] bg-[#ffaa00]/10 text-[#ffaa00] px-2 py-0.5 rounded-lg border border-[#ffaa00]/20">قيد المراجعة</p>' : ''}
+                                </div>
                             </div>
                         `;
                         listEl.insertAdjacentHTML('afterbegin', itemHtml);
