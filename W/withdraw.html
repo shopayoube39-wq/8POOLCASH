@@ -123,7 +123,7 @@
                 
                 <div class="bg-[#ffaa00]/10 border border-[#ffaa00]/20 rounded-xl p-3 flex gap-2 items-start">
                     <i class="fas fa-clock text-[#ffaa00] text-sm mt-0.5"></i>
-                    <p class="text-[10px] text-gray-300 leading-relaxed" id="bankNote">تتم معالجة السحب خلال <span class="font-bold text-[#ffaa00]">ساعتين كحد أقصى</span> بعد الإرسال. تأكد من صحة رقم RIB.</p>
+                    <p class="text-[10px] text-gray-300 leading-relaxed">تتم معالجة السحب خلال <span class="font-bold text-[#ffaa00]">ساعتين كحد أقصى</span> بعد الإرسال. تأكد من صحة <span id="ribOrNumberText">رقم RIB</span>.</p>
                 </div>
 
                 <div class="space-y-3">
@@ -241,6 +241,7 @@
         const userRef = ref(db, 'users/' + currentUsername);
         let userBalance = 0;
         let activeBankName = "";
+        let isCashPlusMode = false;
         
         onValue(userRef, (snapshot) => {
             const data = snapshot.val();
@@ -253,24 +254,25 @@
 
         window.showBankInterface = function(bankName, logoUrl, isCashPlus = false) {
             activeBankName = bankName;
+            isCashPlusMode = isCashPlus;
             document.getElementById('selected-bank-name').innerText = bankName;
             document.getElementById('selected-bank-logo').querySelector('img').src = logoUrl;
             
             const ribLabel = document.getElementById('ribLabel');
             const ribInput = document.getElementById('ribNumber');
             const ribHint = document.getElementById('ribHint');
-            const bankNote = document.getElementById('bankNote');
+            const ribOrNumberText = document.getElementById('ribOrNumberText');
 
-            if (isCashPlus) {
-                ribLabel.innerText = "رقم الهاتف *";
-                ribInput.placeholder = "06XXXXXXXX";
-                ribHint.innerText = "أدخل رقم الهاتف الخاص بك في Cash Plus";
-                bankNote.innerHTML = 'تتم معالجة السحب خلال <span class="font-bold text-[#ffaa00]">ساعتين كحد أقصى</span> بعد الإرسال. تأكد من صحة رقم الهاتف.';
+            if(isCashPlus) {
+                ribLabel.innerText = "رقم هاتف كاش بلوس *";
+                ribInput.placeholder = "مثال : 0600000000";
+                ribHint.innerText = "أدخل رقم هاتف كاش بلوس الصحيح";
+                ribOrNumberText.innerText = "رقم الهاتف";
             } else {
                 ribLabel.innerText = "رقم RIB البنكي *";
                 ribInput.placeholder = "مثال : 230780123456789012345678";
                 ribHint.innerText = "أدخل رقم الـ RIB الكامل بدون مسافات";
-                bankNote.innerHTML = 'تتم معالجة السحب خلال <span class="font-bold text-[#ffaa00]">ساعتين كحد أقصى</span> بعد الإرسال. تأكد من صحة رقم RIB.';
+                ribOrNumberText.innerText = "رقم RIB";
             }
 
             document.getElementById('bank-selection-container').classList.add('hidden');
@@ -306,21 +308,18 @@
             if(!amount || amount < 100 || amount > userBalance || !fname || !lname || !rib) return;
 
             const btn = document.getElementById('withdrawBtn');
-            btn.innerHTML = 'جاري الإرسال... <i class="fas fa-circle-notch fa-spin"></i>';
-            btn.disabled = true;
+            btn.innerText = "جاري الإرسال...";
 
             update(userRef, { balance: userBalance - amount }).then(() => {
                 const requestsRef = ref(db, 'withdrawal_requests/' + currentUsername);
+                const detailLabel = isCashPlusMode ? "رقم الهاتف" : "RIB";
                 push(requestsRef, {
                     amount: amount,
                     bankName: activeBankName,
-                    details: `${fname} ${lname} - ${rib}`,
+                    details: `${fname} ${lname} - ${detailLabel}: ${rib}`,
                     status: "قيد المراجعة",
                     timestamp: new Date().toLocaleString()
                 });
-                alert("تم إرسال طلب السحب بنجاح!");
-                btn.innerHTML = '<i class="fas fa-wallet"></i> <span>سحب ' + amount + ' DH</span>';
-                btn.disabled = false;
                 window.switchTab('history');
             });
         };
