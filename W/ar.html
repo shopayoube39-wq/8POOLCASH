@@ -186,4 +186,339 @@
             </div>
 
             <button id="join-table-btn" onclick="handlePlayClick()" class="w-full main-action-btn font-black py-4 rounded-xl text-sm flex items-center justify-center gap-2 tracking-wide">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                <span>العب الآن - DH 150</span>
+            </button>
+        </div>
+
+        <div class="space-y-3">
+            <div class="flex justify-between items-center px-1">
+                <h3 class="text-xs font-bold text-white flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                    <span>المباريات الحية الجارية الآن</span>
+                </h3>
+                <span id="active-count" class="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded font-bold">142 active</span>
+            </div>
+
+            <div id="live-matches-container" class="space-y-2"></div>
+        </div>
+
+        <div class="premium-card rounded-2xl p-5">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 00.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138z"></path>
+                    </svg>
+                    <span>قائمة متصدري الأسبوع</span>
+                </h3>
+            </div>
+            <div id="leaderboard-container" class="divide-y divide-white/5 text-xs"></div>
+        </div>
+
+    </main>
+
+    <div id="support-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm hidden">
+        <div class="premium-card w-full max-w-sm rounded-2xl p-6 relative border border-white/10">
+            <button onclick="closeSupportModal()" class="absolute top-4 left-4 text-gray-400 hover:text-white transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/xl">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <div class="text-center space-y-4">
+                <div class="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto text-amber-400 shadow-inner">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M5.636 18.364l3.536-3.536m5.656 0l3.536 3.536M5.636 5.636l3.536 3.536m0 5.656l-3.536 3.536M9.172 9.172a4 4 0 115.656 5.656 4 4 0 01-5.656-5.656z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-md font-black text-white">مركز الدعم والمساعدة المباشر</h3>
+                    <p class="text-xs text-gray-400 mt-1 leading-relaxed">إذا واجهتك أي مشكلة في عمليتي الشحن أو السحب، يمكنك التواصل معنا فوراً عبر البريد الإلكتروني المعتمد للمنصة.</p>
+                </div>
+                <div class="bg-white/5 border border-white/5 rounded-xl p-3 flex items-center justify-between">
+                    <span class="text-xs font-semibold text-gray-300 select-all">support@8poolcash.com</span>
+                    <a href="mailto:support@8poolcash.com" class="text-xs font-black text-amber-400 hover:underline">مراسلة الآن</a>
+                </div>
+                <div class="mt-2">
+                     <button onclick="closeSupportModal()" class="w-full bg-white/5 hover:bg-white/10 text-gray-300 font-bold py-2.5 rounded-xl text-xs border border-white/5 transition-all">إغلاق النافذة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-8 text-center px-6">
+        <p class="text-[9px] text-gray-600 font-medium leading-relaxed uppercase">جميع العمليات مشفرة ومحمية بالكامل بموجب معايير الأمان العالمية لمنصة 8POOLCASH الحصرية</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
+        authDomain: "poolcash-6692c.firebaseapp.com",
+        databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
+        projectId: "poolcash-6692c",
+        storageBucket: "poolcash-6692c.firebasestorage.app",
+        messagingSenderId: "866544389541",
+        appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+
+      const amountValues = [150, 200, 300, 500, 1000, 2500, 5000];
+      let currentSelectedIndex = 0;
+      let globalUserBalance = 0; 
+      let currentUsername = "Ayoube"; 
+
+      function goToDeposit() {
+          localStorage.setItem('username', currentUsername);
+          window.location.href = 'deposit.html';
+      }
+
+      function goToWithdraw() {
+          localStorage.setItem('username', currentUsername);
+          window.location.href = 'withdraw.html';
+      }
+
+      function checkWarningBoxVisibility() {
+          const warningBox = document.getElementById('warningBox');
+          if (warningBox) {
+              if (globalUserBalance > 0) {
+                  warningBox.classList.add('hidden'); 
+              } else {
+                  warningBox.classList.remove('hidden'); 
+              }
+          }
+      }
+
+      function selectAmount(index) {
+          currentSelectedIndex = index;
+          const currentAmount = amountValues[index];
+          
+          const tabs = document.querySelectorAll('.amount-tab');
+          tabs.forEach((tab, i) => {
+              if(i === index) {
+                  tab.classList.add('active');
+              } else {
+                  tab.classList.remove('active');
+              }
+          });
+
+          const joinBtn = document.getElementById('join-table-btn');
+          if(joinBtn) {
+              joinBtn.innerHTML = `
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  </svg>
+                  <span>العب الآن - DH ${currentAmount.toLocaleString()}</span>
+              `;
+          }
+      }
+
+      function handlePlayClick() {
+          const requiredAmount = amountValues[currentSelectedIndex];
+          if (globalUserBalance < requiredAmount) {
+              const warningModal = document.createElement('div');
+              warningModal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm';
+              warningModal.innerHTML = `
+                  <div class="premium-card w-full max-w-sm rounded-2xl p-6 border border-amber-500/20 text-center shadow-2xl">
+                      <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20">
+                          <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                      </div>
+                      <h3 class="text-white font-black text-lg mb-2">رصيد غير كافٍ</h3>
+                      <p class="text-gray-400 text-sm mb-6">عذراً، رصيدك الحالي (${globalUserBalance.toLocaleString()} DH) لا يكفي لدخول هذه الغرفة. يرجى الشحن أولاً.</p>
+                      <button onclick="this.parentElement.parentElement.remove(); goToDeposit()" class="w-full bg-amber-500 text-[#08090c] font-black py-3 rounded-xl hover:bg-amber-400 transition-all">شحن الرصيد الآن</button>
+                      <button onclick="this.parentElement.parentElement.remove()" class="w-full text-gray-500 font-bold text-xs mt-4 hover:text-white">إغلاق</button>
+                  </div>
+              `;
+              document.body.appendChild(warningModal);
+          } else {
+              localStorage.setItem('pendingBet', requiredAmount);
+              
+              const nextBalance = globalUserBalance - requiredAmount;
+              database.ref('users/' + currentUsername).update({
+                  balance: nextBalance
+              }).then(() => {
+                  window.location.href = 'games.html';
+              }).catch((err) => {
+                  console.error("Error updating bet balance: ", err);
+              });
+          }
+      }
+
+      function startFirebaseSync(username) {
+          if (!username) return;
+          
+          const userRef = database.ref('users/' + username);
+          
+          userRef.on('value', (snapshot) => {
+              const userData = snapshot.val();
+              if (userData) {
+                  globalUserBalance = userData.balance !== undefined ? parseFloat(userData.balance) : 0;
+                  
+                  const balanceDisplay = document.getElementById('balanceDisplay');
+                  if(balanceDisplay) balanceDisplay.innerText = globalUserBalance.toLocaleString();
+                  
+                  const totalEarningsDisplay = document.getElementById('totalEarningsDisplay');
+                  if(totalEarningsDisplay) totalEarningsDisplay.innerText = globalUserBalance.toLocaleString() + " DH";
+                  
+                  checkWarningBoxVisibility();
+              }
+          }, (error) => {
+              console.error("Firebase sync error: ", error);
+          });
+      }
+
+      function openSupportModal() {
+          const modal = document.getElementById('support-modal');
+          if(modal) {
+              modal.classList.remove('hidden');
+              document.body.style.overflow = 'hidden';
+          }
+      }
+
+      function closeSupportModal() {
+          const modal = document.getElementById('support-modal');
+          if(modal) {
+              modal.classList.add('hidden');
+              document.body.style.overflow = '';
+          }
+      }
+
+      const usernames = [
+          "simohamed", "yassine_8p", "amineraja", "mehdi_casax", "kamal_pool", 
+          "othmane_k", "hassan_pro", "tarek_88", "riad_cash", "anass_b", 
+          "marouane_v", "zakaria_pool", "badr_king", "bilal_pro", "saad_cash",
+          "hamza_8p", "fouad_pl", "ismail_k", "idriss_v", "jalal_pool"
+      ];
+
+      const matchValues = [150, 200, 300, 500];
+
+      function getRandomMaskedUser() {
+          const name = usernames[Math.floor(Math.random() * usernames.length)];
+          const value = matchValues[Math.floor(Math.random() * matchValues.length)];
+          return {
+              rawName: name,
+              maskedName: name.substring(0, 3) + "***" + (name.length > 5 ? name.substring(name.length - 2) : "x"),
+              value: value
+          };
+      }
+
+      let leaderData = [
+          { name: "ach***99", score: 24350 },
+          { name: "wal***_k", score: 18100 },
+          { name: "you***_v", score: 12450 }
+      ];
+
+      function renderLeaderboard() {
+          const container = document.getElementById('leaderboard-container');
+          if(!container) return;
+          container.innerHTML = leaderData.map((user, index) => `
+              <div class="py-3.5 flex justify-between items-center">
+                  <div class="flex items-center gap-2">
+                      <div class="w-5 h-5 rounded bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 font-black text-[10px]">${index + 1}</div>
+                      <span class="font-bold text-white">${user.name}</span>
+                  </div>
+                  <span class="font-black text-amber-400 tracking-wide">${user.score.toLocaleString()} DH</span>
+              </div>
+          `).join('');
+      }
+
+      let liveMatches = [];
+      for(let i=0; i<4; i++) {
+          const p1 = getRandomMaskedUser();
+          const p2 = getRandomMaskedUser();
+          liveMatches.push({
+              p1: p1.maskedName,
+              p2: p2.maskedName,
+              value: p1.value
+          });
+      }
+
+      function renderLiveMatches() {
+          const container = document.getElementById('live-matches-container');
+          if(!container) return;
+          container.innerHTML = liveMatches.map(match => `
+              <div class="premium-card live-table-row rounded-xl p-3.5 flex justify-between items-center animate-fade-in">
+                  <div class="flex items-center gap-3">
+                      <div class="w-7 h-7 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center">
+                          <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="12" cy="12" r="10"></circle>
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3"></path>
+                          </svg>
+                      </div>
+                      <div class="text-right">
+                          <div class="text-xs font-bold text-white">${match.p1} <span class="text-[10px] text-gray-500 font-normal mx-0.5">ضد</span> ${match.p2}</div>
+                          <div class="text-[9px] text-gray-400 mt-0.5">مواجهة جارية الآن</div>
+                      </div>
+                  </div>
+                  <div class="text-right">
+                      <span class="text-xs font-black text-amber-400 block">${match.value} DH</span>
+                      <span class="text-[9px] text-emerald-400 font-medium tracking-wide">مباشر</span>
+                  </div>
+              </div>
+          `).join('');
+      }
+
+      let currentActive = 135;
+      function updateSystemDynamics() {
+          const shift = Math.floor(Math.random() * 7) - 3;
+          currentActive = Math.max(5, Math.min(230, currentActive + shift));
+          const countEl = document.getElementById('active-count');
+          if(countEl) countEl.innerText = currentActive + " active";
+
+          if(Math.random() > 0.4) {
+              liveMatches.pop();
+              const newP1 = getRandomMaskedUser();
+              const newP2 = getRandomMaskedUser();
+              liveMatches.unshift({
+                  p1: newP1.maskedName,
+                  p2: newP2.maskedName,
+                  value: newP1.value
+              });
+              renderLiveMatches();
+          }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+          renderLiveMatches();
+          renderLeaderboard();
+          setInterval(updateSystemDynamics, 3500);
+
+          function syncLoggedUser() {
+              try {
+                  const urlParams = new URLSearchParams(window.location.search);
+                  let activeUser = urlParams.get('username') || urlParams.get('user') || urlParams.get('name');
+
+                  if (!activeUser) {
+                      activeUser = localStorage.getItem('username') || localStorage.getItem('user');
+                  }
+
+                  if (activeUser) {
+                      currentUsername = activeUser.trim();
+                      if (currentUsername.includes('@')) {
+                          currentUsername = currentUsername.split('@')[0];
+                      }
+                  }
+
+                  const userDisplayEl = document.getElementById('userDisplay');
+                  if (userDisplayEl) {
+                      userDisplayEl.innerText = currentUsername;
+                  }
+
+                  startFirebaseSync(currentUsername);
+
+              } catch (error) {
+                  console.error("Session sync failed:", error);
+              }
+          }
+
+          syncLoggedUser();
+          selectAmount(0); 
+      });
+    </script>
+</body>
+</html>
