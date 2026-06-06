@@ -405,7 +405,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, push, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, push, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
@@ -424,6 +424,25 @@
 
         window.selectedBankId = "";
         window.selectedBankName = "";
+
+        // استماع تلقائي لتغيير حالة الطلب من فيرباص
+        onValue(ref(db, 'deposit_requests'), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                for (let key in data) {
+                    if (data[key].username === currentUsername && data[key].status === "approved" && !data[key].isProcessed) {
+                        // طلب مقبول -> زيادة الرصيد تلقائياً
+                        const userRef = ref(db, 'users/' + currentUsername + '/balance');
+                        get(userRef).then((snap) => {
+                            const currentBalance = snap.exists() ? snap.val() : 0;
+                            set(userRef, currentBalance + data[key].amount);
+                            // وضع علامة تم المعالجة باش ما يبقاش يزيد رصيد كل مرة
+                            update(ref(db, 'deposit_requests/' + key), { isProcessed: true });
+                        });
+                    }
+                }
+            }
+        });
 
         // 1. الدالة ديال رفع الصورة لـ ImgBB
         async function uploadToImgBB(file) {
@@ -573,7 +592,7 @@
                     bankName: window.selectedBankName,
                     amount: parseFloat(amount),
                     receiptUrl: imageUrl,
-                    status: "pending",
+                    status: "pending", // قيد المراجعة
                     timestamp: Date.now()
                 });
 
@@ -603,10 +622,10 @@
                         const req = data[key];
                         
                         let statusColor = "text-amber-400 bg-amber-500/5 border-amber-500/20";
-                        let statusText = "قيد الانتظار";
+                        let statusText = "قيد المراجعة";
                         if(req.status === "approved") {
                             statusColor = "text-emerald-400 bg-emerald-500/5 border-emerald-500/20";
-                            statusText = "مقبول ✅";
+                            statusText = "تم القبول ✅";
                         } else if(req.status === "rejected") {
                             statusColor = "text-rose-400 bg-rose-500/5 border-rose-500/20";
                             statusText = "مرفوض ❌";
