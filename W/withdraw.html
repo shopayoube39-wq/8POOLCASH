@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -124,7 +123,7 @@
                 
                 <div class="bg-[#ffaa00]/10 border border-[#ffaa00]/20 rounded-xl p-3 flex gap-2 items-start">
                     <i class="fas fa-clock text-[#ffaa00] text-sm mt-0.5"></i>
-                    <p class="text-[10px] text-gray-300 leading-relaxed">تتم معالجة السحب خلال <span class="font-bold text-[#ffaa00]">ساعتين كحد أقصى</span> بعد الإرسال. تأكد من صحة رقم RIB.</p>
+                    <p class="text-[10px] text-gray-300 leading-relaxed" id="bankNote">تتم معالجة السحب خلال <span class="font-bold text-[#ffaa00]">ساعتين كحد أقصى</span> بعد الإرسال. تأكد من صحة رقم RIB.</p>
                 </div>
 
                 <div class="space-y-3">
@@ -256,6 +255,24 @@
             activeBankName = bankName;
             document.getElementById('selected-bank-name').innerText = bankName;
             document.getElementById('selected-bank-logo').querySelector('img').src = logoUrl;
+            
+            const ribLabel = document.getElementById('ribLabel');
+            const ribInput = document.getElementById('ribNumber');
+            const ribHint = document.getElementById('ribHint');
+            const bankNote = document.getElementById('bankNote');
+
+            if (isCashPlus) {
+                ribLabel.innerText = "رقم الهاتف *";
+                ribInput.placeholder = "06XXXXXXXX";
+                ribHint.innerText = "أدخل رقم الهاتف الخاص بك في Cash Plus";
+                bankNote.innerHTML = 'تتم معالجة السحب خلال <span class="font-bold text-[#ffaa00]">ساعتين كحد أقصى</span> بعد الإرسال. تأكد من صحة رقم الهاتف.';
+            } else {
+                ribLabel.innerText = "رقم RIB البنكي *";
+                ribInput.placeholder = "مثال : 230780123456789012345678";
+                ribHint.innerText = "أدخل رقم الـ RIB الكامل بدون مسافات";
+                bankNote.innerHTML = 'تتم معالجة السحب خلال <span class="font-bold text-[#ffaa00]">ساعتين كحد أقصى</span> بعد الإرسال. تأكد من صحة رقم RIB.';
+            }
+
             document.getElementById('bank-selection-container').classList.add('hidden');
             document.getElementById('bank-interface').classList.remove('hidden');
         };
@@ -289,18 +306,21 @@
             if(!amount || amount < 100 || amount > userBalance || !fname || !lname || !rib) return;
 
             const btn = document.getElementById('withdrawBtn');
-            btn.innerText = "جاري المعالجة...";
+            btn.innerHTML = 'جاري الإرسال... <i class="fas fa-circle-notch fa-spin"></i>';
+            btn.disabled = true;
 
             update(userRef, { balance: userBalance - amount }).then(() => {
                 const requestsRef = ref(db, 'withdrawal_requests/' + currentUsername);
                 push(requestsRef, {
                     amount: amount,
                     bankName: activeBankName,
-                    details: `${fname} ${lname} - RIB: ${rib}`,
+                    details: `${fname} ${lname} - ${rib}`,
                     status: "قيد المراجعة",
                     timestamp: new Date().toLocaleString()
                 });
                 alert("تم إرسال طلب السحب بنجاح!");
+                btn.innerHTML = '<i class="fas fa-wallet"></i> <span>سحب ' + amount + ' DH</span>';
+                btn.disabled = false;
                 window.switchTab('history');
             });
         };
