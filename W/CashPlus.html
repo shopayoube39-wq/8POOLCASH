@@ -100,7 +100,7 @@
 
         <div class="flex border-b border-[#1a2032] text-center font-bold text-xs">
             <button class="flex-1 py-3 text-[#ffaa00] border-b-2 border-[#ffaa00] transition-all">إيداع</button>
-            <button onclick="goBack()" class="flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all">السجل</button>
+            <button onclick="window.location.href='deposit.html'" class="flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all">السجل</button>
         </div>
 
         <div class="text-right flex justify-start">
@@ -109,7 +109,7 @@
                 <span>تغيير البنك</span>
             </button>
         </div>
-        
+
         <div class="bg-[#111520] border border-[#1a2032] rounded-2xl p-2">
             <div class="text-right text-[10px] text-gray-500 font-bold mb-2 pr-1">كيفية الإيداع عبر كاش بلوس 🎬</div>
             <div class="w-full h-48 rounded-xl overflow-hidden border border-[#1a2032]">
@@ -124,7 +124,7 @@
         <div class="bank-card rounded-2xl p-5 shadow-xl">
             <div class="flex justify-between items-center pb-3 mb-2 border-b border-[#1a2032]/40">
                 <div class="w-12 h-12 bg-white rounded-xl p-1 flex items-center justify-center shadow-md">
-                    <img src="https://i.ibb.co/h1T4Wcbg/IMG-3737.jpg" alt="كاش بلوس" class="w-full h-full object-contain rounded-lg">
+                    <img src="https://i.ibb.co/XZ28vnHS/IMG-4708.jpg" alt="كاش بلوس" class="w-full h-full object-contain rounded-lg">
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="text-sm font-black text-white tracking-wide">كاش بلوس</span>
@@ -135,7 +135,7 @@
                 <div class="flex justify-between items-center">
                     <span class="text-gray-500 font-bold text-xs">رقم الهاتف</span>
                     <div class="flex items-center gap-2">
-                        <span id="admin-rib" class="font-mono font-bold text-white text-sm tracking-wider">0627912418</span>
+                        <span id="admin-rib" class="font-mono font-bold text-white text-sm tracking-wider">0777553654</span>
                         <button onclick="copyAndSwitchIcon(this, 'admin-rib')" class="text-[#ffaa00] hover:text-white transition">
                             <i class="far fa-copy text-base"></i>
                         </button>
@@ -143,7 +143,7 @@
                 </div>
 
                 <div class="flex justify-between items-center">
-                    <span class="text-gray-500 font-bold text-xs">السبب / Motif</span>
+                    <span class="text-gray-500 font-bold text-xs">سبب التحويل</span>
                     <div class="flex items-center gap-2">
                         <span id="transfer-reason" class="font-bold text-white text-sm">SRV</span>
                         <button onclick="copyAndSwitchIcon(this, 'transfer-reason')" class="text-[#ffaa00] hover:text-white transition">
@@ -166,12 +166,12 @@
             <div class="space-y-2 text-right">
                 <label class="text-xs font-bold text-gray-400 block px-1">رقم هاتفك</label>
                 <div class="input-box w-full rounded-xl p-1 flex items-center">
-                    <input id="user-account-num" type="text" placeholder="06XXXXXXXX" class="w-full bg-transparent p-3 text-xs font-bold text-right text-white placeholder-gray-600 outline-none">
+                    <input id="user-account-num" type="text" placeholder="رقم الهاتف" class="w-full bg-transparent p-3 text-xs font-bold text-right text-white placeholder-gray-600 outline-none">
                 </div>
             </div>
 
             <div class="space-y-2 text-right">
-                <label class="text-xs font-bold text-gray-400 block px-1">اسمك في كاش بلوس</label>
+                <label class="text-xs font-bold text-gray-400 block px-1">الاسم الكامل لصاحب التحويل</label>
                 <div class="input-box w-full rounded-xl p-1 flex items-center">
                     <input id="user-full-name" type="text" placeholder="الاسم" class="w-full bg-transparent p-3 text-xs font-bold text-right text-white placeholder-gray-600 outline-none">
                 </div>
@@ -179,10 +179,18 @@
 
             <div class="space-y-2 text-right">
                 <label class="text-xs font-bold text-gray-400 block px-1">لقطة شاشة التحويل <span class="text-[10px] text-gray-600">(jpg, png, pdf)</span></label>
-                <div onclick="triggerFileSelect()" class="input-box w-full rounded-xl py-8 px-4 border-dashed border-2 border-[#1a2032] flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[#ffaa00]/30 transition-all">
-                    <i class="fas fa-cloud-upload-alt text-gray-500 text-xl" id="upload-icon"></i>
-                    <span id="file-upload-status" class="text-xs font-bold text-gray-500">انقر لرفع لقطة الشاشة</span>
-                    <input id="file-input" type="file" accept="image/*" class="hidden" onchange="handleFileChange(event)">
+                <div id="upload-container" class="relative">
+                    <div id="drop-area" onclick="triggerFileSelect()" class="input-box w-full rounded-xl py-8 px-4 border-dashed border-2 border-[#1a2032] flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-[#ffaa00]/30 transition-all">
+                        <i class="fas fa-cloud-upload-alt text-gray-500 text-xl" id="upload-icon"></i>
+                        <span id="file-upload-status" class="text-xs font-bold text-gray-500">انقر لرفع لقطة الشاشة</span>
+                        <input id="file-input" type="file" accept="image/*" class="hidden" onchange="handleFileChange(event)">
+                    </div>
+                    <div id="preview-container" class="hidden mt-3 relative w-32 mx-auto">
+                        <img id="image-preview" src="" alt="Preview" class="w-full h-32 object-cover rounded-xl border border-[#1a2032]">
+                        <button onclick="removeFile(event)" class="absolute -top-2 -right-2 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-lg hover:bg-red-700">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -201,8 +209,8 @@
                 <span>يتم تأكيد الإيداع خلال <span class="underline">30 دقيقة كحد أقصى</span> بعد الإرسال</span>
             </div>
 
-            <button id="submit-deposit-btn" onclick="submitDepositRequest()" class="w-full bg-[#1e2330] text-gray-500 font-black py-4 rounded-xl text-xs transition active:scale-[0.99] flex justify-center items-center gap-1.5 cursor-not-allowed">
-                <span id="btn-text">إيداع <span id="btn-amount-text">200 DH</span></span>
+            <button id="submit-deposit-btn" onclick="submitDepositRequest()" class="w-full bg-[#1e2330] text-gray-500 font-black py-4 rounded-xl text-xs transition active:scale-[0.99] flex justify-center items-center gap-1.5 cursor-not-allowed" disabled>
+                <span>إيداع <span id="btn-amount-text">200 DH</span></span>
             </button>
 
         </div>
@@ -225,7 +233,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const currentUsername = localStorage.getItem('username') || "Ayoub_Player";
-        const IMGBB_API_KEY = "52e64673898f7972744d567798150d87";
 
         document.addEventListener("DOMContentLoaded", () => {
             const amountInput = document.getElementById('deposit-amount');
@@ -247,29 +254,34 @@
         window.copyAndSwitchIcon = function(btnElement, elementId) {
             const text = document.getElementById(elementId).innerText;
             const iconElement = btnElement.querySelector('i');
-            
             navigator.clipboard.writeText(text).then(() => {
                 iconElement.className = "fas fa-check text-base text-[#4ade80]";
-                setTimeout(() => {
-                    iconElement.className = "far fa-copy text-base";
-                }, 1500);
+                setTimeout(() => { iconElement.className = "far fa-copy text-base"; }, 1500);
             });
         };
 
-        window.triggerFileSelect = function() { 
-            document.getElementById('file-input').click(); 
-        };
+        window.triggerFileSelect = function() { document.getElementById('file-input').click(); };
 
         window.handleFileChange = function(event) {
             const file = event.target.files[0];
-            const statusText = document.getElementById('file-upload-status');
-            const icon = document.getElementById('upload-icon');
             if (file) {
-                statusText.innerText = `تم إرفاق: ${file.name.substring(0, 20)}...`;
-                statusText.className = "text-xs font-bold text-emerald-400";
-                icon.className = "fas fa-check-circle text-emerald-400 text-lg";
-                checkFormValidity();
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('image-preview').src = e.target.result;
+                    document.getElementById('drop-area').classList.add('hidden');
+                    document.getElementById('preview-container').classList.remove('hidden');
+                    checkFormValidity();
+                }
+                reader.readAsDataURL(file);
             }
+        };
+
+        window.removeFile = function(event) {
+            event.stopPropagation();
+            document.getElementById('file-input').value = '';
+            document.getElementById('drop-area').classList.remove('hidden');
+            document.getElementById('preview-container').classList.add('hidden');
+            checkFormValidity();
         };
 
         function checkFormValidity() {
@@ -292,47 +304,38 @@
             const amount = document.getElementById('deposit-amount').value;
             const userBankNum = document.getElementById('user-account-num').value.trim();
             const userFullName = document.getElementById('user-full-name').value.trim();
-            const fileInput = document.getElementById('file-input');
-            const file = fileInput.files[0];
+            const file = document.getElementById('file-input').files[0];
 
             const btn = document.getElementById('submit-deposit-btn');
-            const btnText = document.getElementById('btn-text');
-            
             btn.disabled = true;
-            btnText.innerText = "جاري الإرسال...";
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
 
             const formData = new FormData();
             formData.append('image', file);
+            formData.append('key', '833d0a3b4757d0867e74bc4a505d0fe8');
 
             try {
-                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                if (!data.success) throw new Error("فشل رفع الصورة");
+                const response = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
+                const result = await response.json();
 
-                const requestsRef = ref(db, 'deposit_requests');
-                const newRequestRef = push(requestsRef);
-
-                await set(newRequestRef, {
-                    username: currentUsername,
-                    bankName: "كاش بلوس",
-                    amount: parseFloat(amount),
-                    sender_phone: userBankNum,
-                    sender_name: userFullName,
-                    screenshotUrl: data.data.url,
-                    status: "pending",
-                    timestamp: Date.now()
-                });
-
-                alert("تم إرسال طلب الإيداع بنجاح! سيتم التحقق وتفعيل الرصيد.");
-                window.location.href = 'deposit.html';
+                if (result.success) {
+                    const requestsRef = ref(db, 'deposit_requests');
+                    await set(push(requestsRef), {
+                        username: currentUsername,
+                        bankName: "كاش بلوس",
+                        amount: parseFloat(amount),
+                        sender_bank_number: userBankNum,
+                        sender_name: userFullName,
+                        screenshot_url: result.data.url,
+                        status: "pending",
+                        timestamp: Date.now()
+                    });
+                    window.location.href = 'deposit.html';
+                }
             } catch (err) {
-                alert("حدث خطأ: " + err.message);
+                alert("حدث خطأ");
                 btn.disabled = false;
-                btnText.innerHTML = `إيداع <span id="btn-amount-text">${amount} DH</span>`;
+                btn.innerText = `إيداع ${amount} DH`;
             }
         };
     </script>
