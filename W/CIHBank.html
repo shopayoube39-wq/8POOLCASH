@@ -188,11 +188,13 @@
                         <span id="file-upload-status" class="text-xs font-bold text-gray-500">انقر لرفع لقطة الشاشة</span>
                         <input id="file-input" type="file" accept="image/*" class="hidden" onchange="handleFileChange(event)">
                     </div>
-                    <div id="preview-container" class="hidden mt-3 relative w-32 mx-auto">
-                        <img id="image-preview" src="" alt="Preview" class="w-full h-32 object-cover rounded-xl border border-[#1a2032]">
-                        <button onclick="removeFile(event)" class="absolute -top-2 -right-2 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-lg hover:bg-red-700">
-                            <i class="fas fa-times text-xs"></i>
-                        </button>
+                    <div id="preview-container" class="hidden mt-3 relative">
+                        <div class="relative inline-block">
+                             <img id="image-preview" src="" alt="Preview" class="max-w-full h-auto rounded-xl border border-[#ffaa00]/50 shadow-lg">
+                             <button onclick="removeFile(event)" class="absolute -top-2 -right-2 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-lg hover:bg-red-700">
+                                 <i class="fas fa-times text-xs"></i>
+                             </button>
+                        </div>
                     </div>
                 </div>
             </div>
