@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -242,7 +243,6 @@
         let userBalance = 0;
         let activeBankName = "";
         
-        // المزامنة اللحظية مع Firebase
         onValue(userRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -256,21 +256,6 @@
             activeBankName = bankName;
             document.getElementById('selected-bank-name').innerText = bankName;
             document.getElementById('selected-bank-logo').querySelector('img').src = logoUrl;
-            
-            const ribLabel = document.getElementById('ribLabel');
-            const ribInput = document.getElementById('ribNumber');
-            const ribHint = document.getElementById('ribHint');
-
-            if (isCashPlus) {
-                ribLabel.innerText = "رقم هاتفك في CashPlus *";
-                ribInput.placeholder = "06XXXXXXXX";
-                ribHint.innerText = "سنحوّل المبلغ إلى هذا الرقم في CashPlus";
-            } else {
-                ribLabel.innerText = "رقم RIB البنكي *";
-                ribInput.placeholder = "مثال : 230780123456789012345678";
-                ribHint.innerText = "أدخل رقم الـ RIB الكامل بدون مسافات";
-            }
-
             document.getElementById('bank-selection-container').classList.add('hidden');
             document.getElementById('bank-interface').classList.remove('hidden');
         };
@@ -286,22 +271,12 @@
             document.getElementById('btnAmountText').innerText = `سحب ${amount} DH`;
             const btn = document.getElementById('withdrawBtn');
             const err = document.getElementById('errorMessage');
-            const errText = document.getElementById('errorMessageText');
-
-            if(amount > 0 && amount < 100) {
-                btn.className = "w-full bg-[#111520] border border-[#1a2032] text-gray-500 font-black py-3.5 rounded-xl text-xs transition cursor-not-allowed flex justify-center items-center gap-2";
-                err.classList.remove('hidden');
-                errText.innerText = "أقل مبلغ للسحب هو 100 DH";
-            } else if(amount > userBalance) {
-                btn.className = "w-full bg-[#111520] border border-[#1a2032] text-gray-500 font-black py-3.5 rounded-xl text-xs transition cursor-not-allowed flex justify-center items-center gap-2";
-                err.classList.remove('hidden');
-                errText.innerText = "المبلغ يتجاوز رصيدك المتاح";
-            } else if(amount >= 100) {
+            if(amount >= 100 && amount <= userBalance) {
                 btn.className = "w-full pool-gold text-black font-black py-3.5 rounded-xl text-xs transition shadow-lg shadow-[#ffaa00]/20 flex justify-center items-center gap-2";
                 err.classList.add('hidden');
             } else {
                 btn.className = "w-full bg-[#111520] border border-[#1a2032] text-gray-500 font-black py-3.5 rounded-xl text-xs transition cursor-not-allowed flex justify-center items-center gap-2";
-                err.classList.add('hidden');
+                if (amount > 0) err.classList.remove('hidden');
             }
         };
 
@@ -311,23 +286,19 @@
             const lname = document.getElementById('lastName').value;
             const rib = document.getElementById('ribNumber').value;
 
-            if(!amount || amount < 100) { alert("أقل مبلغ للسحب هو 100 DH"); return; }
-            if(amount > userBalance) { alert("رصيدك غير كافٍ"); return; }
-            if(!fname || !lname || !rib) { alert("يرجى ملء جميع الحقول"); return; }
+            if(!amount || amount < 100 || amount > userBalance || !fname || !lname || !rib) return;
 
             const btn = document.getElementById('withdrawBtn');
             btn.innerText = "جاري المعالجة...";
 
-            // تحديث الرصيد في Firebase مباشرة
             update(userRef, { balance: userBalance - amount }).then(() => {
-                const requestsRef = push(ref(db, 'withdrawal_requests'));
+                const requestsRef = ref(db, 'withdrawal_requests/' + currentUsername);
                 push(requestsRef, {
-                    username: currentUsername,
                     amount: amount,
                     bankName: activeBankName,
-                    details: `${fname} ${lname} - RIB/Phone: ${rib}`,
-                    status: "pending",
-                    timestamp: Date.now()
+                    details: `${fname} ${lname} - RIB: ${rib}`,
+                    status: "قيد المراجعة",
+                    timestamp: new Date().toLocaleString()
                 });
                 alert("تم إرسال طلب السحب بنجاح!");
                 window.switchTab('history');
@@ -335,35 +306,29 @@
         };
 
         window.loadDepositHistory = async function() {
-            const snapshot = await get(ref(db, 'withdrawal_requests'));
             const listEl = document.getElementById('historyList');
             listEl.innerHTML = "";
-            let hasHistory = false;
-
+            const snapshot = await get(ref(db, 'withdrawal_requests/' + currentUsername));
             if(snapshot.exists()) {
                 const data = snapshot.val();
-                for(let key in data) {
-                    if(data[key].username === currentUsername) {
-                        hasHistory = true;
-                        const req = data[key];
-                        const isPending = req.status === "pending";
-                        const itemHtml = `
-                            <div class="bg-[#111520] border border-[#1a2032] p-4 rounded-xl flex justify-between items-center text-xs">
-                                <div class="space-y-1">
-                                    <p class="font-bold text-gray-200">${req.bankName}</p>
-                                    <p class="text-gray-500 font-mono">${new Date(req.timestamp).toLocaleDateString()}</p>
-                                </div>
-                                <div class="text-right space-y-1">
-                                    <p class="font-bold text-[#ffaa00] font-mono">${req.amount} DH</p>
-                                    ${isPending ? '<p class="text-[10px] bg-[#ffaa00]/10 text-[#ffaa00] px-2 py-0.5 rounded-lg border border-[#ffaa00]/20">قيد المراجعة</p>' : ''}
-                                </div>
+                Object.values(data).reverse().forEach(req => {
+                    listEl.innerHTML += `
+                        <div class="bg-[#111520] border border-[#1a2032] p-4 rounded-xl text-xs space-y-2">
+                            <div class="flex justify-between">
+                                <span class="font-bold text-white">${req.bankName}</span>
+                                <span class="font-black text-[#ffaa00]">DH ${req.amount}</span>
                             </div>
-                        `;
-                        listEl.insertAdjacentHTML('afterbegin', itemHtml);
-                    }
-                }
+                            <div class="flex justify-between text-gray-500 text-[10px]">
+                                <span>${req.timestamp}</span>
+                                <span class="font-bold border border-[#ffaa00] text-[#ffaa00] px-2 rounded">${req.status}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('noHistoryText').classList.add('hidden');
+            } else {
+                document.getElementById('noHistoryText').classList.remove('hidden');
             }
-            document.getElementById('noHistoryText').classList.toggle('hidden', hasHistory);
         };
 
         window.switchTab = function(type) {
