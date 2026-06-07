@@ -73,14 +73,14 @@
                     </div>
                 </div>
             </div>
-            <div class="result-display" id="resultDisplay">Placez votre mise et lancez la roulette !</div>
+            <div class="result-display" id="resultDisplay">Placez votre mise et lanceز la roulette !</div>
         </div>
 
         <div class="betting-section">
             <div class="bet-control-container">
                 <div class="bet-input-group">
-                    <label>Mise (Fixée par le système) :</label>
-                    <input type="number" id="betAmount" value="100" readonly style="pointer-events: none;">
+                    <label>Mise (Fixée par le نظام) :</label>
+                    <input type="number" id="betAmount" value="150" readonly style="pointer-events: none;">
                 </div>
             </div>
 
@@ -120,18 +120,14 @@
         const currentUsername = localStorage.getItem('username') || "Ayoube"; 
         let balance = 0;
 
-        // مزامنة الرصيد
+        // جلب مبلغ الرهان الذي تم حفظه من الكود الثاني (الصفحة الرئيسية)
+        let pendingBetAmount = parseFloat(localStorage.getItem('pendingBet')) || 150;
+        document.getElementById('betAmount').value = pendingBetAmount;
+
+        // مزامنة الرصيد من قاعدة البيانات مباشرة
         database.ref('users/' + currentUsername + '/balance').on('value', (snapshot) => {
             balance = parseFloat(snapshot.val()) || 0;
             document.getElementById('balance').innerText = balance;
-        });
-
-        // مزامنة قيمة الرهان من قاعدة البيانات مباشرة (بدون تدخل المستخدم)
-        database.ref('users/' + currentUsername + '/pendingBet').on('value', (snapshot) => {
-            const val = snapshot.val();
-            if (val) {
-                document.getElementById('betAmount').value = val;
-            }
         });
 
         const sounds = {
@@ -196,12 +192,24 @@
             else { document.getElementById(`bet-${value}`).classList.add('active'); document.getElementById('currentBetType').innerText = value === 'red' ? 'Rouge' : 'Noir'; }
         }
 
+        function updateHistory(winningItem) {
+            const container = document.getElementById('historyContainer');
+            const item = document.createElement('div');
+            item.className = `history-item ${winningItem.color === 'red' ? 'btn-red' : (winningItem.color === 'black' ? 'btn-black' : 'btn-zero')}`;
+            item.innerText = winningItem.num;
+            container.insertBefore(item, container.firstChild);
+            if (container.children.length > 10) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
         function spinWheel() {
-            const betAmount = parseInt(document.getElementById('betAmount').value);
+            const betAmount = parseFloat(document.getElementById('betAmount').value);
             if (!currentBet.type) { alert('Veuillez sélectionner une mise !'); return; }
             if (isNaN(betAmount) || betAmount > balance) { alert('Solde insuffisant !'); return; }
 
             isSpinning = true;
+            // خصم قيمة الرهان الفعّالة عند بدء الدوران
             database.ref('users/' + currentUsername).update({ balance: balance - betAmount });
             
             document.getElementById('spinBtn').disabled = true;
@@ -218,11 +226,17 @@
                 if ((currentBet.type === 'number' && currentBet.value === winning.num)) { won = true; prize = betAmount * 35; }
                 else if ((currentBet.type === 'red' && winning.color === 'red') || (currentBet.type === 'black' && winning.color === 'black')) { won = true; prize = betAmount * 2; }
 
+                document.getElementById('resultDisplay').innerText = `Le numéro gagnant est ${winning.num} (${winning.color === 'red' ? 'Rouge' : winning.color === 'black' ? 'Noir' : 'Zéro'}).`;
+                updateHistory(winning);
+
                 if (won) {
-                    database.ref('users/' + currentUsername).update({ balance: balance - betAmount + prize });
+                    // إذا فاز يحصل على رصيده الجديد مضافاً إليه الجائزة كاملاً
+                    database.ref('users/' + currentUsername).update({ balance: (balance - betAmount) + prize });
                     sounds.win.play().catch(() => {});
+                    alert(`Félicitations ! Vous avez gagné ${prize} DH`);
                 } else {
                     sounds.lose.play().catch(() => {});
+                    alert(`Désolé, vous avez perdu.`);
                 }
                 
                 isSpinning = false;
