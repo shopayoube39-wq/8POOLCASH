@@ -986,7 +986,7 @@ btnStart.onclick = () => {
         return; 
     }
     
-    if(isDemoMode) { demoBalance -= finalCost; } else { globalUserBalance -= finalCost; updateFirebaseBalance(globalUserBalance); }
+    // تم حذف أسطر خصم الرصيد من هنا لتلعب دون أي خصم إضافي
     
     betAmount = checkedBet; 
     currentLevel = 0; isGameActive = true; isProcessingStep = false;
