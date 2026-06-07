@@ -8,7 +8,7 @@
 <style>
 :root {
   --bg-dark: #020408;
-  --panel-bg: rgba(8, 14, 30, 0.85);
+  --panel-bg: rgba(8, 14, 30, 0.9);
   --accent-gold: #ffb703;
   --neon-cyan: #00f0ff;
   --neon-pink: #ff007f;
@@ -16,7 +16,8 @@
   --fever-purple: #9d4edd;
   --text-main: #ffffff;
   --text-muted: #4e6178;
-  --border-neon: rgba(0, 240, 255, 0.2);
+  --border-neon: rgba(0, 240, 255, 0.25);
+  --gold-glow: rgba(241, 196, 15, 0.6); 
 }
 
 * {
@@ -33,21 +34,25 @@ body {
   color: var(--text-main); min-height: 100vh;
   display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
   padding: 15px; overflow-x: hidden; transition: transform 0.1s ease;
+  position: relative;
 }
 
 body.rtl { text-align: right; }
 body.rtl .stat-box, body.rtl .shield-toggle-box, body.rtl .toast, body.rtl .ai-predictor-box { flex-direction: row-reverse; text-align: right; }
 
+/* أنيميشن الاهتزاز والوميض المتقدم عند الخسارة والربح */
 @keyframes screenShake {
   0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  20% { transform: translate(-8px, 5px) rotate(-1deg); }
-  40% { transform: translate(6px, -6px) rotate(1deg); }
-  60% { transform: translate(-5px, 2px) rotate(-0.5deg); }
-  80% { transform: translate(4px, 4px) rotate(0.5deg); }
+  20% { transform: translate(-10px, 7px) rotate(-1.5deg); }
+  40% { transform: translate(8px, -8px) rotate(1.5deg); }
+  60% { transform: translate(-6px, 4px) rotate(-0.5deg); }
+  80% { transform: translate(5px, 5px) rotate(0.5deg); }
 }
 body.shake { animation: screenShake 0.4s ease-in-out; }
-body.flash-danger { animation: flashRed 0.4s ease-out; }
-@keyframes flashRed { 0% { background-color: rgba(255, 0, 127, 0.4); } 100% { background-color: var(--bg-dark); } }
+body.flash-danger { animation: flashRed 0.5s ease-out; }
+@keyframes flashRed { 0% { background-color: rgba(255, 0, 127, 0.5); } 100% { background-color: var(--bg-dark); } }
+body.flash-success { animation: flashGreen 0.5s ease-out; }
+@keyframes flashGreen { 0% { background-color: rgba(57, 255, 20, 0.25); } 100% { background-color: var(--bg-dark); } }
 
 body.fever-glow-active { animation: feverNeonPulse 1.5s infinite alternate; }
 @keyframes feverNeonPulse {
@@ -55,9 +60,39 @@ body.fever-glow-active { animation: feverNeonPulse 1.5s infinite alternate; }
   100% { box-shadow: inset 0 0 50px rgba(157, 78, 221, 0.4); }
 }
 
+/* شرائط الـ LED التفاعلية الفاخرة المحيطة باللعبة */
+.led-strip {
+  position: fixed;
+  top: 10px;
+  bottom: 10px;
+  width: 6px;
+  border-radius: 20px;
+  box-shadow: 0 0 15px var(--neon-cyan);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 999;
+}
+.led-left { left: 10px; }
+.led-right { right: 10px; }
+
+@keyframes led-pulse-idle {
+  0% { background: var(--neon-cyan); filter: drop-shadow(0 0 8px var(--neon-cyan)); }
+  50% { background: var(--fever-purple); filter: drop-shadow(0 0 14px var(--fever-purple)); }
+  100% { background: var(--accent-gold); filter: drop-shadow(0 0 8px var(--accent-gold)); }
+}
+@keyframes led-spinning-active {
+  0% { background: #00f0ff; filter: drop-shadow(0 0 15px #00f0ff); }
+  50% { background: #ff007f; filter: drop-shadow(0 0 25px #ff007f); }
+  100% { background: #39ff14; filter: drop-shadow(0 0 15px #39ff14); }
+}
+
+.led-idle { animation: led-pulse-idle 4s infinite alternate ease-in-out; }
+.led-spin { animation: led-spinning-active 0.4s infinite ease-in-out; }
+.led-win { animation: none !important; background: var(--success-neon) !important; box-shadow: 0 0 35px 12px var(--success-neon) !important; }
+.led-lose { animation: none !important; background: var(--neon-pink) !important; box-shadow: 0 0 35px 12px var(--neon-pink) !important; }
+
 #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
 .toast {
-  background: rgba(6, 11, 25, 0.9); border: 1px solid var(--neon-cyan); padding: 12px 20px; 
+  background: rgba(6, 11, 25, 0.95); border: 1px solid var(--neon-cyan); padding: 12px 20px; 
   border-radius: 12px; color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 10px;
   box-shadow: 0 5px 15px rgba(0,240,255,0.2); animation: slideIn 0.3s ease forwards;
 }
@@ -69,6 +104,7 @@ body.fever-glow-active { animation: feverNeonPulse 1.5s infinite alternate; }
   width: 100%; max-width: 1280px; display: flex; justify-content: space-between; align-items: center;
   background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
   padding: 12px 20px; border-radius: 16px; margin-bottom: 15px; backdrop-filter: blur(10px);
+  z-index: 10;
 }
 .vip-level-box { display: flex; align-items: center; gap: 10px; }
 .xp-bar-bg { width: 120px; height: 8px; background: #111827; border-radius: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
@@ -98,13 +134,12 @@ body.fever-glow-active { animation: feverNeonPulse 1.5s infinite alternate; }
 .lang-btn { background: transparent; border: none; color: var(--text-muted); padding: 5px 10px; font-weight: 800; font-size: 11px; border-radius: 6px; cursor: pointer; }
 .lang-btn.active { background: var(--neon-cyan); color: #000; }
 
-.main-layout { display: flex; gap: 20px; max-width: 1280px; width: 100%; margin-bottom: 20px; }
+.main-layout { display: flex; gap: 20px; max-width: 1280px; width: 100%; margin-bottom: 20px; z-index: 10; }
 .game-core {
-  flex: 2; display: flex; flex-direction: row; gap: 20px; background: var(--panel-bg); backdrop-filter: blur(25px);
+  flex: 1; display: flex; flex-direction: row; gap: 20px; background: var(--panel-bg); backdrop-filter: blur(25px);
   padding: 25px; border-radius: 28px; border: 1px solid var(--border-neon); box-shadow: 0 0 40px rgba(0, 240, 255, 0.05);
 }
-.control-panel, .side-panel { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 290px; }
-.side-panel { background: rgba(8, 14, 30, 0.6); padding: 20px; border-radius: 28px; border: 1px solid rgba(255, 255, 255, 0.02); }
+.control-panel { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 290px; }
 
 .brand-title { font-size: 24px; font-weight: 900; text-align: center; text-shadow: 0 0 10px var(--neon-cyan); text-transform: uppercase; }
 .brand-title span { color: var(--accent-gold); }
@@ -113,7 +148,7 @@ body.fever-glow-active { animation: feverNeonPulse 1.5s infinite alternate; }
 .input-label { font-size: 11px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
 
 .toggle-group { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: rgba(0,0,0,0.5); padding: 4px; border-radius: 12px; }
-.toggle-btn { background: transparent; border: none; color: var(--text-muted); padding: 10px; font-weight: 800; font-size: 11px; border-radius: 8px; cursor: pointer; }
+.toggle-btn { background: transparent; border: none; color: var(--text-muted); padding: 10px; font-weight: 800; font-size: 11px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
 .toggle-btn.active { color: #000; background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
 .toggle-btn.active.danger-mode { color: #fff; background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
 
@@ -131,13 +166,9 @@ body.fever-glow-active { animation: feverNeonPulse 1.5s infinite alternate; }
 @keyframes aiPulse { 0% { opacity: 0.3; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px var(--neon-cyan); } }
 
 .bet-input-container { display: flex; flex-direction: column; gap: 6px; background: rgba(0,0,0,0.5); border-radius: 14px; padding: 6px; border: 1px solid rgba(255,255,255,0.05); }
-.bet-fields-wrapper { display: flex; align-items: center; width: 100%; }
-.bet-quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; width: 100%; }
-.bet-btn-sm { background: rgba(255,255,255,0.04); border: none; color: var(--neon-cyan); padding: 8px; font-weight: 800; font-size: 11px; border-radius: 8px; cursor: pointer; transition: 0.2s; text-align: center; }
-.bet-btn-sm:hover { background: rgba(0, 240, 255, 0.15); color: #fff; }
+.bet-fields-wrapper { display: flex; align-items: center; width: 100%; justify-content: center; }
 
 input[type="number"], select { width: 100%; background: transparent; border: none; color: #fff; font-size: 18px; font-weight: 800; padding: 5px; outline: none; text-align: center; }
-select { color: var(--neon-cyan); cursor: pointer; -webkit-appearance: none; }
 
 .shield-toggle-box {
   background: rgba(255, 0, 127, 0.03); border: 1px dashed rgba(255, 0, 127, 0.2);
@@ -161,7 +192,6 @@ button:disabled { opacity: 0.12; cursor: not-allowed; transform: none !important
 .ladder-step.active { color: #000; background: var(--accent-gold); box-shadow: 0 0 12px var(--accent-gold); transform: scale(1.05); }
 
 .grid { flex: 1; display: flex; flex-direction: column-reverse; gap: 10px; transition: opacity 0.3s; }
-.grid.bot-lock { pointer-events: none; opacity: 0.7; }
 .row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 4px; border-radius: 14px; border: 1px solid transparent; transition: 0.2s; }
 .row.active-row { background: rgba(0, 240, 255, 0.02); border: 1px solid rgba(0, 240, 255, 0.2); }
 
@@ -181,6 +211,7 @@ button:disabled { opacity: 0.12; cursor: not-allowed; transform: none !important
 .bottom-hub {
   width: 100%; max-width: 1280px; background: var(--panel-bg); border: 1px solid var(--border-neon);
   border-radius: 24px; padding: 20px; backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 10px;
+  z-index: 10;
 }
 .hub-tabs { display: flex; gap: 10px; border-bottom: 2px solid rgba(255,255,255,0.05); padding-bottom: 12px; margin-bottom: 15px; overflow-x: auto; }
 .hub-tab-btn {
@@ -210,21 +241,9 @@ button:disabled { opacity: 0.12; cursor: not-allowed; transform: none !important
 .status-win { color: var(--success-neon); font-weight: bold; }
 .status-lose { color: var(--neon-pink); font-weight: bold; }
 
-.wallet-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; padding: 10px 0; }
-.wallet-card { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); }
-.wallet-card h4 { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
-
-.lucky-wheel-container { display: flex; flex-direction: column; align-items: center; gap: 10px; background: rgba(0,0,0,0.5); padding: 12px; border-radius: 14px; border: 1px dashed var(--accent-gold); }
-.wheel-graphic { width: 100px; height: 100px; border-radius: 50%; border: 5px solid var(--accent-gold); background: conic-gradient(var(--neon-cyan) 0deg 90deg, var(--neon-pink) 90deg 180deg, var(--fever-purple) 180deg 270deg, var(--success-neon) 270deg 360deg); transition: transform 3s cubic-bezier(0.25, 1, 0.5, 1); }
-
-.mini-stat-card { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.02); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-.mini-stat-card p:first-child { font-size: 11px; color: var(--text-muted); font-weight: 800; }
-.mini-stat-card p:last-child { font-size: 14px; font-weight: 800; color: var(--accent-gold); }
-
 .particle { position: fixed; pointer-events: none; font-size: 20px; z-index: 9999; animation: fly 0.8s ease-out forwards; }
 @keyframes fly { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--mx), var(--my)) scale(0); opacity: 0; } }
 
-/* شريط الحساب المضاف من الكود الثاني */
 .user-badge-header {
   background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
   padding: 6px 14px; border-radius: 12px; display: flex; align-items: center; gap: 8px; font-size: 12px;
@@ -232,7 +251,11 @@ button:disabled { opacity: 0.12; cursor: not-allowed; transform: none !important
 .pulse-green { width: 6px; height: 6px; background: #10b981; border-radius: 50%; animation: blink 1s infinite alternate; }
 @keyframes blink { 0% { opacity: 0.4; } 100% { opacity: 1; } }
 
+#confetti-canvas { position: fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:99999; }
+
 @media (max-width: 960px) {
+  .led-strip { width: 4px; top:0; bottom:0; }
+  .led-left { left: 0; } .led-right { right: 0; }
   .top-global-bar { flex-direction: column; gap: 10px; padding: 10px; }
   .main-layout { flex-direction: column; gap: 15px; }
   .game-core { flex-direction: column; padding: 15px; }
@@ -240,12 +263,16 @@ button:disabled { opacity: 0.12; cursor: not-allowed; transform: none !important
   .multiplier-ladder { flex-direction: row; width: 100%; overflow-x: auto; }
   .ladder-step { min-width: 55px; }
   .cell { height: 60px; }
-  .wallet-grid { grid-template-columns: 1fr; }
-  .stats-history-layout { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body onclick="initAudioOnInteraction()">
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- عناصر شريط النيون الجانبي المتفاعل -->
+<div class="led-strip led-left led-idle" id="ledLeft"></div>
+<div class="led-strip led-right led-idle" id="ledRight"></div>
 
 <div id="toast-container"></div>
 
@@ -313,15 +340,7 @@ button:disabled { opacity: 0.12; cursor: not-allowed; transform: none !important
         <span class="input-label" id="txt-label-bet">Montant de Mise</span>
         <div class="bet-input-container">
           <div class="bet-fields-wrapper">
-            <button class="bet-btn-sm" style="padding: 5px 10px;" onclick="adjustBet('half')">½</button>
-            <input type="number" id="bet-amount" value="150" min="10">
-            <button class="bet-btn-sm" style="padding: 5px 10px;" onclick="adjustBet('double')">2X</button>
-          </div>
-          <div class="bet-quick-actions">
-            <button class="bet-btn-sm" onclick="adjustBet('min')">MIN</button>
-            <button class="bet-btn-sm" onclick="adjustBet('add50')">+50</button>
-            <button class="bet-btn-sm" onclick="adjustBet('add100')">+100</button>
-            <button class="bet-btn-sm" onclick="adjustBet('max')">MAX</button>
+            <input type="number" id="bet-amount" value="150" readonly style="pointer-events: none; cursor: default;">
           </div>
         </div>
       </div>
@@ -341,37 +360,6 @@ button:disabled { opacity: 0.12; cursor: not-allowed; transform: none !important
     </div>
   </div>
 
-  <div class="side-panel">
-    <div class="brand-title" style="font-size:16px; text-shadow:0 0 5px var(--neon-pink)" id="txt-title-auto">🤖 CONFIG AUTO-BOT</div>
-    
-    <div class="input-group">
-      <span class="input-label" id="txt-label-tier">Palier de sortie automatique</span>
-      <div class="bet-input-container">
-        <select id="auto-cashout-tier">
-          <option value="1">Tier 1 (Safe)</option>
-          <option value="2">Tier 2 (Medium)</option>
-          <option value="3">Tier 3 (Risky)</option>
-          <option value="4">Tier 4 (Hardcore)</option>
-          <option value="5">Tier 5 (Legendary)</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="input-group">
-      <span class="input-label" id="txt-label-rounds">Nombre de Sessions (Max 4)</span>
-      <div class="bet-input-container">
-        <input type="number" id="auto-rounds" value="4" min="1" max="4">
-      </div>
-    </div>
-
-    <button id="btn-auto-start" class="main-btn" style="background: linear-gradient(135deg, var(--neon-pink), #540226); color:#fff;">START ROBOT 🤖</button>
-
-    <div class="brand-title" style="font-size:13px; color:var(--accent-gold); margin-top:15px;" id="txt-title-stats">📊 VOS STATISTIQUES LIVE</div>
-    <div class="stats-dashboard">
-      <div class="mini-stat-card"><p id="lbl-st-1">TOTAL PROFIT</p><p id="stat-total-profit">0 🪙</p></div>
-      <div class="mini-stat-card"><p id="lbl-st-2">MAX MULTI</p><p id="stat-max-mult">X 0.00</p></div>
-    </div>
-  </div>
 </div>
 
 <div class="bottom-hub">
@@ -425,7 +413,6 @@ button:disabled { opacity: 0.12; cursor: not-allowed; transform: none !important
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <script>
-// إعدادات الـ Firebase الخاصة بك من الكود الثاني
 const firebaseConfig = {
   apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
   authDomain: "poolcash-6692c.firebaseapp.com",
@@ -447,16 +434,42 @@ function initAudioOnInteraction() {
     if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume(); }
 }
 
+// محرك السنث والترددات المتطور للمؤثرات الاحترافية
 function playSynthSound(freq, type, duration, vol=0.1) {
     if (!audioCtx) return;
     try {
         if (audioCtx.state === 'suspended') audioCtx.resume();
         let osc = audioCtx.createOscillator();
         let gainNode = audioCtx.createGain();
-        osc.type = type; osc.frequency.value = freq;
+        osc.connect(gainNode); gainNode.connect(audioCtx.destination);
+        
+        osc.type = type; 
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        if (type === 'custom-win') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+            osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+            osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+            osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); // C6
+            gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.6);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.6);
+            return;
+        }
+        
+        if (type === 'custom-lose') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(70, audioCtx.currentTime + 0.5);
+            gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.55);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.55);
+            return;
+        }
+
         gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-        osc.connect(gainNode); gainNode.connect(audioCtx.destination);
         osc.start(); osc.stop(audioCtx.currentTime + duration);
     } catch(e) {}
 }
@@ -468,32 +481,38 @@ function startAmbientBeats() {
 }
 function stopAmbientBeats() { if (ambientInterval) clearInterval(ambientInterval); }
 
+// تغيير حالة أشرطة النيون LED الجانبية المحيطة برمجياً
+function changeLedState(state) {
+    const l = document.getElementById('ledLeft');
+    const r = document.getElementById('ledRight');
+    l.className = 'led-strip led-left';
+    r.className = 'led-strip led-right';
+    if (state === 'spin') { l.classList.add('led-spin'); r.classList.add('led-spin'); }
+    else if (state === 'win') { l.classList.add('led-win'); r.classList.add('led-win'); }
+    else if (state === 'lose') { l.classList.add('led-lose'); r.classList.add('led-lose'); }
+    else { l.classList.add('led-idle'); r.classList.add('led-idle'); }
+}
+
 const locales = {
     fr: {
         logo: "CHAPO CHICKEN <span>PRO</span>", risk: "Niveau de Risque", bal: "Solde Vault", mult: "Multiplicateur",
         profit: "Gain Estimé", bet: "Montant de Mise", shield: "🛡️ ACTIVATION BOUCLIER (+25%)",
-        btnStart: "LANCER CYBER 🚀", btnCashout: "CASHOUT FOUDROYANT 💰",
-        autoTitle: "🤖 CONFIG AUTO-BOT", tier: "Palier de sortie automatique", rounds: "Nombre de Sessions",
-        btnAuto: "START ROBOT 🤖", alert: "Fonds insuffisants!", titleStats: "📊 VOS STATISTIQUES LIVE", st1: "TOTAL PROFIT", st2: "MAX MULTI"
+        btnStart: "LANCER CYBER 🚀", btnCashout: "CASHOUT FOUDROYANT 💰", alert: "Fonds insuffisants!"
     },
     en: {
         logo: "NEON CHICKEN <span>PRO</span>", risk: "Risk Factor Level", bal: "Vault Balance", mult: "Current Multiplier",
         profit: "Estimated Profit", bet: "Bet Size Amount", shield: "🛡️ ACTIVATE SHIELD (+25%)",
-        btnStart: "LAUNCH CYBER 🚀", btnCashout: "INSTANT CASHOUT 💰",
-        autoTitle: "🤖 AUTO-BOT SETTINGS", tier: "Auto Take-Profit Tier", rounds: "Number of Sessions",
-        btnAuto: "START ROBOT 🤖", alert: "Insufficient funds!", titleStats: "📊 YOUR LIVE STATISTICS", st1: "TOTAL PROFIT", st2: "MAX MULTI"
+        btnStart: "LAUNCH CYBER 🚀", btnCashout: "INSTANT CASHOUT 💰", alert: "Insufficient funds!"
     },
     ar: {
         logo: "دجاجة الحظ <span>PRO</span>", risk: "مستوى الخطورة والمخاطرة", bal: "الرصيد الحالي", mult: "المضاعف الحالي",
         profit: "الربح المتوقع الإجمالي", bet: "مبلغ الرهان المختار", shield: "🛡️ تفعيل درع الحماية الأوتوماتيكي (+25%)",
-        btnStart: "أطلق المغامرة 🚀", btnCashout: "سحب فوري للأرباح 💰",
-        autoTitle: "🤖 إعدادات البوت الآلي الذكي", tier: "مستوى الانسحاب التلقائي", rounds: "عدد الجولات المتتالية",
-        btnAuto: "تشغيل الروبوت 🤖", alert: "الرصيد غير كافٍ!", titleStats: "📊 إحصائياتك المباشرة الحالية", st1: "إجمالي الأرباح", st2: "أعلى مضاعف اليوم"
+        btnStart: "أطلق المغامرة 🚀", btnCashout: "سحب فوري للأرباح 💰", alert: "الرصيد غير كافٍ!"
     }
 };
 
 let currentLang = "fr";
-let globalUserBalance = 0; // الرصيد المتزامن مع فايربيس المأخوذ من الكود الثاني
+let globalUserBalance = 0; 
 let currentUsername = "Ayoube"; 
 let demoBalance = 0; 
 let isDemoMode = false;
@@ -504,8 +523,6 @@ let vipLevel = parseInt(localStorage.getItem("elite_chicken_vip")) || 1;
 let betAmount = 0;
 let currentLevel = 0; 
 let isGameActive = false;
-let isAutoMode = false;
-let isBotAwaitingNextRound = false; 
 let currentRiskCount = 1; 
 let isShieldActive = false;
 let isShieldCrushed = false;
@@ -530,12 +547,64 @@ const ladderElement = document.getElementById("ladder");
 const btnStart = document.getElementById("btn-start");
 const btnCashout = document.getElementById("btn-cashout");
 const betInput = document.getElementById("bet-amount");
-const btnAutoStart = document.getElementById("btn-auto-start");
-const autoTierSelect = document.getElementById("auto-cashout-tier");
-const autoRoundsInput = document.getElementById("auto-rounds");
 const shieldBox = document.getElementById("shield-box");
 
-// دالة تحديث وحفظ الرصيد الحقيقي في Firebase تلقائياً عند الربح والخسارة
+// إعداد قماش الجزيئات الاحتفالية المتطورة (Confetti Win Engine)
+const canvas = document.getElementById('confetti-canvas');
+const ctx = canvas.getContext('2d');
+let confetti = [];
+let animationFrameId;
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+
+function createConfetti() {
+    confetti = [];
+    for (let i = 0; i < 100; i++) {
+        confetti.push({
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2 - 100,
+            size: Math.random() * 6 + 5,
+            color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+            speedX: (Math.random() - 0.5) * 12,
+            speedY: (Math.random() - 0.7) * 14,
+            gravity: 0.3,
+            opacity: 1
+        });
+    }
+}
+
+function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    confetti.forEach(p => {
+        if (p.opacity > 0) {
+            alive = true;
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.opacity;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+            p.x += p.speedX;
+            p.y += p.speedY;
+            p.speedY += p.gravity;
+            p.opacity -= 0.012;
+        }
+    });
+    if (alive) { animationFrameId = requestAnimationFrame(drawConfetti); }
+    else { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+}
+
+function triggerWinConfetti() {
+    resizeCanvas();
+    createConfetti();
+    cancelAnimationFrame(animationFrameId);
+    drawConfetti();
+}
+
 function updateFirebaseBalance(newBalance) {
     if (!isDemoMode && currentUsername) {
         database.ref('users/' + currentUsername).update({
@@ -544,7 +613,6 @@ function updateFirebaseBalance(newBalance) {
     }
 }
 
-// دالة المزامنة الحية للرصيد المأخوذة من الكود الثاني
 function startFirebaseSync(username) {
     if (!username) return;
     const userRef = database.ref('users/' + username);
@@ -589,11 +657,6 @@ function changeLang(lang) {
     document.getElementById("txt-label-bet").innerText = dict.bet;
     document.getElementById("txt-shield-label").innerText = dict.shield;
     btnStart.innerText = dict.btnStart; btnCashout.innerText = dict.btnCashout;
-    document.getElementById("txt-title-auto").innerText = dict.autoTitle;
-    document.getElementById("txt-label-tier").innerText = dict.tier;
-    document.getElementById("txt-label-rounds").innerText = dict.rounds;
-    btnAutoStart.innerText = dict.btnAuto; document.getElementById("txt-title-stats").innerText = dict.titleStats;
-    document.getElementById("lbl-st-1").innerText = dict.st1; document.getElementById("lbl-st-2").innerText = dict.st2;
     renderLadder();
 }
 
@@ -606,7 +669,7 @@ function switchTab(tabId) {
 }
 
 function toggleDemoMode() {
-    if (isGameActive || isAutoMode || isBotAwaitingNextRound) return;
+    if (isGameActive) return;
     isDemoMode = !isDemoMode;
     const btn = document.getElementById("tab-demo-indicator");
     const badge = document.getElementById("dimo-badge");
@@ -647,8 +710,13 @@ function updateChartUI() {
     });
 }
 
+function syncPendingBet() {
+    let pendingBetAmount = parseFloat(localStorage.getItem('pendingBet')) || 150;
+    betInput.value = pendingBetAmount;
+}
+
 function setRisk(count) {
-    if (isGameActive || isAutoMode || isBotAwaitingNextRound) return;
+    if (isGameActive) return;
     currentRiskCount = count;
     document.getElementById("risk-1").classList.toggle("active", count === 1);
     document.getElementById("risk-2").classList.toggle("active", count === 2);
@@ -661,7 +729,7 @@ function setRisk(count) {
 }
 
 function toggleShield() {
-    if (isGameActive || isAutoMode || isBotAwaitingNextRound) return;
+    if (isGameActive) return;
     isShieldActive = !isShieldActive;
     shieldBox.classList.toggle("shield-on", isShieldActive);
     document.getElementById("txt-shield-state").innerText = isShieldActive ? "ON" : "OFF";
@@ -691,7 +759,7 @@ function updateUI() {
     let currentActiveBal = isDemoMode ? demoBalance : globalUserBalance;
     document.getElementById("balance").innerText = Math.floor(currentActiveBal);
     
-    let activeBet = isGameActive ? betAmount : Math.max(10, Math.floor(Math.abs(parseInt(betInput.value))) || 10);
+    let activeBet = Math.max(10, Math.floor(Math.abs(parseInt(betInput.value))) || 10);
     let activeMults = riskMultipliers[currentRiskCount];
 
     if (isGameActive && currentLevel > 0) {
@@ -709,29 +777,10 @@ function updateUI() {
     document.querySelectorAll(".ladder-step").forEach((st, idx) => {
         st.classList.toggle("active", isGameActive && idx === currentLevel - 1);
     });
-
-    document.getElementById("stat-total-profit").innerText = `${Math.floor(totalProfitStat)} 🪙`;
-    document.getElementById("stat-max-mult").innerText = `X ${maxMultiStat.toFixed(2)}`;
-}
-
-function adjustBet(type) {
-    if (isGameActive || isAutoMode || isBotAwaitingNextRound) return;
-    let currentBet = Math.floor(Math.abs(parseInt(betInput.value))) || 10;
-    let currentActiveBal = isDemoMode ? demoBalance : globalUserBalance;
-    
-    if (type === 'half') betInput.value = Math.max(10, Math.floor(currentBet / 2));
-    else if (type === 'double') betInput.value = Math.min(currentActiveBal, currentBet * 2);
-    else if (type === 'min') betInput.value = 10;
-    else if (type === 'max') betInput.value = Math.max(10, Math.floor(currentActiveBal));
-    else if (type === 'add50') betInput.value = Math.min(currentActiveBal, currentBet + 50);
-    else if (type === 'add100') betInput.value = Math.min(currentActiveBal, currentBet + 100);
-    playSynthSound(350, "sine", 0.04);
-    updateUI();
 }
 
 function renderNewGrid() {
     gridElement.innerHTML = ""; minePositions = [];
-    gridElement.classList.toggle("bot-lock", isAutoMode); 
     
     for (let i = 0; i < 5; i++) {
         let rowMines = [];
@@ -752,7 +801,7 @@ function renderNewGrid() {
 }
 
 function handleCellClick(rowIndex, cellIndex, cellElement) {
-    if (!isGameActive || rowIndex !== currentLevel || isAutoMode || isProcessingStep) return;
+    if (!isGameActive || rowIndex !== currentLevel || isProcessingStep) return;
     isProcessingStep = true; 
     processStep(cellIndex, cellElement);
 }
@@ -768,10 +817,13 @@ function processStep(cellIndex, cellElement) {
             isProcessingStep = false; return; 
         }
         stopAmbientBeats();
+        
+        // جودة ودقة لقطة الخسارة الصادمة
         document.body.classList.add("shake", "flash-danger");
+        changeLedState('lose');
         cellElement.classList.add("revealed-mine"); cellElement.innerHTML = "💥";
-        playSynthSound(90, "sawtooth", 0.7, 0.3);
-        setTimeout(() => document.body.classList.remove("shake", "flash-danger"), 400);
+        playSynthSound(0, "custom-lose", 0.6, 0.35); // صوت الانفجار الرقمي الاحترافي
+        setTimeout(() => document.body.classList.remove("shake", "flash-danger"), 500);
         
         comboCount = 0; isFeverMode = false; streakCount = 0;
         document.getElementById("fever-box").classList.remove("fever-active");
@@ -786,10 +838,10 @@ function processStep(cellIndex, cellElement) {
         showToast(`💥 BOOM! Perdu -${betAmount} 🪙`, "danger");
         logToHistory(isDemoMode ? "DIMO 💎":"REAL 🪙", betAmount, "LOSE 🔴", -betAmount);
         
-        // الخسارة الأوتوماتيكية: الرصيد مخصوم مسبقاً عند البداية، نقوم فقط بإنهاء اللعبة
         endGame(false);
     } else {
-        playSynthSound(500 + (currentLevel * 80), "sine", 0.12, 0.15);
+        // نغمة الكشف السلسة والناجحة
+        playSynthSound(550 + (currentLevel * 90), "sine", 0.14, 0.2);
         
         let isMystery = Math.random() < 0.15;
         if(isMystery) {
@@ -839,22 +891,15 @@ function processStep(cellIndex, cellElement) {
             updateUI();
             startAmbientBeats();
             isProcessingStep = false; 
-            if (isAutoMode) checkAutoPlayNext();
         }
     }
 }
 
 function endGame(isWin) {
-    let wasAuto = isAutoMode;
     isGameActive = false; btnCashout.disabled = true;
     stopAmbientBeats();
     
-    if (!isAutoMode) { 
-        btnStart.disabled = false; 
-        betInput.disabled = false; 
-    } else {
-        isBotAwaitingNextRound = true; 
-    }
+    btnStart.disabled = false; 
     
     document.querySelectorAll(".row").forEach((row, rIdx) => {
         row.classList.remove("active-row");
@@ -874,114 +919,33 @@ function endGame(isWin) {
         let totalPrize = Math.floor(betAmount * finalMultiplier);
         let netProfit = totalPrize - betAmount;
         
-        if (wasAuto && netProfit > 0) {
-            let commission = Math.floor(netProfit * 0.15);
-            netProfit -= commission;
-            totalPrize = betAmount + netProfit;
-            showToast(`🤖 Commission Robot (-15%): ${commission} 🪙`, "info");
-        }
-
-        // زيادة الأرباح الأوتوماتيكية الحقيقية في فايربيس
         if(isDemoMode) {
             demoBalance += totalPrize;
         } else {
             globalUserBalance += totalPrize;
             updateFirebaseBalance(globalUserBalance);
         }
-        
-        totalProfitStat += netProfit;
-        if(finalMultiplier > maxMultiStat) maxMultiStat = finalMultiplier;
 
+        // جودة ودقة لقطة الربح الاحتفالية
+        document.body.classList.add("flash-success");
+        changeLedState('win');
         showToast(`💰 CASHOUT! +${netProfit} 🪙 (X${finalMultiplier.toFixed(2)})`, "success");
         
-        playSynthSound(600, "sine", 0.15, 0.15);
+        playSynthSound(0, "custom-win", 0.6, 0.25); // سيمفونية الفوز المبهجة الكازينو
+        triggerWinConfetti(); // إشعال الجزيئات الملونة الفاخرة بالكامل
+        
+        setTimeout(() => document.body.classList.remove("flash-success"), 500);
         logToHistory(isDemoMode ? "DIMO 💎":"REAL 🪙", betAmount, "WIN 🟢", netProfit);
         for(let i=0; i<15; i++) setTimeout(() => createParticles(document.body, "✨"), i * 40);
     }
     
     currentLevel = 0; isShieldCrushed = false; isProcessingStep = false; 
+    syncPendingBet();
     updateUI();
     
-    if (isAutoMode) {
-        setTimeout(() => {
-            isBotAwaitingNextRound = false;
-            startAutoRound();
-        }, 1000);
-    } else {
-        gridElement.classList.remove("bot-lock");
-    }
+    // إعادة تعيين أشرطة النيون للوضع الهادئ بعد ثوانٍ من النتيجة
+    setTimeout(() => { if (!isGameActive) changeLedState('idle'); }, 2500);
 }
-
-function startAutoRound() {
-    let checkedBet = Math.floor(Math.abs(parseInt(betInput.value))) || 10;
-    let rounds = Math.floor(Math.abs(parseInt(autoRoundsInput.value))) || 0;
-    let currentActiveBal = isDemoMode ? demoBalance : globalUserBalance;
-    
-    if (rounds <= 0 || !isAutoMode || currentActiveBal < checkedBet || currentActiveBal <= 0) {
-        if(currentActiveBal < checkedBet) { showToast("❌ Solde insuffisant! Veuillez charger votre compte.", "danger"); }
-        isAutoMode = false; 
-        isBotAwaitingNextRound = false;
-        btnAutoStart.innerText = locales[currentLang].btnAuto;
-        btnStart.disabled = false; betInput.disabled = false; 
-        gridElement.classList.remove("bot-lock");
-        return;
-    }
-    
-    rounds--; autoRoundsInput.value = rounds;
-    betAmount = checkedBet;
-    let finalCost = isShieldActive ? Math.floor(betAmount * 1.25) : betAmount;
-    
-    // الخصم التلقائي عند بدء جولة البوت الآلي
-    if(isDemoMode) {
-        demoBalance -= finalCost;
-    } else {
-        globalUserBalance -= finalCost;
-        updateFirebaseBalance(globalUserBalance);
-    }
-    
-    currentLevel = 0; isGameActive = true;
-    renderNewGrid(); updateUI();
-    startAmbientBeats();
-    setTimeout(() => checkAutoPlayNext(), 500);
-}
-
-function checkAutoPlayNext() {
-    if (!isGameActive || !isAutoMode) return;
-    if (currentLevel === parseInt(autoTierSelect.value)) { endGame(true); return; }
-    let randomCellIdx = Math.floor(Math.random() * 3);
-    const currentRow = document.querySelectorAll(".row")[currentLevel];
-    processStep(randomCellIdx, currentRow.querySelectorAll(".cell")[randomCellIdx]);
-}
-
-btnAutoStart.onclick = () => {
-    initAudioOnInteraction();
-    let currentActiveBal = isDemoMode ? demoBalance : globalUserBalance;
-    
-    if (isGameActive || isAutoMode || isBotAwaitingNextRound) { 
-        isAutoMode = false; 
-        isBotAwaitingNextRound = false;
-        btnAutoStart.innerText = locales[currentLang].btnAuto; 
-        btnStart.disabled = false; 
-        gridElement.classList.remove("bot-lock");
-        return; 
-    }
-    
-    let requestedRounds = Math.floor(Math.abs(parseInt(autoRoundsInput.value))) || 0;
-    if (requestedRounds > 4) {
-        showToast("⚠️ Le Robot est limité à 4 sessions maximum !", "danger");
-        autoRoundsInput.value = 4;
-        return;
-    }
-
-    let checkedBet = Math.floor(Math.abs(parseInt(betInput.value))) || 10;
-    if (currentActiveBal < checkedBet || currentActiveBal <= 0) { 
-        showToast("❌ Impossible ! Solde insuffisant. Veuillez charger.", "danger"); 
-        return; 
-    }
-    
-    isAutoMode = true; btnAutoStart.innerText = "STOP 🛑"; btnStart.disabled = true; betInput.disabled = true;
-    startAutoRound();
-};
 
 function createParticles(element, char) {
     const rect = element.getBoundingClientRect();
@@ -1021,9 +985,10 @@ function simulateLiveFeed() {
 
 btnStart.onclick = () => {
     initAudioOnInteraction();
-    if (isGameActive || isAutoMode || isBotAwaitingNextRound) return;
+    if (isGameActive) return;
     
-    let checkedBet = Math.floor(Math.abs(parseInt(betInput.value))) || 10;
+    syncPendingBet(); 
+    let checkedBet = Math.floor(Math.abs(parseInt(betInput.value))) || 150;
     let finalCost = isShieldActive ? Math.floor(checkedBet * 1.25) : checkedBet;
     let currentActiveBal = isDemoMode ? demoBalance : globalUserBalance;
     
@@ -1032,7 +997,6 @@ btnStart.onclick = () => {
         return; 
     }
     
-    // خصم مبلغ الرهان أوتوماتيكياً فور انطلاق المغامرة
     if(isDemoMode) {
         demoBalance -= finalCost;
     } else {
@@ -1042,30 +1006,17 @@ btnStart.onclick = () => {
     
     betAmount = checkedBet; 
     currentLevel = 0; isGameActive = true; isProcessingStep = false;
-    btnStart.disabled = true; btnCashout.disabled = false; betInput.disabled = true;
+    btnStart.disabled = true; btnCashout.disabled = false;
     
-    playSynthSound(420, "sine", 0.15, 0.15);
+    // إشعال النيون للحركة السريعة النشطة
+    changeLedState('spin');
+    playSynthSound(440, "sine", 0.18, 0.2);
     startAmbientBeats();
     renderNewGrid(); updateUI();
 };
 
 btnCashout.onclick = () => { if (!isGameActive || currentLevel === 0 || isProcessingStep) return; endGame(true); };
 
-betInput.oninput = () => {
-    let currentActiveBal = isDemoMode ? demoBalance : globalUserBalance;
-    let sanitizedVal = Math.floor(Math.abs(parseInt(betInput.value))) || 10;
-    if (sanitizedVal > currentActiveBal) betInput.value = Math.floor(currentActiveBal);
-    if (sanitizedVal < 10) betInput.value = 10;
-    updateUI();
-};
-
-autoRoundsInput.oninput = () => {
-    let r = parseInt(autoRoundsInput.value) || 1;
-    if(r > 4) { autoRoundsInput.value = 4; showToast("⚠️ Max 4 sessions !", "danger"); }
-    if(r < 1) autoRoundsInput.value = 1;
-};
-
-// مزامنة المستخدم من المعاملات والجلسة عند تحميل الصفحة مثل الكود الثاني تماماً
 document.addEventListener("DOMContentLoaded", () => {
     try {
         const urlParams = new URLSearchParams(window.location.search);
@@ -1079,6 +1030,7 @@ document.addEventListener("DOMContentLoaded", () => {
         startFirebaseSync(currentUsername);
     } catch (e) { console.error(e); }
     
+    syncPendingBet();
     renderLadder(); renderNewGrid(); updateUI(); simulateLiveFeed(); updateChartUI();
 });
 </script>
