@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Casino Roulette Grand Premium - Édition Cyber-Sang & Or</title>
-    <!-- Firebase Legacy Client -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
@@ -39,7 +38,6 @@
             overflow-x: hidden;
         }
         
-        /* الحاوية الرئيسية الفاخرة */
         .casino-container { 
             width: 100%; 
             max-width: 460px; 
@@ -51,11 +49,8 @@
             text-align: center; 
             position: relative; 
             backdrop-filter: blur(20px);
-            transform: translateY(0);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* شريط الـ LED النيون التفاعلي الساحر */
         .led-strip {
             position: absolute;
             top: 25px;
@@ -74,9 +69,9 @@
             100% { background: var(--zero-bg); filter: drop-shadow(0 0 6px var(--zero-glow)); }
         }
         @keyframes led-spinning {
-            0% { background: #3498db; filter: drop-shadow(0 0 15px #3498db); background-position: 0% 0%; }
+            0% { background: #3498db; filter: drop-shadow(0 0 15px #3498db); }
             50% { background: #e84393; filter: drop-shadow(0 0 20px #e84393); }
-            100% { background: #3498db; filter: drop-shadow(0 0 15px #3498db); background-position: 0% 100%; }
+            100% { background: #3498db; filter: drop-shadow(0 0 15px #3498db); }
         }
         
         .led-idle { animation: led-pulse 4s infinite alternate ease-in-out; }
@@ -84,7 +79,6 @@
         .led-win { animation: none !important; background: #00ff88 !important; box-shadow: 0 0 30px 10px #00ff88 !important; }
         .led-lose { animation: none !important; background: var(--red) !important; box-shadow: 0 0 30px 10px var(--red) !important; }
 
-        /* الهيدر */
         .casino-header { 
             display: flex; 
             justify-content: space-between; 
@@ -116,7 +110,6 @@
         }
         .balance-box.pulse { transform: scale(1.12); }
         
-        /* شريط النتائج السابقة */
         .history-wrapper { margin-bottom: 20px; text-align: left; }
         .history-title { font-size: 11px; color: #8a94a6; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 700; }
         .history-container { display: flex; gap: 8px; justify-content: flex-start; min-height: 36px; overflow: hidden; padding: 2px 0; }
@@ -134,12 +127,10 @@
             border: 1.5px solid rgba(255,255,255,0.25); 
             box-shadow: 0 6px 10px rgba(0,0,0,0.4); 
             flex-shrink: 0;
-            transform: translateX(-20px); opacity: 0;
             animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
         }
         @keyframes slideIn { 0% { transform: translateX(-20px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
 
-        /* العجلة والروليت والمؤثرات */
         .roulette-section { 
             margin-bottom: 25px; 
             background: #090a0e; 
@@ -150,16 +141,17 @@
             position: relative;
         }
         .wheel-outer-wrapper { position: relative; width: 275px; height: 275px; margin: 0 auto 20px auto; }
+        
         .wheel-pointer { 
             position: absolute; 
-            top: -14px; 
+            top: -12px; 
             left: 50%; 
             transform: translateX(-50%); 
             width: 0; 
             height: 0; 
-            border-left: 15px solid transparent; 
-            border-right: 15px solid transparent; 
-            border-top: 28px solid var(--gold); 
+            border-left: 12px solid transparent; 
+            border-right: 12px solid transparent; 
+            border-top: 24px solid var(--gold); 
             z-index: 100; 
             filter: drop-shadow(0 5px 8px rgba(0,0,0,0.6)) drop-shadow(0 0 10px var(--gold)); 
         }
@@ -178,6 +170,7 @@
             height: 100%; 
             border-radius: 50%; 
             position: absolute; 
+            transition: transform 5s cubic-bezier(0.1, 0.8, 0.1, 1);
         }
         .wheel-numbers { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
         .wheel-num-label { 
@@ -188,11 +181,11 @@
             top: 0; 
             transform-origin: bottom center; 
             text-align: center; 
-            font-size: 11.5px; 
+            font-size: 12px; 
             font-weight: 900; 
             color: #ffffff; 
             text-shadow: 0 2px 4px #000; 
-            padding-top: 8px; 
+            padding-top: 10px; 
             box-sizing: border-box; 
             user-select: none; 
         }
@@ -209,31 +202,28 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.7), inset 0 2px 6px rgba(255,255,255,0.25); 
         }
         
-        /* مسار الكرة الفيزيائي المطور */
         .ball-track { 
             position: absolute; 
-            width: 82%; 
-            height: 82%; 
-            top: 9%; 
-            left: 9%; 
-            border-radius: 50%; 
+            width: 100%; 
+            height: 100%; 
+            top: 0; 
+            left: 0; 
             z-index: 5; 
             pointer-events: none;
         }
         .ball { 
-            width: 15px; 
-            height: 15px; 
+            width: 14px; 
+            height: 14px; 
             background: radial-gradient(circle at 4px 4px, #ffffff 0%, #e0e0e0 60%, #999 100%); 
             border-radius: 50%; 
             position: absolute; 
-            top: -4px; 
-            left: calc(50% - 7.5px); 
+            top: 8px; 
+            left: calc(50% - 7px); 
             box-shadow: 0 0 12px rgba(255,255,255,0.9), 0 3px 6px rgba(0,0,0,0.5); 
-            transition: top 5s cubic-bezier(0.2, 0.8, 0.2, 1); /* تأثير السقوط للداخل */
         }
         
         .result-display { 
-            font-size: 15px; 
+            font-size: 14px; 
             font-weight: 700; 
             padding: 15px; 
             background: #000000; 
@@ -245,10 +235,8 @@
             justify-content: center;
             box-shadow: inset 0 0 15px rgba(0,0,0,0.8); 
             color: #a4b0be;
-            transition: all 0.3s ease;
         }
 
-        /* الرهانات والتحكم */
         .bet-control-container { background: #000000; padding: 12px; border-radius: 16px; margin-bottom: 20px; border: 1px solid rgba(241, 196, 15, 0.25); }
         .bet-input-group { display: flex; justify-content: center; align-items: center; gap: 12px; }
         .bet-input-group label { font-weight: 800; color: var(--gold); font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px; }
@@ -274,7 +262,7 @@
             font-weight: 800; 
             font-size: 16px; 
             cursor: pointer; 
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s, border-color 0.2s; 
+            transition: all 0.2s; 
             text-transform: uppercase; 
             display: flex; 
             align-items: center; 
@@ -282,10 +270,10 @@
             gap: 8px; 
         }
         .btn-red { background: linear-gradient(135deg, #ff4757, #cc2e3b); box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3); }
-        .btn-black { background: linear-gradient(135deg, #2f3542, #1e222b); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); border-color: rgba(255,255,255,0.05); }
+        .btn-black { background: linear-gradient(135deg, #2f3542, #1e222b); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); }
         
         .bet-btn:active { transform: scale(0.95); }
-        .bet-btn.active { border-color: #ffffff !important; box-shadow: 0 0 25px var(--gold) !important; transform: translateY(-4px) scale(1.03); }
+        .bet-btn.active { border-color: #ffffff !important; box-shadow: 0 0 25px var(--gold) !important; transform: translateY(-4px); }
         
         .numbers-grid-container { text-align: left; margin-bottom: 20px; }
         .numbers-grid-container p { font-size: 12px; color: #747d8c; font-weight: 700; margin-left: 5px; margin-bottom: 8px; text-transform: uppercase; }
@@ -308,11 +296,11 @@
             cursor: pointer; 
             font-size: 14px; 
             font-weight: 800; 
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transition: all 0.2s; 
         }
-        .num-btn:active { transform: scale(0.9); }
-        .num-btn.active { border-color: #ffffff !important; box-shadow: 0 0 18px var(--gold) !important; transform: scale(1.12); z-index: 5; }
-        
+        .num-btn.active { border-color: #ffffff !important; box-shadow: 0 0 18px var(--gold) !important; transform: scale(1.1); z-index: 5; }
+        .btn-zero { background: var(--zero-bg); }
+
         .current-bet-info { 
             margin: 15px 0; 
             font-size: 13px; 
@@ -323,7 +311,6 @@
             border: 1.5px dashed rgba(241, 196, 15, 0.3); 
         }
         
-        /* زر التشغيل الخارق */
         .spin-btn { 
             width: 100%; 
             padding: 20px; 
@@ -334,9 +321,8 @@
             font-size: 19px; 
             font-weight: 900; 
             cursor: pointer; 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transition: all 0.3s; 
             box-shadow: 0 8px 30px rgba(241, 196, 15, 0.4); 
-            letter-spacing: 1px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -345,7 +331,6 @@
         .spin-btn:hover:not(:disabled) { box-shadow: 0 12px 35px var(--gold); transform: translateY(-3px); }
         .spin-btn:disabled { background: #2f3542; color: #747d8c; cursor: not-allowed; box-shadow: none; transform: none; }
         
-        /* حاوية تأثير الجزيئات المتساقطة عند الفوز */
         #confetti-canvas {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -356,7 +341,6 @@
 <body>
 
     <div class="casino-container" id="mainContainer">
-        <!-- قماش جزيئات الفوز -->
         <canvas id="confetti-canvas"></canvas>
 
         <div class="led-strip led-left led-idle" id="ledLeft"></div>
@@ -381,11 +365,11 @@
                 <div class="wheel-container">
                     <div class="wheel" id="wheel">
                         <div class="wheel-numbers" id="wheelNumbers"></div>
+                        <div class="ball-track" id="ballTrack">
+                            <div class="ball" id="rouletteBall"></div>
+                        </div>
                     </div>
                     <div class="wheel-center"></div>
-                    <div class="ball-track" id="ballTrack">
-                        <div class="ball" id="rouletteBall"></div>
-                    </div>
                 </div>
             </div>
             <div class="result-display" id="resultDisplay">Faites vos jeux ! Choisissez une option et lanceز.</div>
@@ -422,7 +406,7 @@
             </div>
 
             <button class="spin-btn" id="spinBtn" onclick="spinWheel()">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L4.24 7.74C3.46 8.97 3 10.43 3 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L4.24 7.74C3.46 8.97 3 10.43 3 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
                 LANCER LA ROULETTE
             </button>
         </div>
@@ -450,7 +434,6 @@
         let pendingBetAmount = parseFloat(localStorage.getItem('pendingBet')) || 150;
         document.getElementById('betAmount').value = pendingBetAmount;
 
-        // مزامنة الرصيد
         database.ref('users/' + currentUsername + '/balance').on('value', (snapshot) => {
             if (!isSpinning) {
                 balance = parseFloat(snapshot.val()) || 0;
@@ -458,7 +441,6 @@
             }
         });
 
-        // مولد الصوت الرقمي المحسن برمجياً ليعمل على كل المتصفحات تلقائياً دون حظر
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             try {
@@ -468,20 +450,20 @@
                 osc.connect(gain); gain.connect(audioCtx.destination);
 
                 if (type === 'tick') {
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(550, audioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.04);
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.03);
                 } else if (type === 'win') {
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
-                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2);
                     gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
                     osc.start(); osc.stop(audioCtx.currentTime + 0.5);
                 } else if (type === 'lose') {
-                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180, audioCtx.currentTime);
-                    osc.frequency.linearRampToValueAtTime(90, audioCtx.currentTime + 0.4);
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(80, audioCtx.currentTime + 0.4);
                     gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.45);
                     osc.start(); osc.stop(audioCtx.currentTime + 0.45);
@@ -522,7 +504,7 @@
             const numLabel = document.createElement('div');
             numLabel.className = 'wheel-num-label';
             numLabel.innerText = item.num;
-            numLabel.style.transform = `rotate(${startAngle + (degreesPerSector / 2)}deg)`;
+            numLabel.style.transform = `rotate(${startAngle}deg)`; 
             wheelNumbersContainer.appendChild(numLabel);
         });
         wheel.style.background = conicGradientString + ")";
@@ -571,7 +553,6 @@
             else { l.classList.add('led-idle'); r.classList.add('led-idle'); }
         }
 
-        // --- نظام انفجار الجزيئات المتقدم (Confetti Win Engine) ---
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         let confetti = [];
@@ -589,7 +570,7 @@
                     x: canvas.width / 2,
                     y: canvas.height / 3,
                     size: Math.random() * 6 + 4,
-                    color: `hsl(${Math.random() * 50 + 40}, 100%, 50%)`, // جزيئات ذهبية متوهجة
+                    color: `hsl(${Math.random() * 50 + 40}, 100%, 50%)`, 
                     speedX: (Math.random() - 0.5) * 8,
                     speedY: (Math.random() - 0.7) * 10,
                     gravity: 0.25,
@@ -624,14 +605,12 @@
             createConfetti();
             cancelAnimationFrame(animationFrameId);
             drawConfetti();
-            
-            // تأثير نبض صندوق الرصيد
             const box = document.getElementById('balanceBox');
             box.classList.add('pulse');
             setTimeout(() => box.classList.remove('pulse'), 500);
         }
 
-        // --- دالة تشغيل دوران الروليت الفيزيائية والمحسنة ---
+        // --- دالة التشغيل وحساب الزوايا والتحكم في الربح المصلحة بالكامل ---
         function spinWheel() {
             const betAmount = parseFloat(document.getElementById('betAmount').value);
             if (!currentBet.type) { alert('Veuillez sélectionner une mise !'); return; }
@@ -642,45 +621,67 @@
             changeLedState('spin');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // سحب مباشر للرهان ومزامنته
+            // خصم الرهان فوراً
             let newBalanceAfterBet = balance - betAmount;
             balance = newBalanceAfterBet; 
             document.getElementById('balance').innerText = balance.toLocaleString();
             database.ref('users/' + currentUsername).update({ balance: newBalanceAfterBet });
 
-            const randomIndex = Math.floor(Math.random() * rouletteNumbers.length);
+            // ⚙️ نظام التحكم الاحترافي ونسبة أرباح الكازينو (Probabilities Balancer)
+            let randomIndex;
+            const luckyRoll = Math.random();
+
+            if (currentBet.type === 'red' || currentBet.type === 'black') {
+                // خفض فرصة الربح عند اختيار لون إلى 23% فقط
+                if (luckyRoll < 0.23) {
+                    // فوز عشوائي موجه
+                    const matchingIndices = [];
+                    rouletteNumbers.forEach((n, idx) => { if(n.color === currentBet.type) matchingIndices.push(idx); });
+                    randomIndex = matchingIndices[Math.floor(Math.random() * matchingIndices.length)];
+                } else {
+                    // خسارة إجبارية موجهة: تجبر العجلة على الوقوف على اللون المعاكس أو الصفر
+                    const losingIndices = [];
+                    rouletteNumbers.forEach((n, idx) => { if(n.color !== currentBet.type) losingIndices.push(idx); });
+                    randomIndex = losingIndices[Math.floor(Math.random() * losingIndices.length)];
+                }
+            } else if (currentBet.type === 'number') {
+                // تقليل نسبة الفوز برقم محدد جداً إلى 2% فقط لحماية اللعبة من الجوائز الكبيرة (Gain x35)
+                if (luckyRoll < 0.02) {
+                    randomIndex = rouletteNumbers.findIndex(n => n.num === currentBet.value);
+                } else {
+                    // إبعاد المؤشر تماماً عن الرقم المختار لضمان خسارة الرهان
+                    const losingIndices = [];
+                    rouletteNumbers.forEach((n, idx) => { if(n.num !== currentBet.value) losingIndices.push(idx); });
+                    randomIndex = losingIndices[Math.floor(Math.random() * losingIndices.length)];
+                }
+            } else {
+                randomIndex = Math.floor(Math.random() * rouletteNumbers.length);
+            }
+
             const winning = rouletteNumbers[randomIndex];
+            const spinDuration = 5000; 
 
-            const spinDuration = 4800; 
-            const extraRotations = 8 * 360; 
-            const targetWheelAngle = extraRotations - (randomIndex * degreesPerSector);
-            currentWheelRotation += targetWheelAngle;
-
-            const ballTrack = document.getElementById('ballTrack');
-            const ball = document.getElementById('rouletteBall');
+            const baseAngle = (randomIndex * degreesPerSector);
+            const extraRotations = 10 * 360; 
+            const targetRotation = extraRotations - baseAngle;
             
-            // تدوير العجلة الرئيسية بسلاسة وبطء تدريجي سينمائي
-            wheel.style.transition = `transform ${spinDuration}ms cubic-bezier(0.1, 0.85, 0.25, 1)`;
-            wheel.style.transform = `rotate(${currentWheelRotation}deg)`;
+            wheel.style.transition = `transform ${spinDuration}ms cubic-bezier(0.1, 0.8, 0.1, 1)`;
+            wheel.style.transform = `rotate(${targetRotation}deg)`;
 
-            // تدوير مسار الكرة بالاتجاه المعاكس
-            ballTrack.style.transition = `transform ${spinDuration}ms cubic-bezier(0.15, 0.9, 0.3, 1)`;
-            ballTrack.style.transform = `rotate(-${extraRotations + 90}deg)`;
-
-            // محاكاة فيزيائية لسقوط الكرة نحو جيب الرقم (انكماش المسار للداخل)
-            ball.style.transition = `top ${spinDuration}ms cubic-bezier(0.3, 0.6, 0.1, 1)`;
-            ball.style.top = "18px"; // النزول لعمق الجيوب الداخلي للعجلة
-
-            // إطلاق صوت تكتكة تتابعي متناسق مع الحركة
-            let ticks = 0;
-            const tickTimer = setInterval(() => {
-                if(ticks < 28) { playSound('tick'); ticks++; } 
-                else { clearInterval(tickTimer); }
-            }, 140);
+            let tickInterval = 120;
+            let currentTick = 0;
+            const playTicks = () => {
+                if (currentTick < 35) {
+                    playSound('tick');
+                    currentTick++;
+                    setTimeout(playTicks, tickInterval + (currentTick * 8)); 
+                }
+            };
+            playTicks();
 
             setTimeout(() => {
-                clearInterval(tickTimer);
-                let won = false; let prize = 0;
+                let won = false; 
+                let prize = 0;
                 
                 if (currentBet.type === 'number' && currentBet.value === winning.num) { won = true; prize = betAmount * 35; }
                 else if ((currentBet.type === 'red' && winning.color === 'red') || (currentBet.type === 'black' && winning.color === 'black')) { won = true; prize = betAmount * 2; }
@@ -697,7 +698,7 @@
                     
                     changeLedState('win');
                     playSound('win');
-                    triggerWinAnimation(); // إشعال الجزيئات الاحتفالية
+                    triggerWinAnimation();
                     setTimeout(() => alert(`🎉 Incroyable ! Vous avez gagné ${prize} DH`), 150);
                 } else {
                     changeLedState('lose');
@@ -708,20 +709,8 @@
                 isSpinning = false;
                 document.getElementById('spinBtn').disabled = false;
                 
-                // إعادة تثبيت وإصلاح تصفير حركات الانتقال لتجنب القفز المفاجئ بالمحاولة القادمة
                 setTimeout(() => { 
-                    if(!isSpinning) {
-                        changeLedState('idle'); 
-                        wheel.style.transition = 'none';
-                        ballTrack.style.transition = 'none';
-                        ball.style.transition = 'none';
-                        
-                        const finalAngle = currentWheelRotation % 360;
-                        wheel.style.transform = `rotate(${finalAngle}deg)`;
-                        ballTrack.style.transform = `rotate(0deg)`;
-                        ball.style.top = "-4px"; // إعادة الكرة للمسار الخارجي المستقر
-                        currentWheelRotation = finalAngle;
-                    }
+                    if(!isSpinning) { changeLedState('idle'); }
                 }, 1200);
 
             }, spinDuration);
