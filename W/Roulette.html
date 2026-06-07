@@ -311,14 +311,21 @@
             border: 1.5px dashed rgba(241, 196, 15, 0.3); 
         }
         
+        /* أزرار التحكم السفلى */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
         .spin-btn { 
-            width: 100%; 
+            flex: 2; 
             padding: 20px; 
             background: linear-gradient(135deg, #ffe494, var(--gold), #d4ac0d); 
             border: none; 
             border-radius: 18px; 
             color: #000000; 
-            font-size: 19px; 
+            font-size: 18px; 
             font-weight: 900; 
             cursor: pointer; 
             transition: all 0.3s; 
@@ -331,6 +338,26 @@
         .spin-btn:hover:not(:disabled) { box-shadow: 0 12px 35px var(--gold); transform: translateY(-3px); }
         .spin-btn:disabled { background: #2f3542; color: #747d8c; cursor: not-allowed; box-shadow: none; transform: none; }
         
+        .reset-btn {
+            flex: 1;
+            padding: 20px;
+            background: linear-gradient(135deg, #57606f, #2f3542);
+            border: none;
+            border-radius: 18px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .reset-btn:hover:not(:disabled) { background: linear-gradient(135deg, #747d8c, #57606f); transform: translateY(-3px); }
+        .reset-btn:disabled { background: #2f3542; color: #747d8c; cursor: not-allowed; opacity: 0.5; transform: none; }
+
         #confetti-canvas {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -405,10 +432,15 @@
                 Statut : <span id="currentBetType" style="color:var(--gold); font-weight:bold;">Aucun pari sélectionné</span>
             </div>
 
-            <button class="spin-btn" id="spinBtn" onclick="spinWheel()">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L4.24 7.74C3.46 8.97 3 10.43 3 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
-                LANCER LA ROULETTE
-            </button>
+            <div class="action-buttons">
+                <button class="reset-btn" id="resetBtn" onclick="resetGame()">
+                    🔄 Replay
+                </button>
+                <button class="spin-btn" id="spinBtn" onclick="spinWheel()">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L4.24 7.74C3.46 8.97 3 10.43 3 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+                    LANCER
+                </button>
+            </div>
         </div>
     </div>
 
@@ -428,6 +460,7 @@
         const currentUsername = localStorage.getItem('username') || "Ayoube"; 
         let balance = 0;
         let isSpinning = false;
+        let currentRotation = 0; // حل مشكلة توقف الدوران في المرة الثانية بالاحتفاظ بقيمة الزاوية التراكمية
 
         let pendingBetAmount = parseFloat(localStorage.getItem('pendingBet')) || 150;
         document.getElementById('betAmount').value = pendingBetAmount;
@@ -608,6 +641,18 @@
             setTimeout(() => box.classList.remove('pulse'), 500);
         }
 
+        // دالة إعادة اللعب لتنظيف الواجهة وتصفير الخيارات
+        function resetGame() {
+            if (isSpinning) return;
+            currentBet = { type: null, value: null };
+            document.querySelectorAll('.bet-btn, .num-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('currentBetType').innerText = "Aucun pari sélectionné";
+            document.getElementById('resultDisplay').innerText = "Faites vos jeux ! Choisissez une option et lanceز.";
+            changeLedState('idle');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            playSound('tick');
+        }
+
         function spinWheel() {
             const betAmount = parseFloat(document.getElementById('betAmount').value);
             if (!currentBet.type) { alert('Veuillez sélectionner une mise !'); return; }
@@ -615,6 +660,7 @@
 
             isSpinning = true;
             document.getElementById('spinBtn').disabled = true;
+            document.getElementById('resetBtn').disabled = true;
             changeLedState('spin');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -623,42 +669,21 @@
             document.getElementById('balance').innerText = balance.toLocaleString();
             database.ref('users/' + currentUsername).update({ balance: newBalanceAfterBet });
 
-            let randomIndex;
-            const luckyRoll = Math.random();
-
-            if (currentBet.type === 'red' || currentBet.type === 'black') {
-                if (luckyRoll < 0.23) {
-                    const matchingIndices = [];
-                    rouletteNumbers.forEach((n, idx) => { if(n.color === currentBet.type) matchingIndices.push(idx); });
-                    randomIndex = matchingIndices[Math.floor(Math.random() * matchingIndices.length)];
-                } else {
-                    const losingIndices = [];
-                    rouletteNumbers.forEach((n, idx) => { if(n.color !== currentBet.type) losingIndices.push(idx); });
-                    randomIndex = losingIndices[Math.floor(Math.random() * losingIndices.length)];
-                }
-            } else if (currentBet.type === 'number') {
-                if (luckyRoll < 0.02) {
-                    randomIndex = rouletteNumbers.findIndex(n => n.num === currentBet.value);
-                } else {
-                    const losingIndices = [];
-                    rouletteNumbers.forEach((n, idx) => { if(n.num !== currentBet.value) losingIndices.push(idx); });
-                    randomIndex = losingIndices[Math.floor(Math.random() * losingIndices.length)];
-                }
-            } else {
-                randomIndex = Math.floor(Math.random() * rouletteNumbers.length);
-            }
-
+            // اختيار رقم عشوائي حقيقي وعادل تماماً بدون تلاعب بنسب الخسارة
+            const randomIndex = Math.floor(Math.random() * rouletteNumbers.length);
             const winning = rouletteNumbers[randomIndex];
             const spinDuration = 5000; 
 
-            // 🛠️ تصحيح الحسابات الرياضية لزاوية الوقوف الصحيحة تحت المؤشر الثابت في الأعلى
+            // حساب الزاوية بشكل تراكمي صحيح لحل مشكلة عدم الدوران في المرة الثانية
             const extraRotations = 8 * 360; 
-            const targetRotation = extraRotations + (360 - (randomIndex * degreesPerSector));
+            const sectorAngle = (360 - (randomIndex * degreesPerSector)) % 360;
+            
+            // إضافة التدوير الجديد فوق التدوير القديم لضمان استمرارية الحركة في كل المرات
+            currentRotation = currentRotation + extraRotations + (sectorAngle - (currentRotation % 360));
             
             wheel.style.transition = `transform ${spinDuration}ms cubic-bezier(0.1, 0.8, 0.1, 1)`;
-            wheel.style.transform = `rotate(${targetRotation}deg)`;
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
 
-            // 🛠️ تصحيح نظام الصوت ليتزامن وينتهي تدريجياً بالتوازي مع حركة العجلة طوال الـ 5 ثوانٍ
             let startTimestamp = null;
             let lastTickAngle = 0;
             
@@ -667,10 +692,9 @@
                 let progress = timestamp - startTimestamp;
                 
                 if (progress < spinDuration) {
-                    // دالة الـ cubic-bezier التقريبية لمعرفة الزاوية الحالية للعجلة أثناء التباطؤ
                     let t = progress / spinDuration;
-                    let easeOut = 1 - Math.pow(1 - t, 3); // تباطؤ تدريجي سلس
-                    let currentAngle = easeOut * targetRotation;
+                    let easeOut = 1 - Math.pow(1 - t, 3); 
+                    let currentAngle = easeOut * currentRotation;
                     
                     if (currentAngle - lastTickAngle >= degreesPerSector) {
                         playSound('tick');
@@ -685,8 +709,17 @@
                 let won = false; 
                 let prize = 0;
                 
-                if (currentBet.type === 'number' && currentBet.value === winning.num) { won = true; prize = betAmount * 35; }
-                else if ((currentBet.type === 'red' && winning.color === 'red') || (currentBet.type === 'black' && winning.color === 'black')) { won = true; prize = betAmount * 2; }
+                // تطبيق قانون الربح والخسارة بشكل دقيق 
+                if (currentBet.type === 'number' && currentBet.value === winning.num) { 
+                    won = true; 
+                    prize = betAmount * 35; 
+                } else if (currentBet.type === 'red' && winning.color === 'red') { 
+                    won = true; 
+                    prize = betAmount * 2; 
+                } else if (currentBet.type === 'black' && winning.color === 'black') { 
+                    won = true; 
+                    prize = betAmount * 2; 
+                }
 
                 const colorText = winning.color === 'red' ? 'Rouge' : winning.color === 'black' ? 'Noir' : 'Zéro';
                 document.getElementById('resultDisplay').innerHTML = `Gagnant : <span style="color:var(--gold); font-size:18px; margin:0 5px;">★ ${winning.num} ★</span> (${colorText})`;
@@ -710,6 +743,7 @@
                 
                 isSpinning = false;
                 document.getElementById('spinBtn').disabled = false;
+                document.getElementById('resetBtn').disabled = false;
                 
                 setTimeout(() => { 
                     if(!isSpinning) { changeLedState('idle'); }
