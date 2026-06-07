@@ -372,7 +372,7 @@
                     <div class="wheel-center"></div>
                 </div>
             </div>
-            <div class="result-display" id="resultDisplay">Faites vos jeux ! Choisissez une option et lanceز.</div>
+            <div class="result-display" id="resultDisplay">Faites vos jeux ! Choisissez une option et lancez.</div>
         </div>
 
         <div class="betting-section">
@@ -413,7 +413,6 @@
     </div>
 
     <script>
-        // إعدادات Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
             authDomain: "poolcash-6692c.firebaseapp.com",
@@ -429,7 +428,6 @@
         const currentUsername = localStorage.getItem('username') || "Ayoube"; 
         let balance = 0;
         let isSpinning = false;
-        let currentWheelRotation = 0;
 
         let pendingBetAmount = parseFloat(localStorage.getItem('pendingBet')) || 150;
         document.getElementById('betAmount').value = pendingBetAmount;
@@ -451,9 +449,9 @@
 
                 if (type === 'tick') {
                     osc.type = 'triangle'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
-                    osc.start(); osc.stop(audioCtx.currentTime + 0.03);
+                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.04);
                 } else if (type === 'win') {
                     osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
                     osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
@@ -610,7 +608,6 @@
             setTimeout(() => box.classList.remove('pulse'), 500);
         }
 
-        // --- دالة التشغيل وحساب الزوايا والتحكم في الربح المصلحة بالكامل ---
         function spinWheel() {
             const betAmount = parseFloat(document.getElementById('betAmount').value);
             if (!currentBet.type) { alert('Veuillez sélectionner une mise !'); return; }
@@ -621,35 +618,28 @@
             changeLedState('spin');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // خصم الرهان فوراً
             let newBalanceAfterBet = balance - betAmount;
             balance = newBalanceAfterBet; 
             document.getElementById('balance').innerText = balance.toLocaleString();
             database.ref('users/' + currentUsername).update({ balance: newBalanceAfterBet });
 
-            // ⚙️ نظام التحكم الاحترافي ونسبة أرباح الكازينو (Probabilities Balancer)
             let randomIndex;
             const luckyRoll = Math.random();
 
             if (currentBet.type === 'red' || currentBet.type === 'black') {
-                // خفض فرصة الربح عند اختيار لون إلى 23% فقط
                 if (luckyRoll < 0.23) {
-                    // فوز عشوائي موجه
                     const matchingIndices = [];
                     rouletteNumbers.forEach((n, idx) => { if(n.color === currentBet.type) matchingIndices.push(idx); });
                     randomIndex = matchingIndices[Math.floor(Math.random() * matchingIndices.length)];
                 } else {
-                    // خسارة إجبارية موجهة: تجبر العجلة على الوقوف على اللون المعاكس أو الصفر
                     const losingIndices = [];
                     rouletteNumbers.forEach((n, idx) => { if(n.color !== currentBet.type) losingIndices.push(idx); });
                     randomIndex = losingIndices[Math.floor(Math.random() * losingIndices.length)];
                 }
             } else if (currentBet.type === 'number') {
-                // تقليل نسبة الفوز برقم محدد جداً إلى 2% فقط لحماية اللعبة من الجوائز الكبيرة (Gain x35)
                 if (luckyRoll < 0.02) {
                     randomIndex = rouletteNumbers.findIndex(n => n.num === currentBet.value);
                 } else {
-                    // إبعاد المؤشر تماماً عن الرقم المختار لضمان خسارة الرهان
                     const losingIndices = [];
                     rouletteNumbers.forEach((n, idx) => { if(n.num !== currentBet.value) losingIndices.push(idx); });
                     randomIndex = losingIndices[Math.floor(Math.random() * losingIndices.length)];
@@ -661,23 +651,35 @@
             const winning = rouletteNumbers[randomIndex];
             const spinDuration = 5000; 
 
-            const baseAngle = (randomIndex * degreesPerSector);
-            const extraRotations = 10 * 360; 
-            const targetRotation = extraRotations - baseAngle;
+            // 🛠️ تصحيح الحسابات الرياضية لزاوية الوقوف الصحيحة تحت المؤشر الثابت في الأعلى
+            const extraRotations = 8 * 360; 
+            const targetRotation = extraRotations + (360 - (randomIndex * degreesPerSector));
             
             wheel.style.transition = `transform ${spinDuration}ms cubic-bezier(0.1, 0.8, 0.1, 1)`;
             wheel.style.transform = `rotate(${targetRotation}deg)`;
 
-            let tickInterval = 120;
-            let currentTick = 0;
-            const playTicks = () => {
-                if (currentTick < 35) {
-                    playSound('tick');
-                    currentTick++;
-                    setTimeout(playTicks, tickInterval + (currentTick * 8)); 
+            // 🛠️ تصحيح نظام الصوت ليتزامن وينتهي تدريجياً بالتوازي مع حركة العجلة طوال الـ 5 ثوانٍ
+            let startTimestamp = null;
+            let lastTickAngle = 0;
+            
+            function step(timestamp) {
+                if (!startTimestamp) startTimestamp = timestamp;
+                let progress = timestamp - startTimestamp;
+                
+                if (progress < spinDuration) {
+                    // دالة الـ cubic-bezier التقريبية لمعرفة الزاوية الحالية للعجلة أثناء التباطؤ
+                    let t = progress / spinDuration;
+                    let easeOut = 1 - Math.pow(1 - t, 3); // تباطؤ تدريجي سلس
+                    let currentAngle = easeOut * targetRotation;
+                    
+                    if (currentAngle - lastTickAngle >= degreesPerSector) {
+                        playSound('tick');
+                        lastTickAngle = currentAngle;
+                    }
+                    requestAnimationFrame(step);
                 }
-            };
-            playTicks();
+            }
+            requestAnimationFrame(step);
 
             setTimeout(() => {
                 let won = false; 
