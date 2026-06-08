@@ -84,7 +84,7 @@
 
         <div class="bg-white/5 border border-white/5 rounded-xl p-3.5 flex justify-between items-center text-xs">
             <span class="text-gray-400 font-medium">هل تحتاج مساعدة؟</span>
-            <a href="support@mywingims.com" class="text-blue-500 font-bold font-mono hover:underline">support@mywingims.com</a>
+            <a href="mailto:support@mywingims.com" class="text-blue-500 font-bold font-mono hover:underline">support@mywingims.com</a>
         </div>
 
         <div onclick="openBonusModal()" class="border border-blue-500/20 bg-white/5 rounded-2xl p-4 flex justify-between items-center shadow-md cursor-pointer hover:border-blue-500/50 transition">
@@ -682,7 +682,6 @@
             document.getElementById('bonusModal').classList.remove('hidden');
         }
         function closeBonusModal() {
-            document.getElementById('bonusModal').classList.hidden = true; // correction if needed, but keeping as .hidden for consistency with logic
             document.getElementById('bonusModal').classList.add('hidden');
         }
         function copyAdminInfo() {
