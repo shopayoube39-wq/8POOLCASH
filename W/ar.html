@@ -342,8 +342,15 @@
           selectAmount(0);
           
           const urlParams = new URLSearchParams(window.location.search);
-          let activeUser = urlParams.get('username') || localStorage.getItem('username') || "Ayoube";
-          currentUsername = activeUser;
+          let activeUser = urlParams.get('username') || urlParams.get('user') || localStorage.getItem('username') || "Ayoube";
+          
+          if (activeUser) {
+              currentUsername = activeUser.trim();
+              if (currentUsername.includes('@')) {
+                  currentUsername = currentUsername.split('@')[0];
+              }
+              document.getElementById('userDisplay').innerText = currentUsername;
+          }
           
           startFirebaseSync(currentUsername);
       });
