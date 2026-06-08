@@ -143,7 +143,7 @@
         .btn-start { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
         .btn-jump { background: linear-gradient(135deg, #d97706, #b45309); display: none; margin-bottom: 10px; }
         .btn-cashout { background: linear-gradient(135deg, var(--primary), #059669); display: none; color: #04060e; font-weight: 900; }
-        /* تصميم مخصص للزر عندما يكون معطلاً في الخطوة صفر */
+        
         .btn-cashout:disabled {
             background: #1e293b !important;
             color: #64748b !important;
@@ -233,7 +233,7 @@
                 </g>
             </svg>
 
-            <div class="multiplier-top" id="mult-view">1.00x</div>
+            <div class="multiplier-top" id="mult-view">0.00x</div>
         </div>
 
         <div class="dashboard-panel">
@@ -315,12 +315,12 @@
             balance: 0.00,
             activeBet: 150.00,
             currentStep: 0,
-            currentMultiplier: 1.00,
+            currentMultiplier: 0.00, 
             isRoundActive: false,
             currentUsername: "Ayoube",
             
             stepPositionsX: [15, 76, 161, 246, 331], 
-            multiplierSteps: [1.00, 1.35, 1.90, 3.20, 6.00],
+            multiplierSteps: [0.00, 1.35, 1.90, 3.20, 6.00],
             svgNS: "http://www.w3.org/2000/svg",
             cars: [], 
             animationId: null,
@@ -338,19 +338,17 @@
             startRound() {
                 this.syncPendingBet();
 
-                // التحقق الصارم من الرصيد قبل الخصم وبدء اللعبة
                 if (isNaN(this.activeBet) || this.activeBet < 10 || this.balance < this.activeBet) {
                     this.log("الرصيد غير كافٍ ومطابق للبدء.", "var(--accent)");
                     return;
                 }
 
-                // [تعديل هام] خصم مبلغ الرهان فوراً من رصيد اللاعب وتحديث Firebase عند البداية
                 this.balance -= this.activeBet;
                 updateFirebaseBalance(this.balance);
 
                 this.isRoundActive = true;
                 this.currentStep = 0;
-                this.currentMultiplier = 1.00;
+                this.currentMultiplier = 0.00; 
 
                 this.setLEDColor('#00f0ff');
                 document.getElementById('mult-view').classList.remove('crash-text');
@@ -362,15 +360,13 @@
                 
                 this.updateUI();
 
-                // التحكم في الأزرار
                 document.getElementById('action-start').style.display = "none";
                 document.getElementById('action-jump').style.display = "block";
                 document.getElementById('action-cashout').style.display = "block";
                 
-                // [تعديل هام] تعطيل زر السحب عند الخطوة 0 لكي لا يمكنه السحب دون لعب وجلب الأرباح فجأة
                 document.getElementById('action-cashout').disabled = true;
 
-                this.log("تم خصم الرهان! تنشيط ممرات السرعة... اقفز الآن لتفعيل السحب!", "#fff");
+                this.log("تم خصم الرهان وتنشيط المصفوفة! اقفز واجتز السيارة الأولى لتفعيل السحب.", "#fff");
                 
                 this.initTraffic();
                 this.loop();
@@ -447,7 +443,6 @@
                 } else {
                     this.currentMultiplier = this.multiplierSteps[this.currentStep];
                     
-                    // [تعديل هام] بمجرد القفز بنجاح واجتياز أول سيارة (الخطوة > 0) نفعّل زر السحب فوراً
                     if (this.currentStep > 0) {
                         document.getElementById('action-cashout').disabled = false;
                     }
@@ -458,7 +453,7 @@
                         this.log("اختراق كلي للمصفوفة بنجاح ساحق!", "var(--primary)");
                         this.cashout();
                     } else {
-                        this.log(`قفزة دقيقة ومستقرة! المضاعف الحالي: ${this.currentMultiplier.toFixed(2)}x`, "var(--info)");
+                        this.log(`قفزة آمنة! المضاعف الفعلي الحالي: ${this.currentMultiplier.toFixed(2)}x`, "var(--info)");
                     }
                 }
             },
@@ -503,7 +498,7 @@
                 multView.innerText = "💥 CRASHED";
                 multView.classList.add('crash-text');
 
-                this.log("تم سحق الهدف بنجاح من المركبة السيبرانية!", "var(--accent)");
+                this.log("تم سحق الهدف وخسارة الرهان الحالي!", "var(--accent)");
                 this.pushHistory(this.currentMultiplier, false);
                 this.endRoundLifecycle();
             },
@@ -511,22 +506,22 @@
             cashout() {
                 if (!this.isRoundActive) return;
                 
-                // تأكيد إضافي لحماية السحب في الخطوة 0
-                if (this.currentStep === 0) return;
+                if (this.currentStep === 0 || this.currentMultiplier <= 0) {
+                    this.log("خطأ: لا يمكنك السحب قبل اجتياز الممر الأول!", "var(--accent)");
+                    return;
+                }
 
                 this.isRoundActive = false;
                 cancelAnimationFrame(this.animationId);
 
                 SoundSystem.play('win');
-                
                 this.setLEDColor('var(--primary)');
 
-                // احتساب الأرباح وإضافتها للرصيد المحمي (الذي خُصم منه الرهان مسبقاً)
                 let totalWin = this.activeBet * this.currentMultiplier;
                 this.balance += totalWin;
 
                 updateFirebaseBalance(this.balance);
-                this.log(`🚀 تم سحب عوائدك بنجاح: +DH ${totalWin.toFixed(2)}`, "var(--primary)");
+                this.log(`🚀 تم سحب العوائد بنجاح: +DH ${totalWin.toFixed(2)}`, "var(--primary)");
 
                 this.pushHistory(this.currentMultiplier, true);
                 this.endRoundLifecycle();
@@ -543,7 +538,9 @@
             },
 
             updateUI() {
-                document.getElementById('mult-view').innerText = this.currentMultiplier.toFixed(2) + "x";
+                // [تعديل العرض هنا]: يعرض الآن 0.00x بدلاً من 1.00x في الواجهة عند البداية لمنع اللبس تماماً
+                let displayMult = this.currentMultiplier.toFixed(2);
+                document.getElementById('mult-view').innerText = displayMult + "x";
                 document.getElementById('live-profit-counter').innerText = "DH " + (this.activeBet * this.currentMultiplier).toFixed(2);
                 document.getElementById('user-balance').innerText = this.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             },
