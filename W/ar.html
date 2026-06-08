@@ -55,7 +55,6 @@
             overflow: hidden;
         }
         
-        /* Shimmer Effect for Deposit Button */
         .deposit-btn {
             position: relative;
             overflow: hidden;
@@ -239,8 +238,15 @@
           document.getElementById('join-table-btn').innerText = `العب الآن - ${customInput.value || 0} DH`;
       });
 
-      function goToDeposit() { window.location.href = 'deposit.html'; }
-      function goToWithdraw() { window.location.href = 'withdraw.html'; }
+      function goToDeposit() {
+          localStorage.setItem('username', currentUsername);
+          window.location.href = 'deposit.html';
+      }
+
+      function goToWithdraw() {
+          localStorage.setItem('username', currentUsername);
+          window.location.href = 'withdraw.html';
+      }
 
       function selectAmount(index) {
           currentSelectedIndex = index;
@@ -334,6 +340,11 @@
           setInterval(renderLiveMatches, 3000);
           setInterval(renderLeaderboard, 604800000);
           selectAmount(0);
+          
+          const urlParams = new URLSearchParams(window.location.search);
+          let activeUser = urlParams.get('username') || localStorage.getItem('username') || "Ayoube";
+          currentUsername = activeUser;
+          
           startFirebaseSync(currentUsername);
       });
     </script>
