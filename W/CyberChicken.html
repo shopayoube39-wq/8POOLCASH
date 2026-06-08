@@ -17,7 +17,7 @@
             --text: #ffffff;
             --text-muted: #475569;
             --panel-border: #141c2f;
-            --led-color: #00f0ff; /* لون الـ LED الافتراضي */
+            --led-color: #00f0ff; 
         }
 
         * {
@@ -39,7 +39,6 @@
             background: radial-gradient(circle at center, #0f172a 0%, #03050a 100%);
         }
 
-        /* حاوية اللعبة الرئيسية مع شريط إضاءة LED في الجوانب */
         .game-container {
             background-color: var(--bg-card);
             width: 100%;
@@ -53,7 +52,6 @@
             animation: ledPulse 2s linear infinite alternate;
         }
 
-        /* أنيميشن نبض إضاءة LED الجانبية */
         @keyframes ledPulse {
             0% { box-shadow: 0 0 12px var(--led-color); }
             100% { box-shadow: 0 0 25px var(--led-color); }
@@ -92,7 +90,6 @@
             overflow: hidden;
         }
 
-        /* اهتزاز الشاشة العنيف عند الخسارة */
         .shake { animation: heavyShake 0.4s ease-in-out; }
         @keyframes heavyShake {
             0%, 100% { transform: translate(0, 0); }
@@ -100,7 +97,6 @@
             40%, 80% { transform: translate(8px, -5px); }
         }
 
-        /* أنيميشن حركة الدجاجة الافتراضية */
         .chicken-idle-anim {
             animation: chickenPulse 0.6s ease-in-out infinite alternate;
             transform-origin: center;
@@ -110,7 +106,6 @@
             100% { transform: scale(1.05) translateY(-4px); }
         }
 
-        /* أنيميشن وميض للسيارات السيبرانية */
         .car-neon-glow {
             animation: carGlow 1.5s ease-in-out infinite alternate;
         }
@@ -148,6 +143,13 @@
         .btn-start { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
         .btn-jump { background: linear-gradient(135deg, #d97706, #b45309); display: none; margin-bottom: 10px; }
         .btn-cashout { background: linear-gradient(135deg, var(--primary), #059669); display: none; color: #04060e; font-weight: 900; }
+        /* تصميم مخصص للزر عندما يكون معطلاً في الخطوة صفر */
+        .btn-cashout:disabled {
+            background: #1e293b !important;
+            color: #64748b !important;
+            cursor: not-allowed;
+            box-shadow: none !important;
+        }
 
         .sys-log { margin-top: 15px; text-align: center; font-size: 13px; font-weight: 700; color: var(--text-muted); }
 
@@ -211,7 +213,7 @@
                     <line x1="186" y1="0" x2="186" y2="380" stroke="rgba(0, 240, 255, 0.2)" stroke-dasharray="10 12" stroke-width="2"/>
                     <line x1="271" y1="0" x2="271" y2="380" stroke="rgba(0, 240, 255, 0.2)" stroke-dasharray="10 12" stroke-width="2"/>
                     <line x1="356" y1="0" x2="356" y2="380" stroke="rgba(0, 240, 255, 0.2)" stroke-dasharray="10 12" stroke-width="2"/>
-                </</g>
+                </g>
 
                 <g id="traffic-layer"></g>
                 <g id="fx-layer"></g>
@@ -273,7 +275,6 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // نظام أصوات متطور ومحسن 8-bit ليعطي تجربة ألعاب حقيقية
         const SoundSystem = {
             ctx: null,
             init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
@@ -292,7 +293,6 @@
                     gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
                     osc.start(); osc.stop(this.ctx.currentTime + 0.15);
                 } else if (type === 'crash') {
-                    // صوت انفجار حقيقي خشن ومطول للتحذير
                     osc.type = 'sawtooth';
                     osc.frequency.setValueAtTime(120, this.ctx.currentTime);
                     osc.frequency.linearRampToValueAtTime(20, this.ctx.currentTime + 0.6);
@@ -300,7 +300,6 @@
                     gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.6);
                     osc.start(); osc.stop(this.ctx.currentTime + 0.6);
                 } else if (type === 'win') {
-                    // نغمة أركيد فوز متصاعدة ومبهجة
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(400, this.ctx.currentTime); 
                     osc.frequency.setValueAtTime(600, this.ctx.currentTime + 0.1); 
@@ -321,7 +320,6 @@
             currentUsername: "Ayoube",
             
             stepPositionsX: [15, 76, 161, 246, 331], 
-            // تعديل المضاعفات لتتناسب مع مستوى الصعوبة الجديد الشديد
             multiplierSteps: [1.00, 1.35, 1.90, 3.20, 6.00],
             svgNS: "http://www.w3.org/2000/svg",
             cars: [], 
@@ -340,16 +338,20 @@
             startRound() {
                 this.syncPendingBet();
 
-                if (isNaN(this.activeBet) || this.activeBet < 10 || this.activeBet > this.balance) {
+                // التحقق الصارم من الرصيد قبل الخصم وبدء اللعبة
+                if (isNaN(this.activeBet) || this.activeBet < 10 || this.balance < this.activeBet) {
                     this.log("الرصيد غير كافٍ ومطابق للبدء.", "var(--accent)");
                     return;
                 }
+
+                // [تعديل هام] خصم مبلغ الرهان فوراً من رصيد اللاعب وتحديث Firebase عند البداية
+                this.balance -= this.activeBet;
+                updateFirebaseBalance(this.balance);
 
                 this.isRoundActive = true;
                 this.currentStep = 0;
                 this.currentMultiplier = 1.00;
 
-                // إرجاع لون الـ LED الجانبي للوضع الطبيعي الأزرق السيبراني عند البدء
                 this.setLEDColor('#00f0ff');
                 document.getElementById('mult-view').classList.remove('crash-text');
                 
@@ -360,11 +362,15 @@
                 
                 this.updateUI();
 
+                // التحكم في الأزرار
                 document.getElementById('action-start').style.display = "none";
                 document.getElementById('action-jump').style.display = "block";
                 document.getElementById('action-cashout').style.display = "block";
+                
+                // [تعديل هام] تعطيل زر السحب عند الخطوة 0 لكي لا يمكنه السحب دون لعب وجلب الأرباح فجأة
+                document.getElementById('action-cashout').disabled = true;
 
-                this.log("تنشيط ممرات السرعة السيبرانية المفتوحة... انتبه!", "#fff");
+                this.log("تم خصم الرهان! تنشيط ممرات السرعة... اقفز الآن لتفعيل السحب!", "#fff");
                 
                 this.initTraffic();
                 this.loop();
@@ -387,7 +393,6 @@
                     `;
                     layer.appendChild(carGroup);
 
-                    // زيادة سرعة السيارات بشكل ملحوظ لتصبح اللعبة أصعب (من 4.0 إلى 8.5)
                     let speed = 4.0 + Math.random() * 4.5; 
                     let yPos = Math.random() * 380;
                     let isUp = i % 2 === 0;
@@ -426,7 +431,6 @@
                 this.currentStep++;
 
                 let chk = document.getElementById('chicken-object');
-                // أنيميشن تمدد قفزة الدجاجة السيبرانية
                 chk.setAttribute('transform', `translate(${this.stepPositionsX[this.currentStep]}, 165) scale(0.6, 1.4)`);
                 
                 setTimeout(() => {
@@ -435,7 +439,6 @@
                     }
                 }, 120);
 
-                // رفع نظام صعوبة واحتمالية الخسارة (Crash Chance) بشكل تصاعدي حاد جداً لتقليل فرصة الربح السهل
                 let crashChance = 0.38 + (this.currentStep * 0.15);
 
                 if (Math.random() < crashChance) {
@@ -443,6 +446,12 @@
                     this.triggerCrashAction();
                 } else {
                     this.currentMultiplier = this.multiplierSteps[this.currentStep];
+                    
+                    // [تعديل هام] بمجرد القفز بنجاح واجتياز أول سيارة (الخطوة > 0) نفعّل زر السحب فوراً
+                    if (this.currentStep > 0) {
+                        document.getElementById('action-cashout').disabled = false;
+                    }
+
                     this.updateUI();
 
                     if (this.currentStep === 4) {
@@ -458,7 +467,6 @@
                 this.isRoundActive = false;
                 SoundSystem.play('crash');
                 
-                // تحويل لون إضاءة الـ LED الجانبية إلى الأحمر فوراً لبيان الخسارة الصادمة
                 this.setLEDColor('var(--accent)');
 
                 let card = document.getElementById('main-card');
@@ -502,14 +510,18 @@
 
             cashout() {
                 if (!this.isRoundActive) return;
+                
+                // تأكيد إضافي لحماية السحب في الخطوة 0
+                if (this.currentStep === 0) return;
+
                 this.isRoundActive = false;
                 cancelAnimationFrame(this.animationId);
 
                 SoundSystem.play('win');
                 
-                // تغيير الـ LED إلى الأخضر احتفالاً بالربح الصعب
                 this.setLEDColor('var(--primary)');
 
+                // احتساب الأرباح وإضافتها للرصيد المحمي (الذي خُصم منه الرهان مسبقاً)
                 let totalWin = this.activeBet * this.currentMultiplier;
                 this.balance += totalWin;
 
