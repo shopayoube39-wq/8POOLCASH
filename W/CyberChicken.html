@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Chicken: Overdrive Ultimate Edition</title>
+    <style>
+        :root {
+            --bg-main: #03050a;
+            --bg-card: #090d16;
+            --bg-lane: #04060b;
+            --primary: #00ffaa;
+            --primary-glow: rgba(0, 255, 170, 0.5);
+            --accent: #ff0055;
+            --accent-glow: rgba(255, 0, 85, 0.6);
+            --info: #00f0ff;
+            --text: #ffffff;
+            --text-muted: #475569;
+            --panel-border: #141c2f;
+            --led-color: #00f0ff; /* لون الـ LED الافتراضي */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+            background: radial-gradient(circle at center, #0f172a 0%, #03050a 100%);
+        }
+
+        /* حاوية اللعبة الرئيسية مع شريط إضاءة LED في الجوانب */
+        .game-container {
+            background-color: var(--bg-card);
+            width: 100%;
+            max-width: 440px;
+            border-radius: 28px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 20px var(--led-color), 0 25px 60px rgba(0,0,0,0.8);
+            border: 3px solid var(--led-color);
+            transition: border-color 0.3s, box-shadow 0.3s;
+            animation: ledPulse 2s linear infinite alternate;
+        }
+
+        /* أنيميشن نبض إضاءة LED الجانبية */
+        @keyframes ledPulse {
+            0% { box-shadow: 0 0 12px var(--led-color); }
+            100% { box-shadow: 0 0 25px var(--led-color); }
+        }
+
+        .history-bar {
+            display: flex;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #05080e;
+            border-bottom: 1px solid var(--panel-border);
+            overflow-x: auto;
+            min-height: 45px;
+            align-items: center;
+        }
+
+        .history-badge {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 12px;
+            background: #111a2e;
+            color: #94a3b8;
+            border: 1px solid rgba(255,255,255,0.05);
+            animation: badgeIn 0.3s ease-out forwards;
+        }
+        .history-badge.win { background: rgba(0, 255, 170, 0.15); color: var(--primary); border-color: rgba(0, 255, 170, 0.3); }
+        .history-badge.loss { background: rgba(255, 0, 85, 0.15); color: var(--accent); border-color: rgba(255, 0, 85, 0.3); }
+
+        @keyframes badgeIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .viewport-container {
+            position: relative;
+            background-color: var(--bg-lane);
+            height: 380px;
+            overflow: hidden;
+        }
+
+        /* اهتزاز الشاشة العنيف عند الخسارة */
+        .shake { animation: heavyShake 0.4s ease-in-out; }
+        @keyframes heavyShake {
+            0%, 100% { transform: translate(0, 0); }
+            20%, 60% { transform: translate(-8px, 5px); }
+            40%, 80% { transform: translate(8px, -5px); }
+        }
+
+        /* أنيميشن حركة الدجاجة الافتراضية */
+        .chicken-idle-anim {
+            animation: chickenPulse 0.6s ease-in-out infinite alternate;
+            transform-origin: center;
+        }
+        @keyframes chickenPulse {
+            0% { transform: scale(1) translateY(0); }
+            100% { transform: scale(1.05) translateY(-4px); }
+        }
+
+        /* أنيميشن وميض للسيارات السيبرانية */
+        .car-neon-glow {
+            animation: carGlow 1.5s ease-in-out infinite alternate;
+        }
+        @keyframes carGlow {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; filter: drop-shadow(0 0 8px var(--info)); }
+        }
+
+        .dashboard-panel { padding: 20px; background: #05080e; }
+
+        .stat-header {
+            background: #020407; padding: 14px; border-radius: 18px;
+            border: 1px solid var(--panel-border); text-align: center; margin-bottom: 15px;
+        }
+        .balance-box { font-size: 28px; font-weight: 900; color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
+        .balance-label { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
+
+        .bet-control-wrapper { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
+        .bet-interface {
+            display: flex; background: #010204; border: 1px solid var(--panel-border);
+            border-radius: 16px; padding: 12px; align-items: center; justify-content: center;
+        }
+        .bet-interface input {
+            background: none; border: none; outline: none; color: #fff;
+            font-size: 22px; font-weight: 800; width: 100%; text-align: center;
+        }
+
+        .engine-btn {
+            width: 100%; padding: 16px; border: none; border-radius: 16px;
+            font-size: 16px; font-weight: 800; color: #fff; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .engine-btn:active { transform: scale(0.97); }
+
+        .btn-start { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+        .btn-jump { background: linear-gradient(135deg, #d97706, #b45309); display: none; margin-bottom: 10px; }
+        .btn-cashout { background: linear-gradient(135deg, var(--primary), #059669); display: none; color: #04060e; font-weight: 900; }
+
+        .sys-log { margin-top: 15px; text-align: center; font-size: 13px; font-weight: 700; color: var(--text-muted); }
+
+        .multiplier-top {
+            position: absolute; top: 20px; left: 20px; font-size: 42px;
+            font-weight: 900; color: #fff; text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            font-style: italic;
+        }
+        .multiplier-top.crash-text { color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); }
+        
+        .user-badge-header {
+            position: absolute; top: 12px; right: 20px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--panel-border);
+            padding: 4px 12px; border-radius: 10px; display: flex; align-items: center; gap: 6px; font-size: 11px;
+        }
+        .pulse-green { width: 6px; height: 6px; background: #10b981; border-radius: 50%; animation: blink 1s infinite alternate; }
+        @keyframes blink { 0% { opacity: 0.4; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="main-card">
+        <div class="user-badge-header">
+            <div class="pulse-green"></div>
+            <span style="color:#9ca3af;">الحساب:</span>
+            <span id="userDisplay" style="font-weight:700; color:#fff;">Ayoube</span>
+        </div>
+        
+        <div class="history-bar" id="history-box"></div>
+
+        <div class="viewport-container" id="viewport">
+            <svg id="game-canvas" width="100%" height="100%" viewBox="0 0 430 380" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="neonCarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#00f0ff" />
+                        <stop offset="100%" stop-color="#0044ff" />
+                    </linearGradient>
+                    <linearGradient id="dangerCarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#ff0055" />
+                        <stop offset="100%" stop-color="#660011" />
+                    </linearGradient>
+                    <linearGradient id="chickenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#ffffff" />
+                        <stop offset="100%" stop-color="#e2e8f0" />
+                    </linearGradient>
+                    <filter id="glowEffect">
+                        <feGaussianBlur stdDeviation="3" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                </defs>
+
+                <rect width="430" height="380" fill="var(--bg-lane)"/>
+                
+                <g id="road-grid">
+                    <rect x="75" y="0" width="52" height="380" fill="#080c14" />
+                    <rect x="160" y="0" width="52" height="380" fill="#080c14" />
+                    <rect x="245" y="0" width="52" height="380" fill="#080c14" />
+                    <rect x="330" y="0" width="52" height="380" fill="#080c14" />
+                    
+                    <line x1="101" y1="0" x2="101" y2="380" stroke="rgba(0, 240, 255, 0.2)" stroke-dasharray="10 12" stroke-width="2"/>
+                    <line x1="186" y1="0" x2="186" y2="380" stroke="rgba(0, 240, 255, 0.2)" stroke-dasharray="10 12" stroke-width="2"/>
+                    <line x1="271" y1="0" x2="271" y2="380" stroke="rgba(0, 240, 255, 0.2)" stroke-dasharray="10 12" stroke-width="2"/>
+                    <line x1="356" y1="0" x2="356" y2="380" stroke="rgba(0, 240, 255, 0.2)" stroke-dasharray="10 12" stroke-width="2"/>
+                </</g>
+
+                <g id="traffic-layer"></g>
+                <g id="fx-layer"></g>
+
+                <g id="chicken-object" transform="translate(15, 165)" style="transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                    <g class="chicken-idle-anim">
+                        <ellipse cx="25" cy="48" rx="14" ry="4" fill="rgba(0,0,0,0.6)"/>
+                        <circle cx="25" cy="25" r="16" fill="url(#chickenGrad)" stroke="#00f0ff" stroke-width="1.5"/>
+                        <circle cx="33" cy="13" r="10" fill="url(#chickenGrad)" stroke="#00f0ff" stroke-width="1"/>
+                        <path d="M28,4 Q33,-4 38,4" fill="var(--accent)" filter="url(#glowEffect)"/>
+                        <polygon points="41,10 50,14 41,18" fill="#ffaa00" filter="url(#glowEffect)"/>
+                        <circle cx="34" cy="11" r="2.5" fill="#ff0055" filter="url(#glowEffect)"/>
+                        <path d="M16,25 Q10,21 14,14 Q22,18 18,25" fill="none" stroke="#00f0ff" stroke-width="2" filter="url(#glowEffect)"/>
+                        <line x1="21" y1="39" x2="21" y2="47" stroke="#ffaa00" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="29" y1="39" x2="29" y2="47" stroke="#ffaa00" stroke-width="3" stroke-linecap="round"/>
+                    </g>
+                </g>
+            </svg>
+
+            <div class="multiplier-top" id="mult-view">1.00x</div>
+        </div>
+
+        <div class="dashboard-panel">
+            <div class="stat-header">
+                <div>
+                    <span class="balance-label">الرصيد المتاح</span>
+                    <div class="balance-box">DH <span id="user-balance">0.00</span></div>
+                </div>
+            </div>
+
+            <div class="bet-control-wrapper">
+                <span class="balance-label">مبلغ الرهان (المحدد مسبقاً)</span>
+                <div class="bet-interface">
+                    <input type="number" id="bet-core-val" value="150" readonly style="pointer-events: none; cursor: default;">
+                </div>
+            </div>
+
+            <button id="action-start" class="engine-btn btn-start" onclick="GameEngine.startRound()">بدء اللعب وتنشيط المصفوفة</button>
+            <button id="action-jump" class="engine-btn btn-jump" onclick="GameEngine.jumpNextLane()">القفز للمسار التالي ⚡</button>
+            <button id="action-cashout" class="engine-btn btn-cashout" onclick="GameEngine.cashout()">سحب فوري للأرباح (<span id="live-profit-counter">DH 0.00</span>)</button>
+
+            <div class="sys-log" id="sys-logger">اضغط على زر البدء لبدء التحدي.</div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
+            authDomain: "poolcash-6692c.firebaseapp.com",
+            databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
+            projectId: "poolcash-6692c",
+            storageBucket: "poolcash-6692c.firebasestorage.app",
+            messagingSenderId: "866544389541",
+            appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // نظام أصوات متطور ومحسن 8-bit ليعطي تجربة ألعاب حقيقية
+        const SoundSystem = {
+            ctx: null,
+            init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+            play(type) {
+                this.init();
+                let osc = this.ctx.createOscillator();
+                let gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                if (type === 'jump') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(900, this.ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+                    osc.start(); osc.stop(this.ctx.currentTime + 0.15);
+                } else if (type === 'crash') {
+                    // صوت انفجار حقيقي خشن ومطول للتحذير
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(120, this.ctx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(20, this.ctx.currentTime + 0.6);
+                    gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.6);
+                    osc.start(); osc.stop(this.ctx.currentTime + 0.6);
+                } else if (type === 'win') {
+                    // نغمة أركيد فوز متصاعدة ومبهجة
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, this.ctx.currentTime); 
+                    osc.frequency.setValueAtTime(600, this.ctx.currentTime + 0.1); 
+                    osc.frequency.setValueAtTime(900, this.ctx.currentTime + 0.2); 
+                    gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
+                    osc.start(); osc.stop(this.ctx.currentTime + 0.4);
+                }
+            }
+        };
+
+        const GameEngine = {
+            balance: 0.00,
+            activeBet: 150.00,
+            currentStep: 0,
+            currentMultiplier: 1.00,
+            isRoundActive: false,
+            currentUsername: "Ayoube",
+            
+            stepPositionsX: [15, 76, 161, 246, 331], 
+            // تعديل المضاعفات لتتناسب مع مستوى الصعوبة الجديد الشديد
+            multiplierSteps: [1.00, 1.35, 1.90, 3.20, 6.00],
+            svgNS: "http://www.w3.org/2000/svg",
+            cars: [], 
+            animationId: null,
+
+            setLEDColor(color) {
+                document.documentElement.style.setProperty('--led-color', color);
+            },
+
+            syncPendingBet() {
+                let pendingBetAmount = parseFloat(localStorage.getItem('pendingBet')) || 150;
+                this.activeBet = pendingBetAmount;
+                document.getElementById('bet-core-val').value = pendingBetAmount;
+            },
+
+            startRound() {
+                this.syncPendingBet();
+
+                if (isNaN(this.activeBet) || this.activeBet < 10 || this.activeBet > this.balance) {
+                    this.log("الرصيد غير كافٍ ومطابق للبدء.", "var(--accent)");
+                    return;
+                }
+
+                this.isRoundActive = true;
+                this.currentStep = 0;
+                this.currentMultiplier = 1.00;
+
+                // إرجاع لون الـ LED الجانبي للوضع الطبيعي الأزرق السيبراني عند البدء
+                this.setLEDColor('#00f0ff');
+                document.getElementById('mult-view').classList.remove('crash-text');
+                
+                let chk = document.getElementById('chicken-object');
+                chk.setAttribute('transform', `translate(${this.stepPositionsX[0]}, 165) scale(1, 1)`);
+                chk.style.opacity = "1";
+                document.getElementById('fx-layer').innerHTML = "";
+                
+                this.updateUI();
+
+                document.getElementById('action-start').style.display = "none";
+                document.getElementById('action-jump').style.display = "block";
+                document.getElementById('action-cashout').style.display = "block";
+
+                this.log("تنشيط ممرات السرعة السيبرانية المفتوحة... انتبه!", "#fff");
+                
+                this.initTraffic();
+                this.loop();
+            },
+
+            initTraffic() {
+                const layer = document.getElementById('traffic-layer');
+                layer.innerHTML = "";
+                this.cars = [];
+
+                for (let i = 1; i <= 4; i++) {
+                    let lx = this.stepPositionsX[i];
+                    
+                    let carGroup = document.createElementNS(this.svgNS, "g");
+                    carGroup.setAttribute("class", "car-neon-glow");
+                    carGroup.innerHTML = `
+                        <rect x="${lx + 6}" width="40" height="65" rx="12" fill="url(#neonCarGrad)" stroke="#00f0ff" stroke-width="1.5" filter="url(#glowEffect)"/>
+                        <circle cx="${lx + 14}" cy="8" r="3" fill="#fff"/>
+                        <circle cx="${lx + 38}" cy="8" r="3" fill="#fff"/>
+                    `;
+                    layer.appendChild(carGroup);
+
+                    // زيادة سرعة السيارات بشكل ملحوظ لتصبح اللعبة أصعب (من 4.0 إلى 8.5)
+                    let speed = 4.0 + Math.random() * 4.5; 
+                    let yPos = Math.random() * 380;
+                    let isUp = i % 2 === 0;
+
+                    this.cars.push({
+                        laneIndex: i,
+                        group: carGroup,
+                        y: yPos,
+                        speed: speed,
+                        isUp: isUp
+                    });
+                }
+            },
+
+            loop() {
+                if (!GameEngine.isRoundActive) return;
+
+                this.cars.forEach(car => {
+                    if (car.isUp) {
+                        car.y -= car.speed;
+                        if (car.y < -70) car.y = 400;
+                    } else {
+                        car.y += car.speed;
+                        if (car.y > 400) car.y = -70;
+                    }
+                    car.group.setAttribute("transform", `translate(0, ${car.y})`);
+                });
+
+                this.animationId = requestAnimationFrame(() => this.loop());
+            },
+
+            jumpNextLane() {
+                if (!this.isRoundActive) return;
+
+                SoundSystem.play('jump');
+                this.currentStep++;
+
+                let chk = document.getElementById('chicken-object');
+                // أنيميشن تمدد قفزة الدجاجة السيبرانية
+                chk.setAttribute('transform', `translate(${this.stepPositionsX[this.currentStep]}, 165) scale(0.6, 1.4)`);
+                
+                setTimeout(() => {
+                    if (this.isRoundActive) {
+                        chk.setAttribute('transform', `translate(${this.stepPositionsX[this.currentStep]}, 165) scale(1, 1)`);
+                    }
+                }, 120);
+
+                // رفع نظام صعوبة واحتمالية الخسارة (Crash Chance) بشكل تصاعدي حاد جداً لتقليل فرصة الربح السهل
+                let crashChance = 0.38 + (this.currentStep * 0.15);
+
+                if (Math.random() < crashChance) {
+                    cancelAnimationFrame(this.animationId);
+                    this.triggerCrashAction();
+                } else {
+                    this.currentMultiplier = this.multiplierSteps[this.currentStep];
+                    this.updateUI();
+
+                    if (this.currentStep === 4) {
+                        this.log("اختراق كلي للمصفوفة بنجاح ساحق!", "var(--primary)");
+                        this.cashout();
+                    } else {
+                        this.log(`قفزة دقيقة ومستقرة! المضاعف الحالي: ${this.currentMultiplier.toFixed(2)}x`, "var(--info)");
+                    }
+                }
+            },
+
+            triggerCrashAction() {
+                this.isRoundActive = false;
+                SoundSystem.play('crash');
+                
+                // تحويل لون إضاءة الـ LED الجانبية إلى الأحمر فوراً لبيان الخسارة الصادمة
+                this.setLEDColor('var(--accent)');
+
+                let card = document.getElementById('main-card');
+                card.classList.add('shake');
+                setTimeout(() => card.classList.remove('shake'), 400);
+
+                this.cars.forEach(car => {
+                    if (car.laneIndex === this.currentStep) {
+                        car.y = 150; 
+                        car.group.setAttribute("transform", `translate(0, ${car.y})`);
+                        car.group.querySelector('rect').setAttribute('fill', 'url(#dangerCarGrad)');
+                        car.group.querySelector('rect').setAttribute('stroke', 'var(--accent)');
+                    }
+                });
+
+                let chk = document.getElementById('chicken-object');
+                chk.setAttribute('transform', `translate(${this.stepPositionsX[this.currentStep]}, 165) scale(1.4, 0.3)`);
+                chk.style.opacity = "0.2";
+
+                const fxLayer = document.getElementById('fx-layer');
+                let cx = this.stepPositionsX[this.currentStep] + 25;
+                
+                for(let i=0; i<12; i++) {
+                    let p = document.createElementNS(this.svgNS, "circle");
+                    p.setAttribute("cx", cx + (Math.random() * 40 - 20));
+                    p.setAttribute("cy", "185" + (Math.random() * 40 - 20));
+                    p.setAttribute("r", "5");
+                    p.setAttribute("fill", i % 2 === 0 ? "var(--accent)" : "#ffaa00");
+                    p.setAttribute("filter", "url(#glowEffect)");
+                    fxLayer.appendChild(p);
+                }
+
+                let multView = document.getElementById('mult-view');
+                multView.innerText = "💥 CRASHED";
+                multView.classList.add('crash-text');
+
+                this.log("تم سحق الهدف بنجاح من المركبة السيبرانية!", "var(--accent)");
+                this.pushHistory(this.currentMultiplier, false);
+                this.endRoundLifecycle();
+            },
+
+            cashout() {
+                if (!this.isRoundActive) return;
+                this.isRoundActive = false;
+                cancelAnimationFrame(this.animationId);
+
+                SoundSystem.play('win');
+                
+                // تغيير الـ LED إلى الأخضر احتفالاً بالربح الصعب
+                this.setLEDColor('var(--primary)');
+
+                let totalWin = this.activeBet * this.currentMultiplier;
+                this.balance += totalWin;
+
+                updateFirebaseBalance(this.balance);
+                this.log(`🚀 تم سحب عوائدك بنجاح: +DH ${totalWin.toFixed(2)}`, "var(--primary)");
+
+                this.pushHistory(this.currentMultiplier, true);
+                this.endRoundLifecycle();
+            },
+
+            pushHistory(mult, isWin) {
+                let box = document.getElementById('history-box');
+                let badge = document.createElement('span');
+                badge.className = `history-badge ${isWin ? 'win' : 'loss'}`;
+                badge.innerText = isWin ? `${mult.toFixed(2)}x` : `💥 0.00x`;
+                
+                box.insertBefore(badge, box.firstChild);
+                if(box.children.length > 5) box.lastChild.remove();
+            },
+
+            updateUI() {
+                document.getElementById('mult-view').innerText = this.currentMultiplier.toFixed(2) + "x";
+                document.getElementById('live-profit-counter').innerText = "DH " + (this.activeBet * this.currentMultiplier).toFixed(2);
+                document.getElementById('user-balance').innerText = this.balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            },
+
+            log(text, color) {
+                let logger = document.getElementById('sys-logger');
+                logger.innerText = text;
+                logger.style.color = color;
+            },
+
+            endRoundLifecycle() {
+                document.getElementById('action-start').style.display = "block";
+                document.getElementById('action-jump').style.display = "none";
+                document.getElementById('action-cashout').style.display = "none";
+                this.syncPendingBet();
+            }
+        };
+
+        function updateFirebaseBalance(newBalance) {
+            if (GameEngine.currentUsername) {
+                database.ref('users/' + GameEngine.currentUsername).update({
+                    balance: newBalance
+                }).catch(err => console.error("Firebase update failed: ", err));
+            }
+        }
+
+        function startFirebaseSync(username) {
+            if (!username) return;
+            const userRef = database.ref('users/' + username);
+            userRef.on('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (userData) {
+                    GameEngine.balance = userData.balance !== undefined ? parseFloat(userData.balance) : 0;
+                    GameEngine.updateUI();
+                }
+            }, (error) => {
+                console.error("Firebase sync error: ", error);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                let activeUser = urlParams.get('username') || urlParams.get('user') || urlParams.get('name');
+                if (!activeUser) { activeUser = localStorage.getItem('username') || localStorage.getItem('user'); }
+                if (activeUser) {
+                    GameEngine.currentUsername = activeUser.trim();
+                    if (GameEngine.currentUsername.includes('@')) { GameEngine.currentUsername = GameEngine.currentUsername.split('@')[0]; }
+                }
+                document.getElementById('userDisplay').innerText = GameEngine.currentUsername;
+                startFirebaseSync(GameEngine.currentUsername);
+            } catch (e) { console.error(e); }
+            
+            GameEngine.syncPendingBet();
+            GameEngine.updateUI();
+        });
+    </script>
+</body>
+</html>
