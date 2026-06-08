@@ -6,7 +6,7 @@
     <title>VIP PLAY | Dashboard</title>
     <style>
         :root {
-            /* الألوان متطابقة تماماً مع منصة 8POOLCASH في image.png */
+            /* الألوان متطابقة تماماً مع منصة 8POOLCASH */
             --bg-main: #08090c; 
             --bg-gradient: radial-gradient(circle at 50% 0%, #121620 0%, #08090c 80%);
             --bg-card: linear-gradient(145deg, rgba(18, 22, 32, 0.85) 0%, rgba(11, 14, 20, 0.95) 100%);
@@ -16,6 +16,7 @@
             --text-muted: #9ca3af;
             --border-color: rgba(255, 255, 255, 0.05);
             --gold-glow: rgba(245, 158, 11, 0.25);
+            --led-glow: 0 0 20px #f59e0b, 0 0 40px rgba(245, 158, 11, 0.6);
         }
 
         * {
@@ -33,6 +34,28 @@
             color: var(--text-white);
             overflow-x: hidden;
             min-height: 100vh;
+            position: relative;
+        }
+
+        /* تأثير إضاءة الـ LED الجانبية المتوهجة */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            width: 4px;
+            height: 100vh;
+            background: linear-gradient(to bottom, transparent, var(--accent-gold), transparent);
+            box-shadow: var(--led-glow);
+            z-index: 9999;
+            animation: ledPulse 3s infinite ease-in-out;
+            pointer-events: none;
+        }
+        body::before { left: 0; }
+        body::after { right: 0; }
+
+        @keyframes ledPulse {
+            0%, 100% { opacity: 0.5; filter: blur(1px); }
+            50% { opacity: 1; filter: blur(2px); box-shadow: 0 0 25px #f59e0b, 0 0 50px rgba(245, 158, 11, 0.8); }
         }
 
         header {
@@ -99,7 +122,7 @@
         .container {
             max-width: 1400px;
             margin: 40px auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
 
         .section-header {
@@ -117,6 +140,7 @@
         .section-title {
             font-size: 32px;
             font-weight: 800;
+            letter-spacing: 0.5px;
         }
 
         .games-grid {
@@ -206,7 +230,7 @@
         }
 
         .game-card:hover .btn-play {
-            background: linear-gradient(135deg, #ff1e27 0%, #d97706 100%); /* تنويه بسيط متناسق */
+            background: linear-gradient(135deg, #ff1e27 0%, #d97706 100%);
             filter: brightness(1.1);
             box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
             color: #ffffff;
@@ -235,16 +259,25 @@
         .card-billiards:hover .white-ball {
             animation: white-ball 0.8s infinite alternate ease-in-out;
         }
+
+        @keyframes cyber-car-drive {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-5px) scale(1.02); filter: drop-shadow(0 0 10px #00f0ff); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        .card-cyber-chicken:hover svg {
+            animation: cyber-car-drive 0.6s infinite ease-in-out;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo-area">
+        <div class="logo-area" onclick="playClickSound()">
             <span>VIP</span>PLAY
         </div>
         <div class="right-section">
-            <button class="lang-btn" onclick="toggleLanguage()" id="lang-toggle-btn">Français</button>
+            <button class="lang-btn" onclick="toggleLanguage(); playClickSound();" id="lang-toggle-btn">Français</button>
             <div class="balance-container">
                 <span id="user-balance">0.00</span>
             </div>
@@ -253,12 +286,12 @@
 
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title" id="main-title">الألعاب الأساسية</h2>
+            <h2 class="section-title" id="main-title">صالة الألعاب الحصرية</h2>
         </div>
         
         <div class="games-grid">
 
-            <div class="game-card card-chicken" onclick="playGame('chicken')">
+            <div class="game-card card-chicken" onclick="playClickSound(); playGame('chicken')">
                 <div class="game-preview">
                     <svg viewBox="0 0 64 64">
                         <circle cx="32" cy="32" r="28" fill="#141414" stroke="#f59e0b" stroke-width="2"/>
@@ -269,14 +302,33 @@
                     </svg>
                 </div>
                 <div class="game-info">
-                    <span class="game-tag" id="tag-chicken">VIP • موصى به</span>
+                    <span class="game-tag" id="tag-chicken">المقترحة • VIP</span>
                     <h3 class="game-title">Chicken Adventure</h3>
-                    <p class="game-desc" id="desc-chicken">ارفع أغطية الأطباق بحذر، اعثر على الدجاج وتجنب العظام لمضاعفة رصيدك فوراً.</p>
-                    <button class="btn-play" id="btn-chicken">إبدأ اللعب</button>
+                    <p class="game-desc" id="desc-chicken">اكشف الأطباق بذكاء، اعثر على الدجاج الذهبي وتجنب العظام لمضاعفة أرباحك فوراً.</p>
+                    <button class="btn-play" id="btn-chicken">إبدأ التحدي</button>
                 </div>
             </div>
 
-            <div class="game-card card-billiards" onclick="playGame('billiards')">
+            <div class="game-card card-cyber-chicken" onclick="playClickSound(); playGame('cyber_chicken')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100" height="100" fill="#05080e" rx="14"/>
+                        <line x1="50" y1="0" x2="50" y2="100" stroke="rgba(0, 240, 255, 0.3)" stroke-dasharray="6 6" stroke-width="2"/>
+                        <rect x="30" y="25" width="40" height="50" rx="10" fill="#0044ff" stroke="#00f0ff" stroke-width="2"/>
+                        <circle cx="38" cy="35" r="4" fill="#fff"/>
+                        <circle cx="62" cy="35" r="4" fill="#fff"/>
+                        <rect x="35" y="70" width="30" height="4" fill="#ff0055" opacity="0.8"/>
+                    </svg>
+                </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-cyber">مستوى متطور • جديد</span>
+                    <h3 class="game-title">Cyber Chicken</h3>
+                    <p class="game-desc" id="desc-cyber">تجاوز مسارات السرعة السيبرانية وتفادى المركبات النيونية الخاطفة لبلوغ خط الأرباح القياسية.</p>
+                    <button class="btn-play" id="btn-cyber">إبدأ التحدي</button>
+                </div>
+            </div>
+
+            <div class="game-card card-billiards" onclick="playClickSound(); playGame('billiards')">
                 <div class="game-preview">
                     <svg viewBox="0 0 100 100">
                         <rect x="10" y="25" width="80" height="50" rx="4" fill="#1a1a1a" stroke="#222" stroke-width="2"/>
@@ -286,14 +338,14 @@
                     </svg>
                 </div>
                 <div class="game-info">
-                    <span class="game-tag" id="tag-billiards">بطولات لايف</span>
+                    <span class="game-tag" id="tag-billiards">بطولات مباشرة</span>
                     <h3 class="game-title">Billiards 2D Pro</h3>
-                    <p class="game-desc" id="desc-billiards">أظهر مهاراتك الفائقة في توجيه الكرات، وسجل ضربات احترافية لربح الجولة فوراً.</p>
-                    <button class="btn-play" id="btn-billiards">إبدأ اللعب</button>
+                    <p class="game-desc" id="desc-billiards">استعرض مهارتك الاحترافية في توجيه الكرات، وسجل ضربات حاسمة لاقتناص الجوائز الفورية.</p>
+                    <button class="btn-play" id="btn-billiards">إبدأ التحدي</button>
                 </div>
             </div>
 
-            <div class="game-card card-roulette" onclick="playGame('roulette')">
+            <div class="game-card card-roulette" onclick="playClickSound(); playGame('roulette')">
                 <div class="game-preview">
                     <svg viewBox="0 0 100 100">
                         <circle cx="50" cy="50" r="40" fill="none" stroke="#f59e0b" stroke-width="4"/>
@@ -305,10 +357,10 @@
                     </svg>
                 </div>
                 <div class="game-info">
-                    <span class="game-tag" id="tag-roulette">CASINO PREMIUM</span>
+                    <span class="game-tag" id="tag-roulette">كازينو مميز</span>
                     <h3 class="game-title">Roulette Royale</h3>
-                    <p class="game-desc" id="desc-roulette">راهن على الأرقام أو الألوان، اختبر حظك في عجلة الروليت الملكية واربح مضاعفات كبيرة.</p>
-                    <button class="btn-play" id="btn-roulette">إبدأ اللعب</button>
+                    <p class="game-desc" id="desc-roulette">توقع الأرقام والألوان الرابحة، دور عجلة الروليت الملكية وضاعف رصيدك إلى مستويات قياسية.</p>
+                    <button class="btn-play" id="btn-roulette">إبدأ التحدي</button>
                 </div>
             </div>
 
@@ -337,28 +389,57 @@
 
         const translations = {
             ar: {
-                title: "الألعاب الأساسية",
+                title: "صالة الألعاب الحصرية",
                 btnLang: "Français",
-                btnPlay: "إبدأ اللعب",
-                chickenTag: "VIP • موصى به",
-                chickenDesc: "ارفع أغطية الأطباق بحذر، اعثر على الدجاج وتجنب العظام لمضاعفة رصيدك فوراً.",
-                billiardsTag: "بطولات لايف",
-                billiardsDesc: "أظهر مهاراتك الفائقة في توجيه الكرات، وسجل ضربات احترافية لربح الجولة فوراً.",
-                rouletteTag: "CASINO PREMIUM",
-                rouletteDesc: "راهن على الأرقام أو الألوان، اختبر حظك في عجلة الروليت الملكية واربح مضاعفات كبيرة."
+                btnPlay: "إبدأ التحدي",
+                chickenTag: "المقترحة • VIP",
+                chickenDesc: "اكشف الأطباق بذكاء، اعثر على الدجاج الذهبي وتجنب العظام لمضاعفة أرباحك فوراً.",
+                cyberTag: "مستوى متطور • جديد",
+                cyberDesc: "تجاوز مسارات السرعة السيبرانية وتفادى المركبات النيونية الخاطفة لبلوغ خط الأرباح القياسية.",
+                billiardsTag: "بطولات مباشرة",
+                billiardsDesc: "استعرض مهارتك الاحترافية في توجيه الكرات، وسجل ضربات حاسمة لاقتناص الجوائز الفورية.",
+                rouletteTag: "كازينو مميز",
+                rouletteDesc: "توقع الأرقام والألوان الرابحة، دور عجلة الروليت الملكية وضاعف رصيدك إلى مستويات قياسية."
             },
             fr: {
-                title: "Jeux Principaux",
+                title: "Salon de Jeux Exclusif",
                 btnLang: "العربية",
-                btnPlay: "Jouer Maintenant",
-                chickenTag: "VIP • Recommandé",
-                chickenDesc: "Soulevez les cloches avec soin, trouvez les poulets et évitez les os pour multiplier votre solde.",
-                billiardsTag: "Tournois Live",
-                billiardsDesc: "Montrez vos compétences de visée et réussissez des coups pros pour gagner instantanément.",
-                rouletteTag: "CASINO PREMIUM",
-                rouletteDesc: "Pariez sur des chiffres ou des couleurs, testez votre chance sur la roulette royale et gagnez gros."
+                btnPlay: "Lancer le Défi",
+                chickenTag: "Recommandé • VIP",
+                chickenDesc: "Découvrez les plateaux avec stratégie, trouvez les poulets dorés et évitez les os pour multiplier vos gains.",
+                cyberTag: "Mode Expert • Nouveau",
+                cyberDesc: "Franchissez les voies cybernétiques rapides et esquivez les véhicules néon pour atteindre le score maximal.",
+                billiardsTag: "Tournois en Direct",
+                billiardsDesc: "Démontrez votre précision pro, alignez des tirs parfaits et empochez des récompenses instantanées.",
+                rouletteTag: "Casino Premium",
+                rouletteDesc: "Misez sur les bons numéros ou couleurs, lancez la Roulette Royale et maximisez vos multiplicateurs."
             }
         };
+
+        // دالة إنتاج صوت النقر بشكل ديناميكي واحترافي دون الحاجة لملفات صوت خارجية
+        function playClickSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1200, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.08);
+                
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            } catch (e) {
+                console.log("Audio contexts pending user gesture or not supported");
+            }
+        }
 
         function toggleLanguage() {
             const htmlEl = document.getElementById('app-html');
@@ -373,6 +454,11 @@
                 document.getElementById('tag-chicken').innerText = translations.fr.chickenTag;
                 document.getElementById('desc-chicken').innerText = translations.fr.chickenDesc;
                 document.getElementById('btn-chicken').innerText = translations.fr.btnPlay;
+                
+                document.getElementById('tag-cyber').innerText = translations.fr.cyberTag;
+                document.getElementById('desc-cyber').innerText = translations.fr.cyberDesc;
+                document.getElementById('btn-cyber').innerText = translations.fr.btnPlay;
+
                 document.getElementById('tag-billiards').innerText = translations.fr.billiardsTag;
                 document.getElementById('desc-billiards').innerText = translations.fr.billiardsDesc;
                 document.getElementById('btn-billiards').innerText = translations.fr.btnPlay;
@@ -389,6 +475,11 @@
                 document.getElementById('tag-chicken').innerText = translations.ar.chickenTag;
                 document.getElementById('desc-chicken').innerText = translations.ar.chickenDesc;
                 document.getElementById('btn-chicken').innerText = translations.ar.btnPlay;
+                
+                document.getElementById('tag-cyber').innerText = translations.ar.cyberTag;
+                document.getElementById('desc-cyber').innerText = translations.ar.cyberDesc;
+                document.getElementById('btn-cyber').innerText = translations.ar.btnPlay;
+
                 document.getElementById('tag-billiards').innerText = translations.ar.billiardsTag;
                 document.getElementById('desc-billiards').innerText = translations.ar.billiardsDesc;
                 document.getElementById('btn-billiards').innerText = translations.ar.btnPlay;
@@ -418,13 +509,17 @@
 
         function playGame(game) {
             localStorage.setItem('username', currentUsername);
-            if (game === 'chicken') {
-                window.location.href = 'Chicken.html';
-            } else if (game === 'billiards') {
-                window.location.href = '8POOL.html'; 
-            } else if (game === 'roulette') {
-                window.location.href = 'Roulette.html'; 
-            }
+            setTimeout(() => {
+                if (game === 'chicken') {
+                    window.location.href = 'Chicken.html';
+                } else if (game === 'cyber_chicken') {
+                    window.location.href = 'CyberChicken.html';
+                } else if (game === 'billiards') {
+                    window.location.href = '8POOL.html'; 
+                } else if (game === 'roulette') {
+                    window.location.href = 'Roulette.html'; 
+                }
+            }, 150); // تأخير بسيط جداً لكي يسمع المستخدم صوت النقرة قبل الانتقال
         }
 
         document.addEventListener("DOMContentLoaded", () => {
