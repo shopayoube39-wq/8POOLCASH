@@ -312,19 +312,12 @@
               return;
           }
           
-          localStorage.setItem('pendingBet', amount);
-          
           if (globalUserBalance < amount) {
              document.getElementById('deposit-required-modal').classList.remove('hidden');
           } else {
-              const userRef = database.ref('users/' + currentUsername);
-              userRef.once('value').then((snap) => {
-                  const data = snap.val() || { balance: 0, wins: 0, matches: 0, profit: 0 };
-                  userRef.update({ 
-                      balance: data.balance - amount,
-                      matches: (data.matches || 0) + 1
-                  }).then(() => window.location.href = 'games.html');
-              });
+              // تخزين المبلغ في الـ LocalStorage ليتم الخصم منه لاحقاً داخل صفحة اللعبة
+              localStorage.setItem('pendingBet', amount);
+              window.location.href = 'games.html';
           }
       }
 
@@ -342,7 +335,7 @@
       }
 
       function openSupportModal() { document.getElementById('support-modal').classList.remove('hidden'); }
-      function closeSupportModal() { document.getElementById('support-modal').classList.add('hidden'); }
+      function closeSupportModal() { document.getElementById('support-modal').classList.hidden = true; document.getElementById('support-modal').classList.add('hidden'); }
 
       function generateRandomName() {
           const names = ["ach", "wal", "you", "ham", "zak", "meh", "saa", "mar", "has", "idr"];
