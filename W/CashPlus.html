@@ -113,7 +113,7 @@
         <div class="bg-[#10161f] border border-[#2a343f] rounded-2xl p-2">
             <div class="text-right text-[10px] text-gray-500 font-bold mb-2 pr-1">كيفية الإيداع عبر كاش بلوس 🎬</div>
             <div class="w-full h-48 rounded-xl overflow-hidden border border-[#2a343f]">
-                <iframe class="w-full h-full" src="https://player.vimeo.com/video/1198579784" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                <iframe class="w-full h-full" src="https://player.vimeo.com/video/1199830470" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
 
@@ -280,6 +280,7 @@
             event.stopPropagation();
             document.getElementById('file-input').value = '';
             document.getElementById('drop-area').classList.remove('hidden');
+            document.getElementById('preview-container').classList.hidden = true; // Fixed minor logic issue
             document.getElementById('preview-container').classList.add('hidden');
             checkFormValidity();
         };
