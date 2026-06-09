@@ -12,30 +12,30 @@
     
     <style>
         body {
-            background-color: #0b0d14;
-            background-image: radial-gradient(circle at top, #121622 0%, #0b0d14 100%);
+            background-color: #060a10;
+            background-image: radial-gradient(circle at top, #121a24 0%, #060a10 100%);
             font-family: 'Cairo', sans-serif;
         }
         .pool-gold {
-            background-color: #ffaa00;
+            background-color: #3b82f6;
         }
         .text-pool-gold {
-            color: #ffaa00;
+            color: #3b82f6;
         }
         .border-pool-gold {
-            border-color: #ffaa00;
+            border-color: #3b82f6;
         }
         .active-tab {
-            color: #ffaa00;
-            border-bottom: 2px solid #ffaa00;
+            color: #3b82f6;
+            border-bottom: 2px solid #3b82f6;
         }
         .bank-card {
-            background-color: #111520;
-            border: 1px solid #1a2032;
+            background-color: #10161f;
+            border: 1px solid #2a343f;
             transition: all 0.2s ease-in-out;
         }
         .bank-card:hover {
-            border-color: #ffaa00;
+            border-color: #3b82f6;
             transform: translateY(-1px);
         }
         .app-logo-box {
@@ -62,15 +62,15 @@
             overflow: hidden;
             transition: all 0.2s ease-in-out;
             background-color: white;
-            border: 1px solid #1a2032;
+            border: 1px solid #2a343f;
         }
     </style>
 </head>
 <body class="text-gray-200 min-h-screen pb-12 select-none tracking-wide">
 
-    <header class="max-w-md mx-auto p-4 flex justify-between items-center border-b border-[#1a2032]">
+    <header class="max-w-md mx-auto p-4 flex justify-between items-center border-b border-[#2a343f]">
         <div class="flex items-center gap-3">
-            <button onclick="goBack()" class="bg-[#111520] hover:bg-[#1a2032] text-white w-9 h-9 rounded-xl flex justify-center items-center border border-[#1a2032] transition">
+            <button onclick="goBack()" class="bg-[#10161f] hover:bg-[#2a343f] text-white w-9 h-9 rounded-xl flex justify-center items-center border border-[#2a343f] transition">
                 <i class="fas fa-arrow-right text-sm"></i>
             </button>
             <h1 class="text-base font-black">السحب</h1>
@@ -80,37 +80,37 @@
 
     <main class="max-w-md mx-auto px-4 mt-5 space-y-4">
 
-        <div class="bg-[#111520] border border-[#1a2032] rounded-xl p-3.5 flex justify-between items-center text-xs">
+        <div class="bg-[#10161f] border border-[#2a343f] rounded-xl p-3.5 flex justify-between items-center text-xs">
             <span class="text-gray-400 font-medium">هل تحتاج مساعدة؟</span>
-            <a href="mailto:support@8poolcash.com" class="text-[#ffaa00] font-bold font-mono hover:underline">support@8poolcash.com</a>
+            <a href="mailto:support@8poolcash.com" class="text-[#3b82f6] font-bold font-mono hover:underline">support@8poolcash.com</a>
         </div>
 
-        <div class="bg-[#111520] border border-[#1a2032] rounded-2xl p-4 flex flex-col space-y-3">
+        <div class="bg-[#10161f] border border-[#2a343f] rounded-2xl p-4 flex flex-col space-y-3">
             <div class="flex justify-between items-center">
                 <div class="space-y-1">
                     <span class="text-[10px] text-gray-500 block font-medium">رصيدك المتاح</span>
                     <span class="text-xl font-black text-white font-mono" id="userBalanceDisplay">DH 0</span>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-[#ffaa00]/10 flex justify-center items-center text-[#ffaa00] border border-[#ffaa00]/20 text-base">
+                <div class="w-10 h-10 rounded-xl bg-[#3b82f6]/10 flex justify-center items-center text-[#3b82f6] border border-[#3b82f6]/20 text-base">
                     <i class="fas fa-wallet"></i>
                 </div>
             </div>
-            <div class="flex justify-between items-center border-t border-[#1a2032] pt-2 text-[10px]">
+            <div class="flex justify-between items-center border-t border-[#2a343f] pt-2 text-[10px]">
                 <span class="text-gray-500">الحد الأدنى للسحب:</span>
                 <span class="font-bold text-gray-300 font-mono">DH 100</span>
             </div>
         </div>
 
-        <div class="flex border-b border-[#1a2032] text-center font-bold text-xs">
+        <div class="flex border-b border-[#2a343f] text-center font-bold text-xs">
             <button onclick="switchTab('deposit')" id="tab-deposit" class="flex-1 py-3 active-tab transition-all">سحب جديد</button>
             <button onclick="switchTab('history')" id="tab-history" class="flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all">السجل</button>
         </div>
 
         <div id="deposit-section" class="space-y-4">
-            <div id="bank-interface" class="hidden bg-[#111520] border border-[#1a2032] rounded-2xl p-4 space-y-4">
+            <div id="bank-interface" class="hidden bg-[#10161f] border border-[#2a343f] rounded-2xl p-4 space-y-4">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center gap-3">
-                        <div id="selected-bank-logo" class="w-12 h-12 rounded-xl bg-white flex justify-center items-center p-1 border border-[#1a2032]">
+                        <div id="selected-bank-logo" class="w-12 h-12 rounded-xl bg-white flex justify-center items-center p-1 border border-[#2a343f]">
                             <img src="" alt="Bank" class="w-full h-full object-contain">
                         </div>
                         <div>
@@ -121,32 +121,32 @@
                     <button onclick="hideBankInterface()" class="text-xs text-gray-500 hover:text-white"><i class="fas fa-times"></i></button>
                 </div>
                 
-                <div class="bg-[#ffaa00]/10 border border-[#ffaa00]/20 rounded-xl p-3 flex gap-2 items-start">
-                    <i class="fas fa-clock text-[#ffaa00] text-sm mt-0.5"></i>
-                    <p class="text-[10px] text-gray-300 leading-relaxed">تتم معالجة السحب خلال <span class="font-bold text-[#ffaa00]">ساعتين كحد أقصى</span> بعد الإرسال. تأكد من صحة <span id="ribOrNumberText">رقم RIB</span>.</p>
+                <div class="bg-[#3b82f6]/10 border border-[#3b82f6]/20 rounded-xl p-3 flex gap-2 items-start">
+                    <i class="fas fa-clock text-[#3b82f6] text-sm mt-0.5"></i>
+                    <p class="text-[10px] text-gray-300 leading-relaxed">تتم معالجة السحب خلال <span class="font-bold text-[#3b82f6]">ساعتين كحد أقصى</span> بعد الإرسال. تأكد من صحة <span id="ribOrNumberText">رقم RIB</span>.</p>
                 </div>
 
                 <div class="space-y-3">
                     <div>
                         <label class="block text-[10px] text-gray-400 mb-1">المبلغ المراد سحبه (DH)</label>
-                        <input type="number" id="withdrawAmount" oninput="updateWithdrawButton()" placeholder="100" class="w-full bg-[#0b0d14] border border-[#1a2032] rounded-xl p-3 text-white text-xs font-bold outline-none focus:border-[#ffaa00]">
+                        <input type="number" id="withdrawAmount" oninput="updateWithdrawButton()" placeholder="100" class="w-full bg-[#060a10] border border-[#2a343f] rounded-xl p-3 text-white text-xs font-bold outline-none focus:border-[#3b82f6]">
                         <p class="text-[9px] text-gray-500 mt-1">الحد الأدنى: DH 100 — متاح: <span id="availableBalanceText">DH 0</span></p>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[10px] text-gray-400 mb-1">الاسم الأول *</label>
-                            <input type="text" id="firstName" placeholder="مثال: أحمد" class="w-full bg-[#0b0d14] border border-[#1a2032] rounded-xl p-3 text-white text-xs outline-none focus:border-[#ffaa00]">
+                            <input type="text" id="firstName" placeholder="مثال: أحمد" class="w-full bg-[#060a10] border border-[#2a343f] rounded-xl p-3 text-white text-xs outline-none focus:border-[#3b82f6]">
                         </div>
                         <div>
                             <label class="block text-[10px] text-gray-400 mb-1">اسم العائلة *</label>
-                            <input type="text" id="lastName" placeholder="مثال: العلوي" class="w-full bg-[#0b0d14] border border-[#1a2032] rounded-xl p-3 text-white text-xs outline-none focus:border-[#ffaa00]">
+                            <input type="text" id="lastName" placeholder="مثال: العلوي" class="w-full bg-[#060a10] border border-[#2a343f] rounded-xl p-3 text-white text-xs outline-none focus:border-[#3b82f6]">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-[10px] text-gray-400 mb-1" id="ribLabel">رقم RIB البنكي *</label>
-                        <input type="text" id="ribNumber" placeholder="مثال : 230780123456789012345678" class="w-full bg-[#0b0d14] border border-[#1a2032] rounded-xl p-3 text-white text-xs font-mono outline-none focus:border-[#ffaa00]">
+                        <input type="text" id="ribNumber" placeholder="مثال : 230780123456789012345678" class="w-full bg-[#060a10] border border-[#2a343f] rounded-xl p-3 text-white text-xs font-mono outline-none focus:border-[#3b82f6]">
                         <p class="text-[9px] text-gray-500 mt-1" id="ribHint">أدخل رقم الـ RIB الكامل بدون مسافات</p>
                     </div>
                 </div>
@@ -156,7 +156,7 @@
                     <span class="text-[10px]" id="errorMessageText">المبلغ يتجاوز رصيدك المتاح</span>
                 </div>
 
-                <button onclick="submitWithdrawal()" id="withdrawBtn" class="w-full bg-[#111520] border border-[#1a2032] text-gray-500 font-black py-3.5 rounded-xl text-xs transition flex justify-center items-center gap-2">
+                <button onclick="submitWithdrawal()" id="withdrawBtn" class="w-full bg-[#10161f] border border-[#2a343f] text-gray-500 font-black py-3.5 rounded-xl text-xs transition flex justify-center items-center gap-2">
                     <i class="fas fa-wallet"></i> <span id="btnAmountText">سحب 0 DH</span>
                 </button>
             </div>
@@ -168,46 +168,46 @@
                 </div>
                 <div id="bank-selection-grid" class="grid grid-cols-2 gap-3">
                     <div onclick="showBankInterface('Attijariwafa', 'https://i.ibb.co/KcwfqxTQ/IMG-4369.png')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box border border-[#1a2032] group-hover:border-[#ffaa00]">
+                        <div class="app-logo-box border border-[#2a343f] group-hover:border-[#3b82f6]">
                             <img src="https://i.ibb.co/KcwfqxTQ/IMG-4369.png" alt="Attijariwafa" class="w-full h-full object-contain rounded-xl">
                         </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">التجاري وفا بنك</span>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#3b82f6]">التجاري وفا بنك</span>
                     </div>
                     <div onclick="showBankInterface('CIH Bank', 'https://i.ibb.co/S7yJ3PD2/IMG-3730.png')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box border border-[#1a2032] group-hover:border-[#ffaa00]">
+                        <div class="app-logo-box border border-[#2a343f] group-hover:border-[#3b82f6]">
                             <img src="https://i.ibb.co/S7yJ3PD2/IMG-3730.png" alt="CIH Bank" class="w-full h-full object-contain rounded-xl">
                         </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">CIH Bank</span>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#3b82f6]">CIH Bank</span>
                     </div>
                     <div onclick="showBankInterface('Al Barid', 'https://i.ibb.co/67xz40JN/IMG-3734.webp')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box border border-[#1a2032] group-hover:border-[#ffaa00]">
+                        <div class="app-logo-box border border-[#2a343f] group-hover:border-[#3b82f6]">
                             <img src="https://i.ibb.co/67xz40JN/IMG-3734.webp" alt="Al Barid" class="w-full h-full object-contain rounded-xl">
                         </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">البريد بنك</span>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#3b82f6]">البريد بنك</span>
                     </div>
                     <div onclick="showBankInterface('L\'banka Lik', 'https://i.ibb.co/r1sHZH7/IMG-3733.png')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box border border-[#1a2032] group-hover:border-[#ffaa00]">
+                        <div class="app-logo-box border border-[#2a343f] group-hover:border-[#3b82f6]">
                             <img src="https://i.ibb.co/r1sHZH7/IMG-3733.png" alt="L'banka Lik" class="w-full h-full object-contain rounded-xl">
                         </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">لبنك اليك</span>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#3b82f6]">لبنك اليك</span>
                     </div>
                     <div onclick="showBankInterface('BOA', 'https://i.ibb.co/GQBtbkrV/IMG-4716.png')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box border border-[#1a2032] group-hover:border-[#ffaa00]">
+                        <div class="app-logo-box border border-[#2a343f] group-hover:border-[#3b82f6]">
                             <img src="https://i.ibb.co/GQBtbkrV/IMG-4716.png" alt="BOA" class="w-full h-full object-contain rounded-xl">
                         </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">بنك أفريقيا</span>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#3b82f6]">بنك أفريقيا</span>
                     </div>
                     <div onclick="showBankInterface('Cash Plus', 'https://i.ibb.co/XZ28vnHS/IMG-4708.jpg', true)" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box border border-[#1a2032] group-hover:border-[#ffaa00]">
+                        <div class="app-logo-box border border-[#2a343f] group-hover:border-[#3b82f6]">
                             <img src="https://i.ibb.co/XZ28vnHS/IMG-4708.jpg" alt="Cash Plus" class="w-full h-full object-contain rounded-xl">
                         </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">كاش بلوس</span>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#3b82f6]">كاش بلوس</span>
                     </div>
                     <div onclick="showBankInterface('Chaabi Bank', 'https://i.ibb.co/5tnL9GL/IMG-4718.png')" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box border border-[#1a2032] group-hover:border-[#ffaa00]">
+                        <div class="app-logo-box border border-[#2a343f] group-hover:border-[#3b82f6]">
                             <img src="https://i.ibb.co/5tnL9GL/IMG-4718.png" alt="Chaabi Bank" class="w-full h-full object-contain rounded-xl">
                         </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#ffaa00]">البنك الشعبي</span>
+                        <span class="text-xs font-bold text-gray-300 group-hover:text-[#3b82f6]">البنك الشعبي</span>
                     </div>
                 </div>
             </div>
@@ -291,10 +291,10 @@
             const btn = document.getElementById('withdrawBtn');
             const err = document.getElementById('errorMessage');
             if(amount >= 100 && amount <= userBalance) {
-                btn.className = "w-full pool-gold text-black font-black py-3.5 rounded-xl text-xs transition shadow-lg shadow-[#ffaa00]/20 flex justify-center items-center gap-2";
+                btn.className = "w-full pool-gold text-white font-black py-3.5 rounded-xl text-xs transition shadow-lg shadow-[#3b82f6]/20 flex justify-center items-center gap-2";
                 err.classList.add('hidden');
             } else {
-                btn.className = "w-full bg-[#111520] border border-[#1a2032] text-gray-500 font-black py-3.5 rounded-xl text-xs transition cursor-not-allowed flex justify-center items-center gap-2";
+                btn.className = "w-full bg-[#10161f] border border-[#2a343f] text-gray-500 font-black py-3.5 rounded-xl text-xs transition cursor-not-allowed flex justify-center items-center gap-2";
                 if (amount > 0) err.classList.remove('hidden');
             }
         };
@@ -332,14 +332,14 @@
                 const data = snapshot.val();
                 Object.values(data).reverse().forEach(req => {
                     listEl.innerHTML += `
-                        <div class="bg-[#111520] border border-[#1a2032] p-4 rounded-xl text-xs space-y-2">
+                        <div class="bg-[#10161f] border border-[#2a343f] p-4 rounded-xl text-xs space-y-2">
                             <div class="flex justify-between">
                                 <span class="font-bold text-white">${req.bankName}</span>
-                                <span class="font-black text-[#ffaa00]">DH ${req.amount}</span>
+                                <span class="font-black text-[#3b82f6]">DH ${req.amount}</span>
                             </div>
                             <div class="flex justify-between text-gray-500 text-[10px]">
                                 <span>${req.timestamp}</span>
-                                <span class="font-bold border border-[#ffaa00] text-[#ffaa00] px-2 rounded">${req.status}</span>
+                                <span class="font-bold border border-[#3b82f6] text-[#3b82f6] px-2 rounded">${req.status}</span>
                             </div>
                         </div>
                     `;
