@@ -334,6 +334,7 @@
               if (data) {
                   globalUserBalance = data.balance || 0;
                   document.getElementById('balanceDisplay').innerHTML = globalUserBalance.toLocaleString() + ' <span class="text-2xl text-blue-400">DH</span>';
+                  // تحديث الانتصارات والأرباح مباشرة من البيانات المستلمة
                   document.getElementById('winsDisplay').innerText = (data.wins || 0).toLocaleString();
                   document.getElementById('matchesDisplay').innerText = (data.matches || 0).toLocaleString();
                   document.getElementById('profitDisplay').innerText = (data.profit || 0).toLocaleString();
