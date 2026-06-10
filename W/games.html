@@ -363,6 +363,24 @@
                     <button class="btn-play" id="btn-roulette">إبدأ التحدي</button>
                 </div>
             </div>
+            
+            <div class="game-card card-plinko" onclick="playClickSound(); playGame('plinko')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="20" r="8" fill="#ff007f"/>
+                        <circle cx="30" cy="40" r="4" fill="#00f2fe"/>
+                        <circle cx="70" cy="40" r="4" fill="#00f2fe"/>
+                        <circle cx="50" cy="60" r="4" fill="#00f2fe"/>
+                        <rect x="10" y="80" width="80" height="15" rx="2" fill="#3b82f6" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-plinko">مستوى الحظ • تحديث</span>
+                    <h3 class="game-title">Cyber Plinko</h3>
+                    <p class="game-desc" id="desc-plinko">أسقط الكرة عبر المتاهة النيونية، وسجل الأرباح في الخانات الملونة مع مضاعفات خيالية.</p>
+                    <button class="btn-play" id="btn-plinko">إبدأ التحدي</button>
+                </div>
+            </div>
 
         </div>
     </div>
@@ -399,7 +417,9 @@
                 billiardsTag: "بطولات مباشرة",
                 billiardsDesc: "استعرض مهارتك الاحترافية في توجيه الكرات، وسجل ضربات حاسمة لاقتناص الجوائز الفورية.",
                 rouletteTag: "كازينو مميز",
-                rouletteDesc: "توقع الأرقام والألوان الرابحة، دور عجلة الروليت الملكية وضاعف رصيدك إلى مستويات قياسية."
+                rouletteDesc: "توقع الأرقام والألوان الرابحة، دور عجلة الروليت الملكية وضاعف رصيدك إلى مستويات قياسية.",
+                plinkoTag: "مستوى الحظ • تحديث",
+                plinkoDesc: "أسقط الكرة عبر المتاهة النيونية، وسجل الأرباح في الخانات الملونة مع مضاعفات خيالية."
             },
             fr: {
                 title: "Salon de Jeux Exclusif",
@@ -412,7 +432,9 @@
                 billiardsTag: "Tournois en Direct",
                 billiardsDesc: "Démontrez votre précision pro, alignez des tirs parfaits et empochez des récompenses instantanées.",
                 rouletteTag: "Casino Premium",
-                rouletteDesc: "Misez sur les bons numéros ou couleurs, lancez la Roulette Royale et maximisez vos multiplicateurs."
+                rouletteDesc: "Misez sur les bons numéros ou couleurs, lancez la Roulette Royale et maximisez vos multiplicateurs.",
+                plinkoTag: "Mode Chance • Mise à jour",
+                plinkoDesc: "Laissez tomber la bille dans le labyrinthe néon et marquez des gains avec des multiplicateurs incroyables."
             }
         };
 
@@ -464,6 +486,10 @@
                 document.getElementById('tag-roulette').innerText = translations.fr.rouletteTag;
                 document.getElementById('desc-roulette').innerText = translations.fr.rouletteDesc;
                 document.getElementById('btn-roulette').innerText = translations.fr.btnPlay;
+                
+                document.getElementById('tag-plinko').innerText = translations.fr.plinkoTag;
+                document.getElementById('desc-plinko').innerText = translations.fr.plinkoDesc;
+                document.getElementById('btn-plinko').innerText = translations.fr.btnPlay;
             } else {
                 currentLang = 'ar';
                 htmlEl.setAttribute('lang', 'ar');
@@ -485,6 +511,10 @@
                 document.getElementById('tag-roulette').innerText = translations.ar.rouletteTag;
                 document.getElementById('desc-roulette').innerText = translations.ar.rouletteDesc;
                 document.getElementById('btn-roulette').innerText = translations.ar.btnPlay;
+
+                document.getElementById('tag-plinko').innerText = translations.ar.plinkoTag;
+                document.getElementById('desc-plinko').innerText = translations.ar.plinkoDesc;
+                document.getElementById('btn-plinko').innerText = translations.ar.btnPlay;
             }
         }
 
@@ -517,6 +547,8 @@
                     window.location.href = '8POOL.html'; 
                 } else if (game === 'roulette') {
                     window.location.href = 'Roulette.html'; 
+                } else if (game === 'plinko') {
+                    window.location.href = 'Plinko.html';
                 }
             }, 150);
         }
