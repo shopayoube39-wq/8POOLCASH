@@ -6,6 +6,8 @@
     <title>Tower Casino - Hardcore Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
         body {
             font-family: 'Tajawal', 'Space Grotesk', sans-serif;
@@ -86,6 +88,7 @@
                 <div class="bg-black/80 px-3 py-1.5 rounded-xl border border-emerald-400/30 font-mono flex items-center gap-2 shadow-lg">
                     <span class="text-[9px] text-emerald-400 font-black tracking-widest">الرصيد</span>
                     <span id="balance-display" class="text-emerald-300 font-black text-base">0.00</span>
+                    <span class="text-xs text-emerald-400 font-bold">$</span>
                 </div>
             </div>
 
@@ -136,6 +139,7 @@
                     <button class="w-8 h-8 bg-white/5 text-white rounded-lg font-black text-base flex items-center justify-center opacity-50 cursor-not-allowed">-</button>
                     <div class="text-center flex items-center justify-center gap-1 flex-grow">
                         <input id="bet-amount-field" type="number" readonly class="w-16 bg-transparent text-center text-white font-black text-base outline-none">
+                        <span class="text-amber-400 font-bold text-xs">دولار</span>
                     </div>
                     <button class="w-8 h-8 bg-white/5 text-white rounded-lg font-black text-base flex items-center justify-center opacity-50 cursor-not-allowed">+</button>
                 </div>
@@ -146,6 +150,16 @@
     </div>
 
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
+            databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
+            projectId: "poolcash-6692c"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        let username = localStorage.getItem('username') || "Ayoube";
+        
         let audioCtx = null; let isAudioInitialized = false; let isMuted = true; let musicBpmLoop = null;
         function initAudio() { if (isAudioInitialized) return; audioCtx = new (window.AudioContext || window.webkitAudioContext)(); isAudioInitialized = true; }
         function playSynthSound(freq, type, duration, vol = 0.06) {
@@ -186,13 +200,22 @@
 
     <script>
         let gameConfig = {
-            balance: parseFloat(localStorage.getItem('userBalance')) || 0,
+            balance: 0,
             buildingFloors: [],
             gameState: 'idle', 
-            currentBet: parseFloat(localStorage.getItem('pendingBet')) || 0,
+            currentBet: parseFloat(localStorage.getItem('pendingBet')) || 100,
             currentRunningMultiplier: 0.0,
             floorMultipliers: [0.15, 0.35, 0.60, 0.90, 1.15, 1.40, 1.75, 2.10, 2.50, 3.00, 3.60, 4.20]
         };
+
+        database.ref('users/' + username + '/balance').on('value', (snap) => {
+            gameConfig.balance = snap.val() || 0;
+            document.getElementById('balance-display').innerText = gameConfig.balance.toFixed(2);
+        });
+
+        function updateBalanceInFirebase(newBalance) {
+            database.ref('users/' + username).update({ balance: newBalance });
+        }
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -223,7 +246,6 @@
         function resizeViewport() {
             viewWidth = canvas.width = canvas.clientWidth;
             viewHeight = canvas.height = canvas.clientHeight;
-            document.getElementById('balance-display').innerText = gameConfig.balance.toFixed(2);
         }
 
         function handleMainButtonAction() {
@@ -245,9 +267,9 @@
                 }
 
                 gameConfig.balance -= betAmount;
+                updateBalanceInFirebase(gameConfig.balance);
                 gameConfig.gameState = 'dropping';
                 
-                document.getElementById('balance-display').innerText = gameConfig.balance.toFixed(2);
                 if (!isMuted) startCasinoMusicLoop();
             } else if (gameConfig.gameState === 'active_round') {
                 gameConfig.gameState = 'dropping';
@@ -303,7 +325,7 @@
                             </svg>
                             <div class="flex flex-col items-start leading-tight text-right">
                                 <span class="text-[9px] opacity-80 font-bold">جني الأرباح الفورية الآن</span>
-                                <span class="text-xs font-black tracking-tight">صرف الأرباح: ${currentWin} (x${gameConfig.currentRunningMultiplier.toFixed(2)})</span>
+                                <span class="text-xs font-black tracking-tight">صرف الأرباح: $${currentWin} (x${gameConfig.currentRunningMultiplier.toFixed(2)})</span>
                             </div>
                         </button>
                     </div>`;
@@ -315,11 +337,12 @@
 
             let winAmount = gameConfig.currentBet * gameConfig.currentRunningMultiplier;
             gameConfig.balance += winAmount;
+            updateBalanceInFirebase(gameConfig.balance);
             
             sfx.cashout();
             createExplosionParticles(viewWidth/2, viewHeight - 140, '#00ff87', 30);
             triggerResultPopup(true, gameConfig.currentRunningMultiplier, winAmount);
-            addTableStatsRecord("أنت (Youssef)", gameConfig.currentRunningMultiplier, winAmount, true);
+            addTableStatsRecord("أنت", gameConfig.currentRunningMultiplier, winAmount, true);
             addQuickHistoryBadge(gameConfig.currentRunningMultiplier, '#00ff87');
 
             endActiveRoundSystem();
@@ -334,8 +357,6 @@
             currentDropPiece = null;
 
             document.getElementById('current-multiplier-badge').classList.add('hidden');
-            document.getElementById('balance-display').innerText = gameConfig.balance.toFixed(2);
-            localStorage.setItem('userBalance', gameConfig.balance);
             
             updateButtonInterface();
         }
@@ -351,7 +372,7 @@
                 
                 container.innerHTML += `
                     <div class="flex flex-col bg-white/5 p-1 rounded-md text-[8px]" id="fake-p-${i}">
-                        <div class="flex justify-between font-bold text-gray-300"><span>👤 ${name}</span> <span class="text-amber-400">${bet}</span></div>
+                        <div class="flex justify-between font-bold text-gray-300"><span>👤 ${name}</span> <span class="text-amber-400">$${bet}</span></div>
                         <div class="text-[8px] text-gray-400 font-mono" id="fake-p-status-${i}">جاري البناء...</div>
                     </div>`;
             }
@@ -368,7 +389,7 @@
                     let finalMult = gameConfig.floorMultipliers[Math.floor(Math.random() * 3)];
                     let winAmt = p.bet * finalMult;
                     statusEl.className = "text-emerald-400 font-bold";
-                    statusEl.innerText = `💵 سحب مبكر x${finalMult.toFixed(2)} (+${winAmt.toFixed(0)})`;
+                    statusEl.innerText = `💵 سحب مبكر x${finalMult.toFixed(2)} (+${winAmt.toFixed(0)}$)`;
                     
                     addTableStatsRecord(p.name, finalMult, winAmt, true);
                 } else if (Math.random() > 0.60 || p.status === 'cashout') {
@@ -385,7 +406,7 @@
                         let block = document.getElementById(`fake-p-${i}`);
                         if(block) {
                             block.innerHTML = `
-                                <div class="flex justify-between font-bold text-gray-300"><span>👤 ${p.name}</span> <span class="text-amber-400">${p.bet}</span></div>
+                                <div class="flex justify-between font-bold text-gray-300"><span>👤 ${p.name}</span> <span class="text-amber-400">$${p.bet}</span></div>
                                 <div class="text-[8px] text-gray-400 font-mono" id="fake-p-status-${i}">جاري البناء...</div>`;
                         }
                     }, 1200);
@@ -397,7 +418,7 @@
             const list = document.getElementById('table-stats-list');
             const row = document.createElement('div');
             row.className = `flex justify-between items-center p-1 rounded border border-white/5 text-[8px] ${isWin ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`;
-            row.innerHTML = `<span>${name}</span> <span class="font-bold">${isWin ? 'x' + mult.toFixed(2) : '-' + amount}</span>`;
+            row.innerHTML = `<span>${name}</span> <span class="font-bold">${isWin ? 'x' + mult.toFixed(2) : '-$' + amount}</span>`;
             list.insertBefore(row, list.firstChild);
             if(list.children.length > 8) list.removeChild(list.lastChild);
         }
@@ -472,7 +493,7 @@
                         screenShakeTime = 25;
                         sfx.lose();
                         createExplosionParticles(currentDropPiece.x, currentDropPiece.y, '#ff003c', 25);
-                        addTableStatsRecord("أنت (Youssef)", 0, gameConfig.currentBet, false);
+                        addTableStatsRecord("أنت", 0, gameConfig.currentBet, false);
                         addQuickHistoryBadge(0, '#ff003c');
                         
                         let fallTicks = 0;
@@ -505,7 +526,7 @@
 
                         const badge = document.getElementById('current-multiplier-badge');
                         badge.classList.remove('hidden');
-                        badge.innerText = `المضاعف الحالي: x${floorMult.toFixed(2)} (${(gameConfig.currentBet * floorMult).toFixed(1)})`;
+                        badge.innerText = `المضاعف الحالي: x${floorMult.toFixed(2)} (${(gameConfig.currentBet * floorMult).toFixed(1)}$)`;
 
                         targetCameraYOffset = gameConfig.buildingFloors.length * floorHeight;
                         
@@ -607,7 +628,7 @@
                 mText.className = "text-yellow-400 text-3xl font-black font-mono my-0.5";
                 mText.innerText = `x${mult.toFixed(2)}`;
                 aText.className = "text-[#00ff87] text-base font-black font-mono";
-                aText.innerText = `+${amt.toFixed(1)}`;
+                aText.innerText = `+${amt.toFixed(1)}$`;
             } else {
                 box.className = "bg-black/95 border border-red-500/40 px-6 py-4 rounded-2xl text-center shadow-2xl backdrop-blur-md min-w-[200px]";
                 status.className = "text-red-500 text-[10px] font-black tracking-widest mb-0.5";
