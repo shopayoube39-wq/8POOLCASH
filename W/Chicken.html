@@ -526,8 +526,10 @@ let totalProfitStat = 0;
 let maxMultiStat = 0;
 let historyChartData = []; 
 
+const multipliers = [0.5, 1.5, 2, 2.55, 3.50];
+
 const riskMultipliers = {
-    1: [3.10, 9.50, 28.00, 85.00, 260.00], 
+    1: multipliers, 
     2: [12.00, 98.00, 650.00, 4800.00, 35000.00] 
 };
 
@@ -958,7 +960,6 @@ function simulateLiveFeed() {
     }, 2800);
 }
 
-// تعديل دالة زر البدء لتقوم بخصم قيمة الرهان فوراً عند البداية من الرصيد المتوفر
 btnStart.onclick = () => {
     initAudioOnInteraction();
     if (isGameActive) return;
@@ -973,7 +974,6 @@ btnStart.onclick = () => {
         return; 
     }
     
-    // عملية الخصم الفوري عند الضغط على زر البدء لتبدأ جولة جديدة برهان جديد
     if (isDemoMode) {
         demoBalance -= finalCost;
     } else {
