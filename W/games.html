@@ -58,6 +58,13 @@
             50% { opacity: 1; filter: blur(2px); box-shadow: 0 0 25px #3b82f6, 0 0 50px rgba(59, 130, 246, 0.8); }
         }
 
+        /* إضافات الأنميشن الجديدة */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header-content { animation: fadeInDown 0.8s ease-out; }
+
         header {
             display: flex;
             justify-content: space-between;
@@ -80,6 +87,7 @@
             font-weight: 900;
             letter-spacing: 1px;
             font-style: italic;
+            cursor: pointer;
         }
 
         .logo-area span {
@@ -159,7 +167,15 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+            animation: fadeInDown 0.5s ease-out forwards;
+            opacity: 0;
         }
+        .game-card:nth-child(1) { animation-delay: 0.1s; }
+        .game-card:nth-child(2) { animation-delay: 0.2s; }
+        .game-card:nth-child(3) { animation-delay: 0.3s; }
+        .game-card:nth-child(4) { animation-delay: 0.4s; }
+        .game-card:nth-child(5) { animation-delay: 0.5s; }
+        .game-card:nth-child(6) { animation-delay: 0.6s; }
 
         .game-card:hover {
             transform: translateY(-8px);
@@ -272,7 +288,7 @@
 </head>
 <body>
 
-    <header>
+    <header class="header-content">
         <div class="logo-area" onclick="playClickSound()">
             <span>VIP</span>PLAY
         </div>
@@ -286,7 +302,7 @@
 
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title" id="main-title">صالة الألعاب الحصرية</h2>
+            <h2 class="section-title" id="main-title">مركز الألعاب النخبوية</h2>
         </div>
         
         <div class="games-grid">
@@ -304,7 +320,7 @@
                 <div class="game-info">
                     <span class="game-tag" id="tag-chicken">المقترحة • VIP</span>
                     <h3 class="game-title">Chicken Adventure</h3>
-                    <p class="game-desc" id="desc-chicken">اكشف الأطباق بذكاء، اعثر على الدجاج الذهبي وتجنب العظام لمضاعفة أرباحك فوراً.</p>
+                    <p class="game-desc" id="desc-chicken">استكشف الأطباق بدقة، حدد مواقع الدجاج الذهبي وتجاوز العقبات لتعظيم أرباحك فورياً.</p>
                     <button class="btn-play" id="btn-chicken">إبدأ التحدي</button>
                 </div>
             </div>
@@ -321,9 +337,9 @@
                     </svg>
                 </div>
                 <div class="game-info">
-                    <span class="game-tag" id="tag-cyber">مستوى متطور • جديد</span>
+                    <span class="game-tag" id="tag-cyber">إصدار سيبراني • جديد</span>
                     <h3 class="game-title">Cyber Chicken</h3>
-                    <p class="game-desc" id="desc-cyber">تجاوز مسارات السرعة السيبرانية وتفادى المركبات النيونية الخاطفة لبلوغ خط الأرباح القياسية.</p>
+                    <p class="game-desc" id="desc-cyber">اختبر مهاراتك عبر مسارات النيون السريعة وتفادى المركبات المعرقلة لتحقيق مستويات أرباح قياسية.</p>
                     <button class="btn-play" id="btn-cyber">إبدأ التحدي</button>
                 </div>
             </div>
@@ -338,9 +354,9 @@
                     </svg>
                 </div>
                 <div class="game-info">
-                    <span class="game-tag" id="tag-billiards">بطولات مباشرة</span>
+                    <span class="game-tag" id="tag-billiards">بطولات تنافسية</span>
                     <h3 class="game-title">Billiards 2D Pro</h3>
-                    <p class="game-desc" id="desc-billiards">استعرض مهارتك الاحترافية في توجيه الكرات، وسجل ضربات حاسمة لاقتناص الجوائز الفورية.</p>
+                    <p class="game-desc" id="desc-billiards">وظّف مهاراتك الاحترافية في التوجيه والتحكم، وقم بتنفيذ ضربات حاسمة لاقتناص المكافآت المالية.</p>
                     <button class="btn-play" id="btn-billiards">إبدأ التحدي</button>
                 </div>
             </div>
@@ -357,9 +373,9 @@
                     </svg>
                 </div>
                 <div class="game-info">
-                    <span class="game-tag" id="tag-roulette">كازينو مميز</span>
+                    <span class="game-tag" id="tag-roulette">كازينو ملكي</span>
                     <h3 class="game-title">Roulette Royale</h3>
-                    <p class="game-desc" id="desc-roulette">توقع الأرقام والألوان الرابحة، دور عجلة الروليت الملكية وضاعف رصيدك إلى مستويات قياسية.</p>
+                    <p class="game-desc" id="desc-roulette">توقع الأرقام والألوان الرابحة بدقة، قم بتدوير العجلة الملكية لرفع رصيدك إلى مستويات تنافسية.</p>
                     <button class="btn-play" id="btn-roulette">إبدأ التحدي</button>
                 </div>
             </div>
@@ -375,15 +391,35 @@
                     </svg>
                 </div>
                 <div class="game-info">
-                    <span class="game-tag" id="tag-plinko">مستوى الحظ • تحديث</span>
+                    <span class="game-tag" id="tag-plinko">خوارزمية الحظ • محدثة</span>
                     <h3 class="game-title">Cyber Plinko</h3>
-                    <p class="game-desc" id="desc-plinko">أسقط الكرة عبر المتاهة النيونية، وسجل الأرباح في الخانات الملونة مع مضاعفات خيالية.</p>
+                    <p class="game-desc" id="desc-plinko">أسقط الكرة ضمن المتاهة المتطورة، وحقق عوائد مالية من خلال الخانات الملونة ذات المضاعفات المرتفعة.</p>
                     <button class="btn-play" id="btn-plinko">إبدأ التحدي</button>
+                </div>
+            </div>
+
+            <div class="game-card card-aviator" onclick="playClickSound(); playGame('aviator')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M10 80 Q 50 10, 90 40" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="6 6"/>
+                        <path d="M10 80 L30 60 L40 70 L90 20" fill="none" stroke="#ffffff" stroke-width="3"/>
+                        <circle cx="90" cy="20" r="5" fill="#f59e0b"/>
+                    </svg>
+                </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-aviator">الأكثر طلباً • فائق السرعة</span>
+                    <h3 class="game-title">Aviator Pro</h3>
+                    <p class="game-desc" id="desc-aviator">حلق بمركبتك نحو الأعلى، وقم بإنهاء الصفقة في الوقت المثالي لمضاعفة رأس مالك في ثوانٍ.</p>
+                    <button class="btn-play" id="btn-aviator">إبدأ التحدي</button>
                 </div>
             </div>
 
         </div>
     </div>
+
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
@@ -404,41 +440,49 @@
 
         let currentLang = 'ar';
         let currentUsername = "Ayoube"; 
+        const music = document.getElementById('bg-music');
 
         const translations = {
             ar: {
-                title: "صالة الألعاب الحصرية",
+                title: "مركز الألعاب النخبوية",
                 btnLang: "Français",
                 btnPlay: "إبدأ التحدي",
                 chickenTag: "المقترحة • VIP",
-                chickenDesc: "اكشف الأطباق بذكاء، اعثر على الدجاج الذهبي وتجنب العظام لمضاعفة أرباحك فوراً.",
-                cyberTag: "مستوى متطور • جديد",
-                cyberDesc: "تجاوز مسارات السرعة السيبرانية وتفادى المركبات النيونية الخاطفة لبلوغ خط الأرباح القياسية.",
-                billiardsTag: "بطولات مباشرة",
-                billiardsDesc: "استعرض مهارتك الاحترافية في توجيه الكرات، وسجل ضربات حاسمة لاقتناص الجوائز الفورية.",
-                rouletteTag: "كازينو مميز",
-                rouletteDesc: "توقع الأرقام والألوان الرابحة، دور عجلة الروليت الملكية وضاعف رصيدك إلى مستويات قياسية.",
-                plinkoTag: "مستوى الحظ • تحديث",
-                plinkoDesc: "أسقط الكرة عبر المتاهة النيونية، وسجل الأرباح في الخانات الملونة مع مضاعفات خيالية."
+                chickenDesc: "استكشف الأطباق بدقة، حدد مواقع الدجاج الذهبي وتجاوز العقبات لتعظيم أرباحك فورياً.",
+                cyberTag: "إصدار سيبراني • جديد",
+                cyberDesc: "اختبر مهاراتك عبر مسارات النيون السريعة وتفادى المركبات المعرقلة لتحقيق مستويات أرباح قياسية.",
+                billiardsTag: "بطولات تنافسية",
+                billiardsDesc: "وظّف مهاراتك الاحترافية في التوجيه والتحكم، وقم بتنفيذ ضربات حاسمة لاقتناص المكافآت المالية.",
+                rouletteTag: "كازينو ملكي",
+                rouletteDesc: "توقع الأرقام والألوان الرابحة بدقة، قم بتدوير العجلة الملكية لرفع رصيدك إلى مستويات تنافسية.",
+                plinkoTag: "خوارزمية الحظ • محدثة",
+                plinkoDesc: "أسقط الكرة ضمن المتاهة المتطورة، وحقق عوائد مالية من خلال الخانات الملونة ذات المضاعفات المرتفعة.",
+                aviatorTag: "الأكثر طلباً • فائق السرعة",
+                aviatorDesc: "حلق بمركبتك نحو الأعلى، وقم بإنهاء الصفقة في الوقت المثالي لمضاعفة رأس مالك في ثوانٍ."
             },
             fr: {
-                title: "Salon de Jeux Exclusif",
+                title: "Salon de Jeux Élite",
                 btnLang: "العربية",
                 btnPlay: "Lancer le Défi",
                 chickenTag: "Recommandé • VIP",
-                chickenDesc: "Découvrez les plateaux avec stratégie, trouvez les poulets dorés et évitez les os pour multiplier vos gains.",
-                cyberTag: "Mode Expert • Nouveau",
-                cyberDesc: "Franchissez les voies cybernétiques rapides et esquivez les véhicules néon pour atteindre le score maximal.",
-                billiardsTag: "Tournois en Direct",
-                billiardsDesc: "Démontrez votre précision pro, alignez des tirs parfaits et empochez des récompenses instantanées.",
-                rouletteTag: "Casino Premium",
-                rouletteDesc: "Misez sur les bons numéros ou couleurs, lancez la Roulette Royale et maximisez vos multiplicateurs.",
-                plinkoTag: "Mode Chance • Mise à jour",
-                plinkoDesc: "Laissez tomber la bille dans le labyrinthe néon et marquez des gains avec des multiplicateurs incroyables."
+                chickenDesc: "Explorez les plateaux avec précision, identifiez les poulets dorés et évitez les pièges pour maximiser vos gains.",
+                cyberTag: "Édition Cyber • Nouveau",
+                cyberDesc: "Testez vos réflexes sur des pistes néon rapides et esquivez les obstacles pour atteindre des records de profits.",
+                billiardsTag: "Tournois Compétitifs",
+                billiardsDesc: "Utilisez vos compétences professionnelles de visée et de contrôle pour exécuter des tirs décisifs et décrocher vos récompenses.",
+                rouletteTag: "Casino Royal",
+                rouletteDesc: "Anticipez les chiffres et couleurs gagnants, faites tourner la roue royale et augmentez votre solde à des niveaux compétitifs.",
+                plinkoTag: "Algorithme de Chance • Mis à jour",
+                plinkoDesc: "Laissez tomber la bille dans le labyrinthe avancé et générez des revenus grâce aux cases colorées à hauts multiplicateurs.",
+                aviatorTag: "Le plus populaire • Ultra-Rapide",
+                aviatorDesc: "Envolez-vous, et finalisez votre transaction au moment idéal pour multiplier votre capital en quelques secondes."
             }
         };
 
         function playClickSound() {
+            // تفعيل الموسيقى عند أول تفاعل
+            if (music.paused) music.play().catch(e => console.log("Audio play blocked"));
+            
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
@@ -490,6 +534,10 @@
                 document.getElementById('tag-plinko').innerText = translations.fr.plinkoTag;
                 document.getElementById('desc-plinko').innerText = translations.fr.plinkoDesc;
                 document.getElementById('btn-plinko').innerText = translations.fr.btnPlay;
+
+                document.getElementById('tag-aviator').innerText = translations.fr.aviatorTag;
+                document.getElementById('desc-aviator').innerText = translations.fr.aviatorDesc;
+                document.getElementById('btn-aviator').innerText = translations.fr.btnPlay;
             } else {
                 currentLang = 'ar';
                 htmlEl.setAttribute('lang', 'ar');
@@ -515,6 +563,10 @@
                 document.getElementById('tag-plinko').innerText = translations.ar.plinkoTag;
                 document.getElementById('desc-plinko').innerText = translations.ar.plinkoDesc;
                 document.getElementById('btn-plinko').innerText = translations.ar.btnPlay;
+
+                document.getElementById('tag-aviator').innerText = translations.ar.aviatorTag;
+                document.getElementById('desc-aviator').innerText = translations.ar.aviatorDesc;
+                document.getElementById('btn-aviator').innerText = translations.ar.btnPlay;
             }
         }
 
@@ -549,6 +601,8 @@
                     window.location.href = 'Roulette.html'; 
                 } else if (game === 'plinko') {
                     window.location.href = 'Plinko.html';
+                } else if (game === 'aviator') {
+                    window.location.href = 'Aviator.html';
                 }
             }, 150);
         }
