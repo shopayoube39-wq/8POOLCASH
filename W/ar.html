@@ -329,7 +329,10 @@
                   document.getElementById('balanceDisplay').innerHTML = globalUserBalance.toLocaleString() + ' <span class="text-2xl text-blue-400">DH</span>';
                   document.getElementById('winsDisplay').innerText = (data.wins || 0).toLocaleString();
                   document.getElementById('matchesDisplay').innerText = (data.matches || 0).toLocaleString();
-                  document.getElementById('profitDisplay').innerText = (data.profit || 0).toLocaleString();
+                  
+                  // الحساب: إجمالي الأرباح لكل فوز
+                  const totalProfit = (data.wins || 0) * (data.avgWinAmount || 0);
+                  document.getElementById('profitDisplay').innerText = totalProfit.toLocaleString();
               }
           });
       }
