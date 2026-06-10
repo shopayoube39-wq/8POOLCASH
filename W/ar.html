@@ -188,43 +188,9 @@
                     </a>
                     <p class="text-[10px] text-gray-600 mt-2">اضغط على البريد للمراسلة مباشرة</p>
                 </div>
-
-                <div class="bg-[#0d111a] rounded-2xl p-5 border border-white/5 text-right">
-                    <div class="flex items-center gap-2 text-gray-300 text-xs font-bold mb-3">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <span>وقت الاستجابة</span>
-                    </div>
-                    <p class="text-[11px] text-gray-500">نرد على جميع الرسائل خلال 24 ساعة كحد أقصى</p>
-                </div>
-
-                <div class="bg-[#0d111a] rounded-2xl p-5 border border-white/5 text-right">
-                    <div class="flex items-center gap-2 text-gray-300 text-xs font-bold mb-3">
-                        <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                        <span>يمكنك التواصل بخصوص:</span>
-                    </div>
-                    <ul class="text-[11px] text-gray-500 space-y-1">
-                        <li>• مشاكل الإيداع والسحب</li>
-                        <li>• الشكاوى والمخاوف المتعلقة بالحساب</li>
-                        <li>• الإبلاغ عن خلل تقني</li>
-                    </ul>
-                </div>
             </div>
 
             <button onclick="closeSupportModal()" class="w-full mt-6 py-3 rounded-xl bg-white text-black font-bold text-sm">إغلاق</button>
-        </div>
-    </div>
-
-    <div id="deposit-required-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm hidden">
-        <div class="bg-[#0d111a] w-full max-w-sm rounded-3xl p-8 border border-white/10 text-center">
-            <div class="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-            </div>
-            <h3 class="text-xl font-black text-white mb-2">رصيد غير كافٍ</h3>
-            <p class="text-gray-400 text-sm mb-8">عذراً، رصيدك الحالي لا يكفي لبدء هذه المواجهة. يرجى شحن رصيدك للمتابعة.</p>
-            <div class="space-y-3">
-                <button onclick="window.location.href='deposit.html'" class="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all">الذهاب للإيداع</button>
-                <button onclick="document.getElementById('deposit-required-modal').classList.add('hidden')" class="w-full py-4 bg-white/5 hover:bg-white/10 text-white font-bold rounded-2xl transition-all">إغلاق</button>
-            </div>
         </div>
     </div>
 
@@ -280,46 +246,6 @@
         selector.appendChild(btn);
       });
 
-      customInput.addEventListener('input', () => {
-          const tabs = document.querySelectorAll('.amount-tab');
-          tabs.forEach(tab => tab.classList.remove('active'));
-          currentSelectedIndex = -1;
-          document.getElementById('join-table-btn').innerText = `العب الآن - ${customInput.value || 0} DH`;
-      });
-
-      function goToDeposit() {
-          localStorage.setItem('username', currentUsername);
-          window.location.href = 'deposit.html';
-      }
-
-      function goToWithdraw() {
-          localStorage.setItem('username', currentUsername);
-          window.location.href = 'withdraw.html';
-      }
-
-      function selectAmount(index) {
-          currentSelectedIndex = index;
-          const tabs = document.querySelectorAll('.amount-tab');
-          tabs.forEach((tab, i) => i === index ? tab.classList.add('active') : tab.classList.remove('active'));
-          document.getElementById('join-table-btn').innerText = `العب الآن - ${amountValues[index]} DH`;
-      }
-
-      function handlePlayClick() {
-          const amount = currentSelectedIndex !== -1 ? amountValues[currentSelectedIndex] : parseInt(customInput.value);
-          
-          if (!amount || amount <= 0) {
-              alert("يرجى إدخال مبلغ صحيح");
-              return;
-          }
-          
-          if (globalUserBalance < amount) {
-             document.getElementById('deposit-required-modal').classList.remove('hidden');
-          } else {
-              localStorage.setItem('pendingBet', amount);
-              window.location.href = 'games.html';
-          }
-      }
-
       function startFirebaseSync(username) {
           database.ref('users/' + username).on('value', (snap) => {
               const data = snap.val();
@@ -329,78 +255,39 @@
                   document.getElementById('winsDisplay').innerText = (data.wins || 0).toLocaleString();
                   document.getElementById('matchesDisplay').innerText = (data.matches || 0).toLocaleString();
                   
-                  // الحساب المحدث: (إجمالي الرهانات الفائزة * نسبة الربح) - إجمالي الرهانات الخاسرة
-                  // يتم جلب totalWonAmount و totalLossAmount من قاعدة البيانات
+                  // حساب الأرباح: (إجمالي المبالغ الفائزة) - (إجمالي المبالغ الخاسرة)
                   const totalProfit = (data.totalWonAmount || 0) - (data.totalLossAmount || 0);
                   document.getElementById('profitDisplay').innerText = totalProfit.toLocaleString();
               }
           });
       }
 
+      function handlePlayClick() {
+          const amount = currentSelectedIndex !== -1 ? amountValues[currentSelectedIndex] : parseInt(customInput.value);
+          if (!amount || amount <= 0) {
+              alert("يرجى إدخال مبلغ صحيح");
+              return;
+          }
+          localStorage.setItem('pendingBet', amount);
+          window.location.href = 'games.html';
+      }
+
       function openSupportModal() { document.getElementById('support-modal').classList.remove('hidden'); }
-      function closeSupportModal() { document.getElementById('support-modal').classList.hidden = true; document.getElementById('support-modal').classList.add('hidden'); }
-
-      function generateRandomName() {
-          const names = ["ach", "wal", "you", "ham", "zak", "meh", "saa", "mar", "has", "idr"];
-          return names[Math.floor(Math.random() * names.length)] + "***" + Math.floor(Math.random() * 99);
-      }
-
-      function renderLeaderboard() {
-          const container = document.getElementById('leaderboard-container');
-          const data = [
-            {n: generateRandomName(), s: (Math.floor(Math.random() * 20000) + 5000).toLocaleString()},
-            {n: generateRandomName(), s: (Math.floor(Math.random() * 10000) + 3000).toLocaleString()},
-            {n: generateRandomName(), s: (Math.floor(Math.random() * 5000) + 1000).toLocaleString()}
-          ];
-          container.innerHTML = data.map((u, i) => `
-            <div class="flex justify-between items-center text-xs">
-                <div class="flex items-center gap-3">
-                    <span class="font-black ${i==0?'leader-gold':i==1?'leader-silver':'leader-bronze'}">#${i+1}</span>
-                    <span class="font-bold">${u.n}</span>
-                </div>
-                <span class="font-black text-blue-400">${u.s} DH</span>
-            </div>
-          `).join('');
-      }
-
-      function renderLiveMatches() {
-          const container = document.getElementById('live-matches-container');
-          const v = [150, 200, 300, 500, 1000];
-          const results = ["فاز", "خسر"];
-          const matches = Array.from({length: 4}, () => ({
-              p1: generateRandomName(), 
-              p2: generateRandomName(), 
-              v: v[Math.floor(Math.random() * v.length)],
-              res: results[Math.floor(Math.random() * results.length)]
-          }));
-          container.innerHTML = matches.map(m => `
-            <div class="glass-card rounded-2xl p-4 flex justify-between items-center animate-pulse">
-                <span class="text-xs font-bold text-gray-300">${m.p1} vs ${m.p2}</span>
-                <span class="text-[10px] font-black ${m.res === 'فاز' ? 'text-green-500' : 'text-red-500'}">${m.res} - ${m.v} DH</span>
-            </div>
-          `).join('');
-      }
+      function closeSupportModal() { document.getElementById('support-modal').classList.add('hidden'); }
 
       document.addEventListener("DOMContentLoaded", () => {
-          renderLiveMatches();
-          renderLeaderboard();
-          setInterval(renderLiveMatches, 3000);
-          setInterval(renderLeaderboard, 604800000);
           selectAmount(0);
-          
           const urlParams = new URLSearchParams(window.location.search);
           let activeUser = urlParams.get('username') || urlParams.get('user') || localStorage.getItem('username') || "Ayoube";
-          
-          if (activeUser) {
-              currentUsername = activeUser.trim();
-              if (currentUsername.includes('@')) {
-                  currentUsername = currentUsername.split('@')[0];
-              }
-              document.getElementById('userDisplay').innerText = currentUsername;
-          }
-          
+          currentUsername = activeUser.trim().split('@')[0];
+          document.getElementById('userDisplay').innerText = currentUsername;
           startFirebaseSync(currentUsername);
       });
+      
+      function selectAmount(index) {
+          currentSelectedIndex = index;
+          document.querySelectorAll('.amount-tab').forEach((tab, i) => i === index ? tab.classList.add('active') : tab.classList.remove('active'));
+      }
     </script>
 </body>
 </html>
