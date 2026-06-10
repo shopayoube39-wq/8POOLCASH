@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="app-html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP PLAY | Dashboard</title>
+    <style>
+        :root {
+            /* الألوان متطابقة تماماً مع منصة 8POOLCASH */
+            --bg-main: #060a10; 
+            --bg-gradient: radial-gradient(circle at 50% 0%, #121a24 0%, #060a10 100%);
+            --bg-card: linear-gradient(145deg, rgba(16, 22, 31, 0.85) 0%, rgba(10, 14, 20, 0.95) 100%);
+            --accent-gold: #3b82f6; /* اللون الجديد المعتمد للموقع */
+            --accent-gold-hover: #2563eb;
+            --text-white: #ffffff;
+            --text-muted: #9ca3af;
+            --border-color: #2a343f;
+            --gold-glow: rgba(59, 130, 246, 0.25);
+            --led-glow: 0 0 20px #3b82f6, 0 0 40px rgba(59, 130, 246, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background: var(--bg-main);
+            background-image: var(--bg-gradient);
+            color: var(--text-white);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* تأثير إضاءة الـ LED الجانبية المتوهجة */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            width: 4px;
+            height: 100vh;
+            background: linear-gradient(to bottom, transparent, var(--accent-gold), transparent);
+            box-shadow: var(--led-glow);
+            z-index: 9999;
+            animation: ledPulse 3s infinite ease-in-out;
+            pointer-events: none;
+        }
+        body::before { left: 0; }
+        body::after { right: 0; }
+
+        @keyframes ledPulse {
+            0%, 100% { opacity: 0.5; filter: blur(1px); }
+            50% { opacity: 1; filter: blur(2px); box-shadow: 0 0 25px #3b82f6, 0 0 50px rgba(59, 130, 246, 0.8); }
+        }
+
+        /* إضافات الأنميشن الجديدة */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header-content { animation: fadeInDown 0.8s ease-out; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 4%;
+            background: #060a10;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            font-style: italic;
+            cursor: pointer;
+        }
+
+        .logo-area span {
+            color: var(--accent-gold);
+        }
+
+        .right-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-white);
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .balance-container {
+            background: #10161f;
+            border: 1px solid var(--accent-gold);
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--accent-gold);
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+
+        .section-header {
+            margin-bottom: 40px;
+            border-right: 4px solid var(--accent-gold);
+            padding-right: 15px;
+        }
+        
+        html[dir="ltr"] .section-header {
+            border-right: none;
+            border-left: 4px solid var(--accent-gold);
+            padding-left: 15px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            animation: fadeInDown 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        .game-card:nth-child(1) { animation-delay: 0.1s; }
+        .game-card:nth-child(2) { animation-delay: 0.2s; }
+        .game-card:nth-child(3) { animation-delay: 0.3s; }
+        .game-card:nth-child(4) { animation-delay: 0.4s; }
+        .game-card:nth-child(5) { animation-delay: 0.5s; }
+        .game-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.15);
+        }
+
+        .game-preview {
+            height: 180px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .game-preview svg {
+            width: 90px;
+            height: 90px;
+        }
+
+        .game-info {
+            padding: 25px;
+        }
+
+        .game-tag {
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-gold);
+            padding: 4px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 12px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .game-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .game-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            height: 45px;
+            overflow: hidden;
+        }
+
+        .btn-play {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .game-card:hover .btn-play {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            filter: brightness(1.1);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            color: #ffffff;
+        }
+
+        @keyframes chicken-move {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.08) rotate(-5deg); }
+        }
+        .card-chicken:hover svg {
+            animation: chicken-move 0.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes cue-hit {
+            0% { transform: translateX(0); }
+            30% { transform: translateX(-10px); }
+            100% { transform: translateX(15px); }
+        }
+        @keyframes white-ball {
+            0%, 30% { transform: translateX(0); }
+            100% { transform: translateX(40px); opacity: 0.8; }
+        }
+        .card-billiards:hover .cue-stick {
+            animation: cue-hit 0.8s infinite alternate ease-in-out;
+        }
+        .card-billiards:hover .white-ball {
+            animation: white-ball 0.8s infinite alternate ease-in-out;
+        }
+
+        @keyframes cyber-car-drive {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-5px) scale(1.02); filter: drop-shadow(0 0 10px #00f0ff); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        .card-cyber-chicken:hover svg {
+            animation: cyber-car-drive 0.6s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-content">
+        <div class="logo-area" onclick="playClickSound()">
+            <span>VIP</span>PLAY
+        </div>
+        <div class="right-section">
+            <button class="lang-btn" onclick="toggleLanguage(); playClickSound();" id="lang-toggle-btn">Français</button>
+            <div class="balance-container">
+                <span id="user-balance">0.00</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title" id="main-title">مركز الألعاب النخبوية</h2>
+        </div>
+        
+        <div class="games-grid">
+
+            <div class="game-card card-chicken" onclick="playClickSound(); playGame('chicken')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 64 64">
+                        <circle cx="32" cy="32" r="28" fill="#141414" stroke="#3b82f6" stroke-width="2"/>
+                        <path d="M22 40 C22 25, 42 25, 42 40 Z" fill="#ffffff"/>
+                        <circle cx="36" cy="30" r="3" fill="#000"/>
+                        <polygon points="42,30 48,33 42,36" fill="#3b82f6"/>
+                        <path d="M28 25 Q 32 18, 36 25" fill="none" stroke="#3b82f6" stroke-width="3"/>
+                    </svg>
+                </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-chicken">المقترحة • VIP</span>
+                    <h3 class="game-title">Chicken Adventure</h3>
+                    <p class="game-desc" id="desc-chicken">استكشف الأطباق بدقة، حدد مواقع الدجاج الذهبي وتجاوز العقبات لتعظيم أرباحك فورياً.</p>
+                    <button class="btn-play" id="btn-chicken">إبدأ التحدي</button>
+                </div>
+            </div>
+
+            <div class="game-card card-cyber-chicken" onclick="playClickSound(); playGame('cyber_chicken')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100" height="100" fill="#05080e" rx="14"/>
+                        <line x1="50" y1="0" x2="50" y2="100" stroke="rgba(0, 240, 255, 0.3)" stroke-dasharray="6 6" stroke-width="2"/>
+                        <rect x="30" y="25" width="40" height="50" rx="10" fill="#0044ff" stroke="#00f0ff" stroke-width="2"/>
+                        <circle cx="38" cy="35" r="4" fill="#fff"/>
+                        <circle cx="62" cy="35" r="4" fill="#fff"/>
+                        <rect x="35" y="70" width="30" height="4" fill="#ff0055" opacity="0.8"/>
+                    </svg>
+                </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-cyber">إصدار سيبراني • جديد</span>
+                    <h3 class="game-title">Cyber Chicken</h3>
+                    <p class="game-desc" id="desc-cyber">اختبر مهاراتك عبر مسارات النيون السريعة وتفادى المركبات المعرقلة لتحقيق مستويات أرباح قياسية.</p>
+                    <button class="btn-play" id="btn-cyber">إبدأ التحدي</button>
+                </div>
+            </div>
+
+            <div class="game-card card-billiards" onclick="playClickSound(); playGame('billiards')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100">
+                        <rect x="10" y="25" width="80" height="50" rx="4" fill="#1a1a1a" stroke="#222" stroke-width="2"/>
+                        <circle cx="65" cy="50" r="6" fill="#3b82f6"/>
+                        <circle class="white-ball" cx="40" cy="50" r="6" fill="#ffffff"/>
+                        <line class="cue-stick" x1="15" y1="50" x2="32" y2="50" stroke="#3b82f6" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-billiards">بطولات تنافسية</span>
+                    <h3 class="game-title">Billiards 2D Pro</h3>
+                    <p class="game-desc" id="desc-billiards">وظّف مهاراتك الاحترافية في التوجيه والتحكم، وقم بتنفيذ ضربات حاسمة لاقتناص المكافآت المالية.</p>
+                    <button class="btn-play" id="btn-billiards">إبدأ التحدي</button>
+                </div>
+            </div>
+
+            <div class="game-card card-roulette" onclick="playClickSound(); playGame('roulette')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#3b82f6" stroke-width="4"/>
+                        <circle cx="50" cy="50" r="8" fill="#3b82f6"/>
+                        <line x1="50" y1="10" x2="50" y2="25" stroke="#3b82f6" stroke-width="3"/>
+                        <line x1="50" y1="75" x2="50" y2="90" stroke="#3b82f6" stroke-width="3"/>
+                        <line x1="10" y1="50" x2="25" y2="50" stroke="#3b82f6" stroke-width="3"/>
+                        <line x1="75" y1="50" x2="90" y2="50" stroke="#3b82f6" stroke-width="3"/>
+                    </svg>
+                </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-roulette">كازينو ملكي</span>
+                    <h3 class="game-title">Roulette Royale</h3>
+                    <p class="game-desc" id="desc-roulette">توقع الأرقام والألوان الرابحة بدقة، قم بتدوير العجلة الملكية لرفع رصيدك إلى مستويات تنافسية.</p>
+                    <button class="btn-play" id="btn-roulette">إبدأ التحدي</button>
+                </div>
+            </div>
+            
+            <div class="game-card card-plinko" onclick="playClickSound(); playGame('plinko')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="20" r="8" fill="#ff007f"/>
+                        <circle cx="30" cy="40" r="4" fill="#00f2fe"/>
+                        <circle cx="70" cy="40" r="4" fill="#00f2fe"/>
+                        <circle cx="50" cy="60" r="4" fill="#00f2fe"/>
+                        <rect x="10" y="80" width="80" height="15" rx="2" fill="#3b82f6" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-plinko">خوارزمية الحظ • محدثة</span>
+                    <h3 class="game-title">Cyber Plinko</h3>
+                    <p class="game-desc" id="desc-plinko">أسقط الكرة ضمن المتاهة المتطورة، وحقق عوائد مالية من خلال الخانات الملونة ذات المضاعفات المرتفعة.</p>
+                    <button class="btn-play" id="btn-plinko">إبدأ التحدي</button>
+                </div>
+            </div>
+
+            <div class="game-card card-aviator" onclick="playClickSound(); playGame('aviator')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M10 80 Q 50 10, 90 40" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="6 6"/>
+                        <path d="M10 80 L30 60 L40 70 L90 20" fill="none" stroke="#ffffff" stroke-width="3"/>
+                        <circle cx="90" cy="20" r="5" fill="#f59e0b"/>
+                    </svg>
+                </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-aviator">الأكثر طلباً • فائق السرعة</span>
+                    <h3 class="game-title">Aviator Pro</h3>
+                    <p class="game-desc" id="desc-aviator">حلق بمركبتك نحو الأعلى، وقم بإنهاء الصفقة في الوقت المثالي لمضاعفة رأس مالك في ثوانٍ.</p>
+                    <button class="btn-play" id="btn-aviator">إبدأ التحدي</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
+            authDomain: "poolcash-6692c.firebaseapp.com",
+            databaseURL: "https://poolcash-6692c-default-rtdb.firebaseio.com",
+            projectId: "poolcash-6692c",
+            storageBucket: "poolcash-6692c.firebasestorage.app",
+            messagingSenderId: "866544389541",
+            appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let currentLang = 'ar';
+        let currentUsername = "Ayoube"; 
+        const music = document.getElementById('bg-music');
+
+        const translations = {
+            ar: {
+                title: "مركز الألعاب النخبوية",
+                btnLang: "Français",
+                btnPlay: "إبدأ التحدي",
+                chickenTag: "المقترحة • VIP",
+                chickenDesc: "استكشف الأطباق بدقة، حدد مواقع الدجاج الذهبي وتجاوز العقبات لتعظيم أرباحك فورياً.",
+                cyberTag: "إصدار سيبراني • جديد",
+                cyberDesc: "اختبر مهاراتك عبر مسارات النيون السريعة وتفادى المركبات المعرقلة لتحقيق مستويات أرباح قياسية.",
+                billiardsTag: "بطولات تنافسية",
+                billiardsDesc: "وظّف مهاراتك الاحترافية في التوجيه والتحكم، وقم بتنفيذ ضربات حاسمة لاقتناص المكافآت المالية.",
+                rouletteTag: "كازينو ملكي",
+                rouletteDesc: "توقع الأرقام والألوان الرابحة بدقة، قم بتدوير العجلة الملكية لرفع رصيدك إلى مستويات تنافسية.",
+                plinkoTag: "خوارزمية الحظ • محدثة",
+                plinkoDesc: "أسقط الكرة ضمن المتاهة المتطورة، وحقق عوائد مالية من خلال الخانات الملونة ذات المضاعفات المرتفعة.",
+                aviatorTag: "الأكثر طلباً • فائق السرعة",
+                aviatorDesc: "حلق بمركبتك نحو الأعلى، وقم بإنهاء الصفقة في الوقت المثالي لمضاعفة رأس مالك في ثوانٍ."
+            },
+            fr: {
+                title: "Salon de Jeux Élite",
+                btnLang: "العربية",
+                btnPlay: "Lancer le Défi",
+                chickenTag: "Recommandé • VIP",
+                chickenDesc: "Explorez les plateaux avec précision, identifiez les poulets dorés et évitez les pièges pour maximiser vos gains.",
+                cyberTag: "Édition Cyber • Nouveau",
+                cyberDesc: "Testez vos réflexes sur des pistes néon rapides et esquivez les obstacles pour atteindre des records de profits.",
+                billiardsTag: "Tournois Compétitifs",
+                billiardsDesc: "Utilisez vos compétences professionnelles de visée et de contrôle pour exécuter des tirs décisifs et décrocher vos récompenses.",
+                rouletteTag: "Casino Royal",
+                rouletteDesc: "Anticipez les chiffres et couleurs gagnants, faites tourner la roue royale et augmentez votre solde à des niveaux compétitifs.",
+                plinkoTag: "Algorithme de Chance • Mis à jour",
+                plinkoDesc: "Laissez tomber la bille dans le labyrinthe avancé et générez des revenus grâce aux cases colorées à hauts multiplicateurs.",
+                aviatorTag: "Le plus populaire • Ultra-Rapide",
+                aviatorDesc: "Envolez-vous, et finalisez votre transaction au moment idéal pour multiplier votre capital en quelques secondes."
+            }
+        };
+
+        function playClickSound() {
+            // تفعيل الموسيقى عند أول تفاعل
+            if (music.paused) music.play().catch(e => console.log("Audio play blocked"));
+            
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1200, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.08);
+                
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            } catch (e) {
+                console.log("Audio contexts pending user gesture or not supported");
+            }
+        }
+
+        function toggleLanguage() {
+            const htmlEl = document.getElementById('app-html');
+            
+            if (currentLang === 'ar') {
+                currentLang = 'fr';
+                htmlEl.setAttribute('lang', 'fr');
+                htmlEl.setAttribute('dir', 'ltr');
+                
+                document.getElementById('lang-toggle-btn').innerText = translations.fr.btnLang;
+                document.getElementById('main-title').innerText = translations.fr.title;
+                document.getElementById('tag-chicken').innerText = translations.fr.chickenTag;
+                document.getElementById('desc-chicken').innerText = translations.fr.chickenDesc;
+                document.getElementById('btn-chicken').innerText = translations.fr.btnPlay;
+                
+                document.getElementById('tag-cyber').innerText = translations.fr.cyberTag;
+                document.getElementById('desc-cyber').innerText = translations.fr.cyberDesc;
+                document.getElementById('btn-cyber').innerText = translations.fr.btnPlay;
+
+                document.getElementById('tag-billiards').innerText = translations.fr.billiardsTag;
+                document.getElementById('desc-billiards').innerText = translations.fr.billiardsDesc;
+                document.getElementById('btn-billiards').innerText = translations.fr.btnPlay;
+                document.getElementById('tag-roulette').innerText = translations.fr.rouletteTag;
+                document.getElementById('desc-roulette').innerText = translations.fr.rouletteDesc;
+                document.getElementById('btn-roulette').innerText = translations.fr.btnPlay;
+                
+                document.getElementById('tag-plinko').innerText = translations.fr.plinkoTag;
+                document.getElementById('desc-plinko').innerText = translations.fr.plinkoDesc;
+                document.getElementById('btn-plinko').innerText = translations.fr.btnPlay;
+
+                document.getElementById('tag-aviator').innerText = translations.fr.aviatorTag;
+                document.getElementById('desc-aviator').innerText = translations.fr.aviatorDesc;
+                document.getElementById('btn-aviator').innerText = translations.fr.btnPlay;
+            } else {
+                currentLang = 'ar';
+                htmlEl.setAttribute('lang', 'ar');
+                htmlEl.setAttribute('dir', 'rtl');
+                
+                document.getElementById('lang-toggle-btn').innerText = translations.ar.btnLang;
+                document.getElementById('main-title').innerText = translations.ar.title;
+                document.getElementById('tag-chicken').innerText = translations.ar.chickenTag;
+                document.getElementById('desc-chicken').innerText = translations.ar.chickenDesc;
+                document.getElementById('btn-chicken').innerText = translations.ar.btnPlay;
+                
+                document.getElementById('tag-cyber').innerText = translations.ar.cyberTag;
+                document.getElementById('desc-cyber').innerText = translations.ar.cyberDesc;
+                document.getElementById('btn-cyber').innerText = translations.ar.btnPlay;
+
+                document.getElementById('tag-billiards').innerText = translations.ar.billiardsTag;
+                document.getElementById('desc-billiards').innerText = translations.ar.billiardsDesc;
+                document.getElementById('btn-billiards').innerText = translations.ar.btnPlay;
+                document.getElementById('tag-roulette').innerText = translations.ar.rouletteTag;
+                document.getElementById('desc-roulette').innerText = translations.ar.rouletteDesc;
+                document.getElementById('btn-roulette').innerText = translations.ar.btnPlay;
+
+                document.getElementById('tag-plinko').innerText = translations.ar.plinkoTag;
+                document.getElementById('desc-plinko').innerText = translations.ar.plinkoDesc;
+                document.getElementById('btn-plinko').innerText = translations.ar.btnPlay;
+
+                document.getElementById('tag-aviator').innerText = translations.ar.aviatorTag;
+                document.getElementById('desc-aviator').innerText = translations.ar.aviatorDesc;
+                document.getElementById('btn-aviator').innerText = translations.ar.btnPlay;
+            }
+        }
+
+        function startBalanceSync(username) {
+            if (!username) return;
+            
+            const userRef = database.ref('users/' + username);
+            userRef.on('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (userData) {
+                    let balance = userData.balance !== undefined ? parseFloat(userData.balance) : 0;
+                    const balanceEl = document.getElementById('user-balance');
+                    if(balanceEl) {
+                        balanceEl.innerText = balance.toLocaleString() + " DH";
+                    }
+                }
+            }, (error) => {
+                console.error("خطأ أثناء مزامنة رصيد واجهة اللعبة:", error);
+            });
+        }
+
+        function playGame(game) {
+            localStorage.setItem('username', currentUsername);
+            setTimeout(() => {
+                if (game === 'chicken') {
+                    window.location.href = 'Chicken.html';
+                } else if (game === 'cyber_chicken') {
+                    window.location.href = 'CyberChicken.html';
+                } else if (game === 'billiards') {
+                    window.location.href = '8POOL.html'; 
+                } else if (game === 'roulette') {
+                    window.location.href = 'Roulette.html'; 
+                } else if (game === 'plinko') {
+                    window.location.href = 'Plinko.html';
+                } else if (game === 'aviator') {
+                    window.location.href = 'Aviator.html';
+                }
+            }, 150);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                let activeUser = urlParams.get('username') || urlParams.get('user');
+
+                if (!activeUser) {
+                    activeUser = localStorage.getItem('username');
+                }
+
+                if (activeUser) {
+                    currentUsername = activeUser.trim();
+                    if (currentUsername.includes('@')) {
+                        currentUsername = currentUsername.split('@')[0];
+                    }
+                }
+
+                startBalanceSync(currentUsername);
+
+            } catch (e) {
+                console.error("حدث مشكل بمزامنة كاش الحساب النشط:", e);
+            }
+        });
+    </script>
+</body>
+</html>
