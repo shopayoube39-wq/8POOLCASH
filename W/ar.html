@@ -300,7 +300,7 @@
       function selectAmount(index) {
           currentSelectedIndex = index;
           const tabs = document.querySelectorAll('.amount-tab');
-          tabs.forEach((tab, i) => i === index ? tab.classList.add.add('active') : tab.classList.remove('active'));
+          tabs.forEach((tab, i) => i === index ? tab.classList.add('active') : tab.classList.remove('active'));
           document.getElementById('join-table-btn').innerText = `العب الآن - ${amountValues[index]} DH`;
       }
 
@@ -327,11 +327,12 @@
               if (data) {
                   globalUserBalance = data.balance || 0;
                   document.getElementById('balanceDisplay').innerHTML = globalUserBalance.toLocaleString() + ' <span class="text-2xl text-blue-400">DH</span>';
-                  
-                  // التعديل المطلوب: الاعتماد على قيم من Firebase مباشرة بدلاً من الحساب اليدوي
                   document.getElementById('winsDisplay').innerText = (data.wins || 0).toLocaleString();
                   document.getElementById('matchesDisplay').innerText = (data.matches || 0).toLocaleString();
-                  document.getElementById('profitDisplay').innerText = (data.totalProfit || 0).toLocaleString();
+                  
+                  // الحساب: إجمالي الأرباح لكل فوز
+                  const totalProfit = (data.wins || 0) * (data.avgWinAmount || 0);
+                  document.getElementById('profitDisplay').innerText = totalProfit.toLocaleString();
               }
           });
       }
