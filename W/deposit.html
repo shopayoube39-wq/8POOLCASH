@@ -1,415 +1,430 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="app-html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>8POOLCASH - الإيداع</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    
+    <title>VIP PLAY | Dashboard</title>
     <style>
-        body {
-            background-color: #050608;
-            background-image: radial-gradient(circle at top, #0f172a 0%, #050608 100%);
-            font-family: 'Cairo', sans-serif;
+        :root {
+            /* الألوان متطابقة تماماً مع منصة 8POOLCASH */
+            --bg-main: #060a10; 
+            --bg-gradient: radial-gradient(circle at 50% 0%, #121a24 0%, #060a10 100%);
+            --bg-card: linear-gradient(145deg, rgba(16, 22, 31, 0.85) 0%, rgba(10, 14, 20, 0.95) 100%);
+            --accent-gold: #3b82f6; /* اللون الجديد المعتمد للموقع */
+            --accent-gold-hover: #2563eb;
+            --text-white: #ffffff;
+            --text-muted: #9ca3af;
+            --border-color: #2a343f;
+            --gold-glow: rgba(59, 130, 246, 0.25);
+            --led-glow: 0 0 20px #3b82f6, 0 0 40px rgba(59, 130, 246, 0.6);
         }
-        .pool-yellow {
-            background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-        }
-        .text-pool-yellow {
-            color: #3b82f6;
-        }
-        .border-pool-yellow {
-            border-color: #3b82f6;
-        }
-        .active-tab {
-            color: #3b82f6;
-            border-bottom: 2px solid #3b82f6;
-        }
-        .bank-card {
-            background-color: rgba(17, 21, 32, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
             transition: all 0.3s ease;
         }
-        .bank-card:hover {
-            border-color: #3b82f6;
-            background-color: rgba(30, 41, 59, 0.6);
-            transform: translateY(-2px);
+
+        body {
+            background: var(--bg-main);
+            background-image: var(--bg-gradient);
+            color: var(--text-white);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
         }
-        .app-logo-box {
+
+        /* تأثير إضاءة الـ LED الجانبية المتوهجة */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            width: 4px;
+            height: 100vh;
+            background: linear-gradient(to bottom, transparent, var(--accent-gold), transparent);
+            box-shadow: var(--led-glow);
+            z-index: 9999;
+            animation: ledPulse 3s infinite ease-in-out;
+            pointer-events: none;
+        }
+        body::before { left: 0; }
+        body::after { right: 0; }
+
+        @keyframes ledPulse {
+            0%, 100% { opacity: 0.5; filter: blur(1px); }
+            50% { opacity: 1; filter: blur(2px); box-shadow: 0 0 25px #3b82f6, 0 0 50px rgba(59, 130, 246, 0.8); }
+        }
+
+        /* إضافات الأنميشن الجديدة */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header-content { animation: fadeInDown 0.8s ease-out; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 4%;
+            background: #060a10;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .logo-area {
             display: flex;
             align-items: center;
-            justify-content: center;
-            border-radius: 1.25rem;
-            width: 4rem;
-            height: 4rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            overflow: hidden;
-            transition: all 0.2s ease-in-out;
-            padding: 0.25rem;
-            background-color: #ffffff;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            font-style: italic;
+            cursor: pointer;
         }
-        .crypto-logo-box {
+
+        .logo-area span {
+            color: var(--accent-gold);
+        }
+
+        .right-section {
             display: flex;
             align-items: center;
-            justify-content: center;
-            border-radius: 9999px;
-            width: 2.25rem;
-            height: 2.25rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            gap: 20px;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-white);
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .balance-container {
+            background: #10161f;
+            border: 1px solid var(--accent-gold);
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--accent-gold);
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+
+        .section-header {
+            margin-bottom: 40px;
+            border-right: 4px solid var(--accent-gold);
+            padding-right: 15px;
+        }
+        
+        html[dir="ltr"] .section-header {
+            border-right: none;
+            border-left: 4px solid var(--accent-gold);
+            padding-left: 15px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .game-card {
+            background: var(--bg-card);
+            border-radius: 16px;
             overflow: hidden;
-            transition: all 0.2s ease-in-out;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            animation: fadeInDown 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        .game-card:nth-child(1) { animation-delay: 0.1s; }
+        .game-card:nth-child(2) { animation-delay: 0.2s; }
+        .game-card:nth-child(3) { animation-delay: 0.3s; }
+        .game-card:nth-child(4) { animation-delay: 0.4s; }
+        .game-card:nth-child(5) { animation-delay: 0.5s; }
+        .game-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.15);
+        }
+
+        .game-preview {
+            height: 180px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .game-preview svg {
+            width: 90px;
+            height: 90px;
+        }
+
+        .game-info {
+            padding: 25px;
+        }
+
+        .game-tag {
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-gold);
+            padding: 4px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 12px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .game-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .game-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            height: 45px;
+            overflow: hidden;
+        }
+
+        .btn-play {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .game-card:hover .btn-play {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            filter: brightness(1.1);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            color: #ffffff;
+        }
+
+        @keyframes chicken-move {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.08) rotate(-5deg); }
+        }
+        .card-chicken:hover svg {
+            animation: chicken-move 0.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes cue-hit {
+            0% { transform: translateX(0); }
+            30% { transform: translateX(-10px); }
+            100% { transform: translateX(15px); }
+        }
+        @keyframes white-ball {
+            0%, 30% { transform: translateX(0); }
+            100% { transform: translateX(40px); opacity: 0.8; }
+        }
+        .card-billiards:hover .cue-stick {
+            animation: cue-hit 0.8s infinite alternate ease-in-out;
+        }
+        .card-billiards:hover .white-ball {
+            animation: white-ball 0.8s infinite alternate ease-in-out;
+        }
+
+        @keyframes cyber-car-drive {
+            0% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-5px) scale(1.02); filter: drop-shadow(0 0 10px #00f0ff); }
+            100% { transform: translateY(0) scale(1); }
+        }
+        .card-cyber-chicken:hover svg {
+            animation: cyber-car-drive 0.6s infinite ease-in-out;
         }
     </style>
 </head>
-<body class="text-gray-200 min-h-screen pb-12 select-none tracking-wide">
+<body>
 
-    <header class="max-w-md mx-auto p-4 flex justify-between items-center border-b border-white/5">
-        <div class="flex items-center gap-3">
-            <button onclick="goBack()" class="bg-white/5 hover:bg-white/10 text-white w-9 h-9 rounded-xl flex justify-center items-center border border-white/10 transition">
-                <i class="fas fa-arrow-right text-sm"></i>
-            </button>
-            <h1 class="text-base font-black">الإيداع</h1>
+    <header class="header-content">
+        <div class="logo-area" onclick="playClickSound()">
+            <span>VIP</span>PLAY
         </div>
-        <div></div>
+        <div class="right-section">
+            <button class="lang-btn" onclick="toggleLanguage(); playClickSound();" id="lang-toggle-btn">Français</button>
+            <div class="balance-container">
+                <span id="user-balance">0.00</span>
+            </div>
+        </div>
     </header>
 
-    <main class="max-w-md mx-auto px-4 mt-5 space-y-4">
-
-        <div class="bg-white/5 border border-white/5 rounded-xl p-3.5 flex justify-between items-center text-xs">
-            <span class="text-gray-400 font-medium">هل تحتاج مساعدة؟</span>
-            <a href="mailto:support@mywingims.com" class="text-blue-500 font-bold font-mono hover:underline">support@mywingims.com</a>
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title" id="main-title">مركز الألعاب النخبوية</h2>
         </div>
+        
+        <div class="games-grid">
 
-        <div onclick="openBonusModal()" class="border border-blue-500/20 bg-white/5 rounded-2xl p-4 flex justify-between items-center shadow-md cursor-pointer hover:border-blue-500/50 transition">
-            <div class="space-y-1">
-                <h4 class="text-xs font-black text-blue-400">عرض خاص — مكافأة الإيداع الثاني 🎉</h4>
-                <p class="text-gray-400 text-[11px] font-medium">عند إيداعك الثاني تحصل على <span class="text-white font-bold font-mono">100 DH</span> مجاناً 🎁</p>
-            </div>
-            <div class="w-9 h-9 rounded-xl bg-blue-500/10 flex justify-center items-center text-blue-500 border border-blue-500/20 text-base">
-                <i class="fas fa-gift"></i>
-            </div>
-        </div>
-
-        <div class="flex border-b border-white/10 text-center font-bold text-xs">
-            <button onclick="switchTab('deposit')" id="tab-deposit" class="flex-1 py-3 active-tab transition-all">إيداع</button>
-            <button onclick="switchTab('history')" id="tab-history" class="flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all">السجل</button>
-        </div>
-
-        <div id="deposit-section" class="space-y-4">
-
-            <div id="crypto-methods-main" class="space-y-4">
-                <div onclick="showCryptoStep1()" class="bank-card rounded-2xl p-4 flex justify-between items-center cursor-pointer">
-                    <div class="flex items-center gap-3">
-                        <div class="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-500 border border-blue-500/20 flex justify-center items-center text-xl shadow-inner">
-                            <i class="fab fa-bitcoin"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xs font-bold text-gray-200">الدفع بالعملات الرقمية</h3>
-                            <p class="text-[10px] text-gray-500 mt-0.5">Bitcoin, USDT, ETH... متاح لكل الدول 🌍</p>
-                        </div>
-                    </div>
-                    <i class="fas fa-chevron-left text-[10px] text-gray-600"></i>
+            <div class="game-card card-chicken" onclick="playClickSound(); playGame('chicken')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 64 64">
+                        <circle cx="32" cy="32" r="28" fill="#141414" stroke="#3b82f6" stroke-width="2"/>
+                        <path d="M22 40 C22 25, 42 25, 42 40 Z" fill="#ffffff"/>
+                        <circle cx="36" cy="30" r="3" fill="#000"/>
+                        <polygon points="42,30 48,33 42,36" fill="#3b82f6"/>
+                        <path d="M28 25 Q 32 18, 36 25" fill="none" stroke="#3b82f6" stroke-width="3"/>
+                    </svg>
                 </div>
-
-                <p class="text-[11px] text-gray-500 text-center font-bold my-2">أو اختر بنك مغربي 🇲🇦</p>
-
-                <div class="grid grid-cols-2 gap-3">
-                    
-                    <div onclick="window.location.href='CIHBank.html'" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-white group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/S7yJ3PD2/IMG-3730.png" alt="CIH Bank" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-blue-400">CIH Bank</span>
-                    </div>
-
-                    <div onclick="window.location.href='attijari.html'" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-white group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/0ysK3ySQ/IMG-3731.png" alt="Attijariwafa Bank" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-blue-400">التجاري وفا بنك</span>
-                    </div>
-
-                    <div onclick="window.location.href='lbankalik.html'" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-white group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/tMR8tVky/IMG-3733.png" alt="L'bankalik" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-blue-400">لبنك اليك</span>
-                    </div>
-
-                    <div onclick="window.location.href='albaridbank.html'" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-white group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/Jjy3FRRK/IMG-3980.webp" alt="Al Barid Bank" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-blue-400">البريد بنك</span>
-                    </div>
-
-                    <div onclick="window.location.href='CashPlus.html'" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-white group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/JFn2cfLM/IMG-3737.jpg" alt="Cash Plus" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-blue-400">كاش بلوس</span>
-                    </div>
-
-                    <div onclick="window.location.href='BMCE.html'" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-white group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/LDWFNTWR/IMG-3736.png" alt="BMCE Bank of Africa" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-blue-400">BMCE بنك أفريقيا</span>
-                    </div>
-
-                    <div onclick="window.location.href='bcp.html'" class="bank-card rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-3 cursor-pointer group">
-                        <div class="app-logo-box bg-white border border-white group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/S7xtn8Vk/IMG-3738.png" alt="Chaabi Bank" class="w-full h-full object-contain rounded-xl">
-                        </div>
-                        <span class="text-xs font-bold text-gray-300 group-hover:text-blue-400">البنك الشعبي</span>
-                    </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-chicken">المقترحة • VIP</span>
+                    <h3 class="game-title">Chicken Adventure</h3>
+                    <p class="game-desc" id="desc-chicken">استكشف الأطباق بدقة، حدد مواقع الدجاج الذهبي وتجاوز العقبات لتعظيم أرباحك فورياً.</p>
+                    <button class="btn-play" id="btn-chicken">إبدأ التحدي</button>
                 </div>
             </div>
 
-            <div id="crypto-step-1" class="hidden space-y-4">
-                <div onclick="hideCryptoSteps()" class="text-xs font-bold text-blue-400 flex items-center gap-1 cursor-pointer hover:underline mb-2">
-                    <i class="fas fa-arrow-right text-[10px]"></i>
-                    <span>رجوع إلى البنوك</span>
+            <div class="game-card card-cyber-chicken" onclick="playClickSound(); playGame('cyber_chicken')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100" height="100" fill="#05080e" rx="14"/>
+                        <line x1="50" y1="0" x2="50" y2="100" stroke="rgba(0, 240, 255, 0.3)" stroke-dasharray="6 6" stroke-width="2"/>
+                        <rect x="30" y="25" width="40" height="50" rx="10" fill="#0044ff" stroke="#00f0ff" stroke-width="2"/>
+                        <circle cx="38" cy="35" r="4" fill="#fff"/>
+                        <circle cx="62" cy="35" r="4" fill="#fff"/>
+                        <rect x="35" y="70" width="30" height="4" fill="#ff0055" opacity="0.8"/>
+                    </svg>
                 </div>
-
-                <div class="bank-card rounded-2xl p-4 flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 border border-blue-500/20 flex justify-center items-center text-lg">
-                            <i class="fas fa-wallet"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xs font-black text-gray-200">الإيداع بالعملات الرقمية</h3>
-                            <p class="text-[10px] text-gray-500 mt-0.5">الخطوة 1 من 3: المبلغ</p>
-                        </div>
-                    </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-cyber">إصدار سيبراني • جديد</span>
+                    <h3 class="game-title">Cyber Chicken</h3>
+                    <p class="game-desc" id="desc-cyber">اختبر مهاراتك عبر مسارات النيون السريعة وتفادى المركبات المعرقلة لتحقيق مستويات أرباح قياسية.</p>
+                    <button class="btn-play" id="btn-cyber">إبدأ التحدي</button>
                 </div>
-
-                <div class="text-right text-xs space-y-2">
-                    <div class="flex justify-between items-center">
-                        <label class="text-gray-400 font-medium">المبلغ بالدولار ($1,000 - $20)</label>
-                    </div>
-                    <div class="relative flex items-center bg-[#0b0d14] border border-white/10 rounded-xl p-1 focus-within:border-blue-500">
-                        <span class="text-blue-500 font-black font-mono px-3 text-sm">$</span>
-                        <input type="number" id="cryptoAmountInput" value="20" oninput="updateCryptoBonusText()" class="w-full p-2.5 bg-transparent text-white font-black text-left outline-none font-mono text-sm">
-                    </div>
-                    <p class="text-[11px] text-blue-400 font-bold" id="cryptoBonusText">ستحصل على 200 رصيد</p>
-                </div>
-
-                <div class="grid grid-cols-4 gap-2">
-                    <button onclick="setCryptoAmount(20)" class="bg-white/5 border border-white/5 hover:border-blue-500 focus:border-blue-500 text-gray-300 font-black py-2.5 rounded-xl text-xs font-mono transition">$20</button>
-                    <button onclick="setCryptoAmount(50)" class="bg-white/5 border border-white/5 hover:border-blue-500 focus:border-blue-500 text-gray-300 font-black py-2.5 rounded-xl text-xs font-mono transition">$50</button>
-                    <button onclick="setCryptoAmount(100)" class="bg-white/5 border border-white/5 hover:border-blue-500 focus:border-blue-500 text-gray-300 font-black py-2.5 rounded-xl text-xs font-mono transition">$100</button>
-                    <button onclick="setCryptoAmount(500)" class="bg-white/5 border border-white/5 hover:border-blue-500 focus:border-blue-500 text-gray-300 font-black py-2.5 rounded-xl text-xs font-mono transition">$500</button>
-                </div>
-
-                <button onclick="showCryptoStep2()" class="w-full pool-yellow text-white font-black py-3.5 rounded-xl text-xs transition shadow-lg shadow-blue-500/20 flex justify-center items-center gap-1.5 active:scale-[0.99]">
-                    متابعة ← اختيار العملة
-                </button>
             </div>
 
-            <div id="crypto-step-2" class="hidden space-y-4">
-                <div onclick="showCryptoStep1()" class="text-xs font-bold text-blue-400 flex items-center gap-1 cursor-pointer hover:underline mb-2">
-                    <i class="fas fa-arrow-right text-[10px]"></i>
-                    <span id="cryptoBackToStep1Text">تغيير المبلغ ($20)</span>
+            <div class="game-card card-billiards" onclick="playClickSound(); playGame('billiards')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100">
+                        <rect x="10" y="25" width="80" height="50" rx="4" fill="#1a1a1a" stroke="#222" stroke-width="2"/>
+                        <circle cx="65" cy="50" r="6" fill="#3b82f6"/>
+                        <circle class="white-ball" cx="40" cy="50" r="6" fill="#ffffff"/>
+                        <line class="cue-stick" x1="15" y1="50" x2="32" y2="50" stroke="#3b82f6" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
                 </div>
-
-                <div class="bank-card rounded-2xl p-4 flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 border border-blue-500/20 flex justify-center items-center text-lg">
-                            <i class="fas fa-coins"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-xs font-black text-gray-200">الإيداع بالعملات الرقمية</h3>
-                            <p class="text-[10px] text-gray-500 mt-0.5">الخطوة 2 من 3: اختر العملة</p>
-                        </div>
-                    </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-billiards">بطولات تنافسية</span>
+                    <h3 class="game-title">Billiards 2D Pro</h3>
+                    <p class="game-desc" id="desc-billiards">وظّف مهاراتك الاحترافية في التوجيه والتحكم، وقم بتنفيذ ضربات حاسمة لاقتناص المكافآت المالية.</p>
+                    <button class="btn-play" id="btn-billiards">إبدأ التحدي</button>
                 </div>
+            </div>
 
-                <p class="text-[11px] text-gray-400 font-medium text-right px-1">اختر العملة الرقمية للدفع</p>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div onclick="selectCryptoCurrency('USDT (TRC20)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-blue-400">USDT</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">TRC20</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/hxshTnYD/IMG-4007.png" alt="USDT" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('BTC (Bitcoin)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-blue-400">BTC</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">Bitcoin</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/tMHCD2p7/IMG-4006.png" alt="BTC" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('TRX (Tron)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-blue-400">TRX</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">Tron</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/wZJ29Zvn/IMG-4005.png" alt="TRX" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('LTC (Litecoin)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-blue-400">LTC</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">Litecoin</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/7d6PNpq9/IMG-4009.png" alt="LTC" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('BNB (BSC)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-blue-400">BNB</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">BSC</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/S439n4VG/IMG-4010.png" alt="BNB" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('ETH (Ethereum)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-blue-400">ETH</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">Ethereum</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/8km1Myr/IMG-4011.png" alt="ETH" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('TON (Toncoin)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-blue-400">TON</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">Toncoin</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/PGVhrYn7/IMG-4012.png" alt="TON" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
-
-                    <div onclick="selectCryptoCurrency('SOL (Solana)')" class="bank-card rounded-2xl p-3.5 flex justify-between items-center cursor-pointer group">
-                        <div class="text-right">
-                            <h4 class="text-xs font-black text-gray-200 group-hover:text-blue-400">SOL</h4>
-                            <p class="text-[10px] text-gray-500 font-mono">Solana</p>
-                        </div>
-                        <div class="crypto-logo-box group-hover:border-blue-500">
-                            <img src="https://i.ibb.co/tw4VQSJk/IMG-4013.png" alt="SOL" class="w-full h-full object-contain rounded-full">
-                        </div>
-                    </div>
+            <div class="game-card card-roulette" onclick="playClickSound(); playGame('roulette')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="#3b82f6" stroke-width="4"/>
+                        <circle cx="50" cy="50" r="8" fill="#3b82f6"/>
+                        <line x1="50" y1="10" x2="50" y2="25" stroke="#3b82f6" stroke-width="3"/>
+                        <line x1="50" y1="75" x2="50" y2="90" stroke="#3b82f6" stroke-width="3"/>
+                        <line x1="10" y1="50" x2="25" y2="50" stroke="#3b82f6" stroke-width="3"/>
+                        <line x1="75" y1="50" x2="90" y2="50" stroke="#3b82f6" stroke-width="3"/>
+                    </svg>
                 </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-roulette">كازينو ملكي</span>
+                    <h3 class="game-title">Roulette Royale</h3>
+                    <p class="game-desc" id="desc-roulette">توقع الأرقام والألوان الرابحة بدقة، قم بتدوير العجلة الملكية لرفع رصيدك إلى مستويات تنافسية.</p>
+                    <button class="btn-play" id="btn-roulette">إبدأ التحدي</button>
+                </div>
+            </div>
+            
+            <div class="game-card card-plinko" onclick="playClickSound(); playGame('plinko')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="20" r="8" fill="#ff007f"/>
+                        <circle cx="30" cy="40" r="4" fill="#00f2fe"/>
+                        <circle cx="70" cy="40" r="4" fill="#00f2fe"/>
+                        <circle cx="50" cy="60" r="4" fill="#00f2fe"/>
+                        <rect x="10" y="80" width="80" height="15" rx="2" fill="#3b82f6" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-plinko">خوارزمية الحظ • محدثة</span>
+                    <h3 class="game-title">Cyber Plinko</h3>
+                    <p class="game-desc" id="desc-plinko">أسقط الكرة ضمن المتاهة المتطورة، وحقق عوائد مالية من خلال الخانات الملونة ذات المضاعفات المرتفعة.</p>
+                    <button class="btn-play" id="btn-plinko">إبدأ التحدي</button>
+                </div>
+            </div>
 
-                <div class="text-center text-[11px] text-gray-400 flex items-center justify-center gap-1 py-1">
-                    <span class="text-blue-400">💡</span>
-                    <span><strong class="text-blue-400 font-mono">USDT TRC20</strong> هي الأرخص والأسرع</span>
+            <div class="game-card card-aviator" onclick="playClickSound(); playGame('aviator')">
+                <div class="game-preview">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M10 80 Q 50 10, 90 40" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="6 6"/>
+                        <path d="M10 80 L30 60 L40 70 L90 20" fill="none" stroke="#ffffff" stroke-width="3"/>
+                        <circle cx="90" cy="20" r="5" fill="#f59e0b"/>
+                    </svg>
+                </div>
+                <div class="game-info">
+                    <span class="game-tag" id="tag-aviator">الأكثر طلباً • فائق السرعة</span>
+                    <h3 class="game-title">Aviator Pro</h3>
+                    <p class="game-desc" id="desc-aviator">حلق بمركبتك نحو الأعلى، وقم بإنهاء الصفقة في الوقت المثالي لمضاعفة رأس مالك في ثوانٍ.</p>
+                    <button class="btn-play" id="btn-aviator">إبدأ التحدي</button>
                 </div>
             </div>
 
         </div>
+    </div>
 
-        <div id="paymentModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-end justify-center">
-            <div class="bg-[#0f172a] w-full max-w-md rounded-t-3xl border-t border-white/10 p-5 space-y-4">
-                
-                <div class="flex justify-between items-center">
-                    <h3 class="text-xs font-bold text-gray-200">الدفع عبر: <span id="modalMethodName" class="text-blue-400"></span></h3>
-                    <button onclick="closeModal()" class="text-gray-500 hover:text-white text-base"><i class="fas fa-times"></i></button>
-                </div>
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
 
-                <div class="bg-[#050608] p-4 rounded-xl border border-white/5 text-xs space-y-2.5">
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">إسم المستلم:</span>
-                        <span class="font-bold text-white" id="adminName">أيوب العايدي</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-400" id="numberLabel">رقم الحساب / RIB:</span>
-                        <div class="flex items-center gap-2">
-                            <span class="font-mono font-bold text-blue-400" id="adminNumber">00000000000000</span>
-                            <button onclick="copyAdminInfo()" class="bg-white/5 text-[10px] px-2.5 py-1 rounded-lg border border-white/10 hover:bg-white/10 text-white transition font-bold">نسخ</button>
-                        </div>
-                    </div>
-                </div>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-                <div class="space-y-3 text-right text-xs">
-                    <div>
-                        <label class="block text-gray-400 mb-1.5 font-medium">المبلغ المراد شحنه (بالدرهم DH):</label>
-                        <input type="number" id="amountInput" placeholder="مثال: 150" class="w-full p-3 bg-[#050608] border border-white/10 rounded-xl text-white font-bold outline-none focus:border-blue-500 font-mono">
-                    </div>
-                    <div>
-                        <label class="block text-gray-400 mb-1.5 font-medium">تحميل صورة وصل التحويل (Reçu):</label>
-                        <div class="relative w-full bg-[#050608] border border-dashed border-white/10 rounded-xl p-4 text-center cursor-pointer hover:border-blue-500/40 transition">
-                            <input type="file" id="receiptFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="fileUploaded()">
-                            <p id="uploadText" class="text-gray-500 font-medium"><i class="fas fa-cloud-upload-alt ml-1 text-sm"></i> اضغط لرفع صورة التوصيل</p>
-                            <p id="uploadSuccess" class="text-emerald-400 font-bold hidden"><i class="fas fa-check-circle ml-1"></i> تم إرفاق الوصل بنجاح</p>
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="sendDepositRequest()" id="submitBtn" class="w-full pool-yellow text-white font-black py-3.5 rounded-xl text-xs transition shadow-lg shadow-blue-500/20 active:scale-[0.99]">
-                    إرسال الطلب للمراجعة 🚀
-                </button>
-            </div>
-        </div>
-
-        <div id="bonusModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-            <div class="bg-[#0f172a] w-full max-w-sm rounded-3xl border border-white/5 p-6 text-center space-y-5 relative shadow-2xl">
-                <button onclick="closeBonusModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white bg-[#050608] w-8 h-8 rounded-full flex justify-center items-center border border-white/5 text-sm transition">
-                    <i class="fas fa-times"></i>
-                </button>
-                
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-500/10 text-blue-500 border border-blue-500/20 flex justify-center items-center text-2xl shadow-lg shadow-blue-500/5 animate-pulse">
-                    <i class="fas fa-gift"></i>
-                </div>
-
-                <div class="space-y-2">
-                    <h3 class="text-sm font-black text-white flex items-center justify-center gap-1.5">
-                        <span>مكافأة الإيداع الثاني</span>
-                        <span>🎁</span>
-                    </h3>
-                    <p class="text-gray-400 text-xs leading-relaxed px-2">
-                        عند إيداعك الثاني ستحصل على مكافأة هدية مجانية تُضاف مباشرة إلى رصيدك
-                    </p>
-                </div>
-
-                <div class="bg-[#050608] border border-dashed border-blue-500/30 rounded-2xl p-4 my-2">
-                    <span class="text-gray-500 text-[10px] block font-bold mb-1">مكافأتك</span>
-                    <span class="text-xl font-black text-blue-400 font-mono tracking-wider">+ 100 DH</span>
-                    <span class="text-[11px] text-blue-400 font-bold block mt-1">مجاناً 🎉</span>
-                </div>
-
-                <button onclick="closeBonusModal()" class="w-full pool-yellow text-white font-black py-3 rounded-xl text-xs transition shadow-lg shadow-blue-500/10 active:scale-[0.99]">
-                    فهمت — شكراً لك
-                </button>
-            </div>
-        </div>
-
-        <div id="history-section" class="hidden space-y-3">
-            <p class="text-xs text-gray-500 text-center py-6 font-medium" id="noHistoryText">لا توجد أي عمليات شحن سابقة حالياً.</p>
-            <div id="historyList" class="space-y-2"></div>
-        </div>
-
-    </main>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, push, get, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyB86n79oAqZ1rNWtezWxZ-f0ngV2QJn1fw",
             authDomain: "poolcash-6692c.firebaseapp.com",
@@ -420,279 +435,200 @@
             appId: "1:866544389541:web:2382c85a768da8c5bd6c4c"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-        const currentUsername = localStorage.getItem('username') || "Ayoub_Player";
+        let currentLang = 'ar';
+        let currentUsername = "Ayoube"; 
+        const music = document.getElementById('bg-music');
 
-        window.selectedBankId = "";
-        window.selectedBankName = "";
+        const translations = {
+            ar: {
+                title: "مركز الألعاب النخبوية",
+                btnLang: "Français",
+                btnPlay: "إبدأ التحدي",
+                chickenTag: "المقترحة • VIP",
+                chickenDesc: "استكشف الأطباق بدقة، حدد مواقع الدجاج الذهبي وتجاوز العقبات لتعظيم أرباحك فورياً.",
+                cyberTag: "إصدار سيبراني • جديد",
+                cyberDesc: "اختبر مهاراتك عبر مسارات النيون السريعة وتفادى المركبات المعرقلة لتحقيق مستويات أرباح قياسية.",
+                billiardsTag: "بطولات تنافسية",
+                billiardsDesc: "وظّف مهاراتك الاحترافية في التوجيه والتحكم، وقم بتنفيذ ضربات حاسمة لاقتناص المكافآت المالية.",
+                rouletteTag: "كازينو ملكي",
+                rouletteDesc: "توقع الأرقام والألوان الرابحة بدقة، قم بتدوير العجلة الملكية لرفع رصيدك إلى مستويات تنافسية.",
+                plinkoTag: "خوارزمية الحظ • محدثة",
+                plinkoDesc: "أسقط الكرة ضمن المتاهة المتطورة، وحقق عوائد مالية من خلال الخانات الملونة ذات المضاعفات المرتفعة.",
+                aviatorTag: "الأكثر طلباً • فائق السرعة",
+                aviatorDesc: "حلق بمركبتك نحو الأعلى، وقم بإنهاء الصفقة في الوقت المثالي لمضاعفة رأس مالك في ثوانٍ."
+            },
+            fr: {
+                title: "Salon de Jeux Élite",
+                btnLang: "العربية",
+                btnPlay: "Lancer le Défi",
+                chickenTag: "Recommandé • VIP",
+                chickenDesc: "Explorez les plateaux avec précision, identifiez les poulets dorés et évitez les pièges pour maximiser vos gains.",
+                cyberTag: "Édition Cyber • Nouveau",
+                cyberDesc: "Testez vos réflexes sur des pistes néon rapides et esquivez les obstacles pour atteindre des records de profits.",
+                billiardsTag: "Tournois Compétitifs",
+                billiardsDesc: "Utilisez vos compétences professionnelles de visée et de contrôle pour exécuter des tirs décisifs et décrocher vos récompenses.",
+                rouletteTag: "Casino Royal",
+                rouletteDesc: "Anticipez les chiffres et couleurs gagnants, faites tourner la roue royale et augmentez votre solde à des niveaux compétitifs.",
+                plinkoTag: "Algorithme de Chance • Mis à jour",
+                plinkoDesc: "Laissez tomber la bille dans le labyrinthe avancé et générez des revenus grâce aux cases colorées à hauts multiplicateurs.",
+                aviatorTag: "Le plus populaire • Ultra-Rapide",
+                aviatorDesc: "Envolez-vous, et finalisez votre transaction au moment idéal pour multiplier votre capital en quelques secondes."
+            }
+        };
 
-        onValue(ref(db, 'deposit_requests'), (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                for (let key in data) {
-                    if (data[key].username === currentUsername && data[key].status === "approved" && !data[key].isProcessed) {
-                        const userRef = ref(db, 'users/' + currentUsername + '/balance');
-                        get(userRef).then((snap) => {
-                            const currentBalance = snap.exists() ? snap.val() : 0;
-                            set(userRef, currentBalance + data[key].amount);
-                            update(ref(db, 'deposit_requests/' + key), { isProcessed: true });
-                        });
+        function playClickSound() {
+            // تفعيل الموسيقى عند أول تفاعل
+            if (music.paused) music.play().catch(e => console.log("Audio play blocked"));
+            
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1200, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.08);
+                
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            } catch (e) {
+                console.log("Audio contexts pending user gesture or not supported");
+            }
+        }
+
+        function toggleLanguage() {
+            const htmlEl = document.getElementById('app-html');
+            
+            if (currentLang === 'ar') {
+                currentLang = 'fr';
+                htmlEl.setAttribute('lang', 'fr');
+                htmlEl.setAttribute('dir', 'ltr');
+                
+                document.getElementById('lang-toggle-btn').innerText = translations.fr.btnLang;
+                document.getElementById('main-title').innerText = translations.fr.title;
+                document.getElementById('tag-chicken').innerText = translations.fr.chickenTag;
+                document.getElementById('desc-chicken').innerText = translations.fr.chickenDesc;
+                document.getElementById('btn-chicken').innerText = translations.fr.btnPlay;
+                
+                document.getElementById('tag-cyber').innerText = translations.fr.cyberTag;
+                document.getElementById('desc-cyber').innerText = translations.fr.cyberDesc;
+                document.getElementById('btn-cyber').innerText = translations.fr.btnPlay;
+
+                document.getElementById('tag-billiards').innerText = translations.fr.billiardsTag;
+                document.getElementById('desc-billiards').innerText = translations.fr.billiardsDesc;
+                document.getElementById('btn-billiards').innerText = translations.fr.btnPlay;
+                document.getElementById('tag-roulette').innerText = translations.fr.rouletteTag;
+                document.getElementById('desc-roulette').innerText = translations.fr.rouletteDesc;
+                document.getElementById('btn-roulette').innerText = translations.fr.btnPlay;
+                
+                document.getElementById('tag-plinko').innerText = translations.fr.plinkoTag;
+                document.getElementById('desc-plinko').innerText = translations.fr.plinkoDesc;
+                document.getElementById('btn-plinko').innerText = translations.fr.btnPlay;
+
+                document.getElementById('tag-aviator').innerText = translations.fr.aviatorTag;
+                document.getElementById('desc-aviator').innerText = translations.fr.aviatorDesc;
+                document.getElementById('btn-aviator').innerText = translations.fr.btnPlay;
+            } else {
+                currentLang = 'ar';
+                htmlEl.setAttribute('lang', 'ar');
+                htmlEl.setAttribute('dir', 'rtl');
+                
+                document.getElementById('lang-toggle-btn').innerText = translations.ar.btnLang;
+                document.getElementById('main-title').innerText = translations.ar.title;
+                document.getElementById('tag-chicken').innerText = translations.ar.chickenTag;
+                document.getElementById('desc-chicken').innerText = translations.ar.chickenDesc;
+                document.getElementById('btn-chicken').innerText = translations.ar.btnPlay;
+                
+                document.getElementById('tag-cyber').innerText = translations.ar.cyberTag;
+                document.getElementById('desc-cyber').innerText = translations.ar.cyberDesc;
+                document.getElementById('btn-cyber').innerText = translations.ar.btnPlay;
+
+                document.getElementById('tag-billiards').innerText = translations.ar.billiardsTag;
+                document.getElementById('desc-billiards').innerText = translations.ar.billiardsDesc;
+                document.getElementById('btn-billiards').innerText = translations.ar.btnPlay;
+                document.getElementById('tag-roulette').innerText = translations.ar.rouletteTag;
+                document.getElementById('desc-roulette').innerText = translations.ar.rouletteDesc;
+                document.getElementById('btn-roulette').innerText = translations.ar.btnPlay;
+
+                document.getElementById('tag-plinko').innerText = translations.ar.plinkoTag;
+                document.getElementById('desc-plinko').innerText = translations.ar.plinkoDesc;
+                document.getElementById('btn-plinko').innerText = translations.ar.btnPlay;
+
+                document.getElementById('tag-aviator').innerText = translations.ar.aviatorTag;
+                document.getElementById('desc-aviator').innerText = translations.ar.aviatorDesc;
+                document.getElementById('btn-aviator').innerText = translations.ar.btnPlay;
+            }
+        }
+
+        function startBalanceSync(username) {
+            if (!username) return;
+            
+            const userRef = database.ref('users/' + username);
+            userRef.on('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (userData) {
+                    let balance = userData.balance !== undefined ? parseFloat(userData.balance) : 0;
+                    const balanceEl = document.getElementById('user-balance');
+                    if(balanceEl) {
+                        balanceEl.innerText = balance.toLocaleString() + " DH";
                     }
                 }
+            }, (error) => {
+                console.error("خطأ أثناء مزامنة رصيد واجهة اللعبة:", error);
+            });
+        }
+
+        function playGame(game) {
+            localStorage.setItem('username', currentUsername);
+            setTimeout(() => {
+                if (game === 'chicken') {
+                    window.location.href = 'Chicken.html';
+                } else if (game === 'cyber_chicken') {
+                    window.location.href = 'CyberChicken.html';
+                } else if (game === 'billiards') {
+                    window.location.href = '8POOL.html'; 
+                } else if (game === 'roulette') {
+                    window.location.href = 'Roulette.html'; 
+                } else if (game === 'plinko') {
+                    window.location.href = 'Plinko.html';
+                } else if (game === 'aviator') {
+                    window.location.href = 'Aviator.html';
+                }
+            }, 150);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                let activeUser = urlParams.get('username') || urlParams.get('user');
+
+                if (!activeUser) {
+                    activeUser = localStorage.getItem('username');
+                }
+
+                if (activeUser) {
+                    currentUsername = activeUser.trim();
+                    if (currentUsername.includes('@')) {
+                        currentUsername = currentUsername.split('@')[0];
+                    }
+                }
+
+                startBalanceSync(currentUsername);
+
+            } catch (e) {
+                console.error("حدث مشكل بمزامنة كاش الحساب النشط:", e);
             }
         });
-
-        async function uploadToImgBB(file) {
-            const apiKey = 'e0b37b674c57db37a7780678926f3029'; 
-            const formData = new FormData();
-            formData.append('image', file);
-
-            const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-                method: 'POST',
-                body: formData
-            });
-
-            const result = await response.json();
-            return result.data.url;
-        }
-
-        window.showCryptoStep1 = function() {
-            document.getElementById('crypto-methods-main').classList.add('hidden');
-            document.getElementById('crypto-step-2').classList.add('hidden');
-            document.getElementById('crypto-step-1').classList.remove('hidden');
-            window.updateCryptoBonusText();
-        };
-
-        window.hideCryptoSteps = function() {
-            document.getElementById('crypto-step-1').classList.add('hidden');
-            document.getElementById('crypto-step-2').classList.add('hidden');
-            document.getElementById('crypto-methods-main').classList.remove('hidden');
-        };
-
-        window.setCryptoAmount = function(amount) {
-            document.getElementById('cryptoAmountInput').value = amount;
-            window.updateCryptoBonusText();
-        };
-
-        window.updateCryptoBonusText = function() {
-            const val = document.getElementById('cryptoAmountInput').value || 0;
-            const coins = val * 10;
-            document.getElementById('cryptoBonusText').innerText = `ستحصل على ${coins} رصيد`;
-        };
-
-        window.showCryptoStep2 = function() {
-            const amount = document.getElementById('cryptoAmountInput').value;
-            if(!amount || parseFloat(amount) <= 0) {
-                alert('الرجاء إدخال مبلغ صحيح بالدولار!');
-                return;
-            }
-            document.getElementById('cryptoBackToStep1Text').innerText = `تغيير المبلغ ($${amount})`;
-            document.getElementById('crypto-step-1').classList.add('hidden');
-            document.getElementById('crypto-step-2').classList.remove('hidden');
-        };
-
-        window.selectCryptoCurrency = function(cryptoName) {
-            const amountInDollars = document.getElementById('cryptoAmountInput').value;
-            const amountInDh = parseFloat(amountInDollars) * 10; 
-            
-            document.getElementById('crypto-step-2').classList.add('hidden');
-            document.getElementById('crypto-methods-main').classList.remove('hidden');
-            
-            window.selectMethod('crypto', cryptoName);
-            document.getElementById('amountInput').value = amountInDh;
-        };
-
-        window.selectMethod = function(id, name) {
-            window.selectedBankId = id;
-            window.selectedBankName = name;
-            
-            document.getElementById('modalMethodName').innerText = name;
-            document.getElementById('paymentModal').classList.remove('hidden');
-
-            const nameEl = document.getElementById('adminName');
-            const labelEl = document.getElementById('numberLabel');
-            const numEl = document.getElementById('adminNumber');
-
-            if(id === 'cih') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "رقم الحساب (RIB):";
-                numEl.innerText = "230123456789012345678901"; 
-            } else if(id === 'attijari') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "حساب التجاري وفا:";
-                numEl.innerText = "00712345678901234567"; 
-            } else if(id === 'cashplus') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "رقم البطاقة الوطنية (CIN):";
-                numEl.innerText = "AB123456"; 
-            } else if(id === 'albarid') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "رقم حساب البريد بنك:";
-                numEl.innerText = "3501234567890123"; 
-            } else if(id === 'lbankalik') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "رقم حساب L'bankalik:";
-                numEl.innerText = "4401234567890123"; 
-            } else if(id === 'bmce') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "رقم حساب بنك أفريقيا:";
-                numEl.innerText = "1901234567890123"; 
-            } else if(id === 'chaabi') {
-                nameEl.innerText = "أيوب العايدي";
-                labelEl.innerText = "رقم حساب البنك الشعبي:";
-                numEl.innerText = "211112345678901234567890"; 
-            } else if(id === 'crypto') {
-                nameEl.innerText = "محفظة " + name;
-                labelEl.innerText = "عنوان المحفظة:";
-                numEl.innerText = "TY7xxxxxxxxxxxxxxxxxxxxxx"; 
-            }
-        };
-
-        window.closeModal = function() {
-            document.getElementById('paymentModal').classList.add('hidden');
-            document.getElementById('amountInput').value = "";
-            document.getElementById('receiptFile').value = "";
-            document.getElementById('uploadText').classList.remove('hidden');
-            document.getElementById('uploadSuccess').classList.add('hidden');
-        };
-
-        window.fileUploaded = function() {
-            document.getElementById('uploadText').classList.add('hidden');
-            document.getElementById('uploadSuccess').classList.remove('hidden');
-        };
-
-        window.sendDepositRequest = async function() {
-            const amount = document.getElementById('amountInput').value.trim();
-            const fileInput = document.getElementById('receiptFile');
-
-            if(!amount || parseFloat(amount) <= 0) {
-                alert('الرجاء كتابة مبلغ شحن صحيح!');
-                return;
-            }
-            if(fileInput.files.length === 0) {
-                alert('من فضلك قم برفع صورة الوصل أولاً لتأكيد الدفع!');
-                return;
-            }
-
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerText = "جاري الرفع والارسال...";
-
-            try {
-                const imageUrl = await uploadToImgBB(fileInput.files[0]);
-                
-                const requestsRef = ref(db, 'deposit_requests');
-                const newRequestRef = push(requestsRef);
-
-                await set(newRequestRef, {
-                    username: currentUsername,
-                    bankName: window.selectedBankName,
-                    amount: parseFloat(amount),
-                    receiptUrl: imageUrl,
-                    status: "pending", 
-                    timestamp: Date.now()
-                });
-
-                alert('تم إرسال طلب الشحن بنجاح! سيتم التحقق من الوصل وتفعيل رصيدك خلال دقائق.');
-                window.closeModal();
-                window.switchTab('history'); 
-            } catch (err) {
-                alert('حدث خطأ: ' + err.message);
-                btn.disabled = false;
-                btn.innerText = "إرسال الطلب للمراجعة 🚀";
-            }
-        };
-
-        window.loadDepositHistory = async function() {
-            const requestsRef = ref(db, 'deposit_requests');
-            const snapshot = await get(requestsRef);
-            const listEl = document.getElementById('historyList');
-            listEl.innerHTML = "";
-            
-            let hasHistory = false;
-
-            if(snapshot.exists()) {
-                const data = snapshot.val();
-                for(let key in data) {
-                    if(data[key].username === currentUsername) {
-                        hasHistory = true;
-                        const req = data[key];
-                        
-                        let statusColor = "text-amber-400 bg-amber-500/5 border-amber-500/20";
-                        let statusText = "قيد المراجعة";
-                        if(req.status === "approved") {
-                            statusColor = "text-emerald-400 bg-emerald-500/5 border-emerald-500/20";
-                            statusText = "تم القبول ✅";
-                        } else if(req.status === "rejected") {
-                            statusColor = "text-rose-400 bg-rose-500/5 border-rose-500/20";
-                            statusText = "مرفوض ❌";
-                        }
-
-                        const itemHtml = `
-                            <div class="bg-white/5 border border-white/5 p-4 rounded-xl flex justify-between items-center text-xs">
-                                <div class="space-y-1">
-                                    <p class="font-bold text-gray-200">${req.bankName}</p>
-                                    <p class="text-gray-500 font-mono">${new Date(req.timestamp).toLocaleString('ar-MA')}</p>
-                                    ${req.receiptUrl ? `<a href="${req.receiptUrl}" target="_blank" class="text-[10px] text-blue-400 underline">مشاهدة الوصل</a>` : ''}
-                                </div>
-                                <div class="text-right space-y-1.5">
-                                    <p class="font-bold text-blue-400 font-mono">${req.amount} DH</p>
-                                    <span class="inline-block px-2 py-0.5 border rounded text-[10px] ${statusColor}">${statusText}</span>
-                                </div>
-                            </div>
-                        `;
-                        listEl.insertAdjacentHTML('afterbegin', itemHtml);
-                    }
-                }
-            }
-
-            if(hasHistory) {
-                document.getElementById('noHistoryText').classList.add('hidden');
-            } else {
-                document.getElementById('noHistoryText').classList.remove('hidden');
-            }
-        };
-
-        window.switchTab = function(type) {
-            const depTab = document.getElementById('tab-deposit');
-            const hisTab = document.getElementById('tab-history');
-            const depSec = document.getElementById('deposit-section');
-            const hisSec = document.getElementById('history-section');
-
-            if(type === 'deposit') {
-                depTab.className = "flex-1 py-3 active-tab transition-all";
-                hisTab.className = "flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all";
-                depSec.classList.remove('hidden');
-                hisSec.classList.add('hidden');
-                window.hideCryptoSteps();
-            } else {
-                hisTab.className = "flex-1 py-3 active-tab transition-all";
-                depTab.className = "flex-1 py-3 text-gray-500 hover:text-gray-400 transition-all";
-                hisSec.classList.remove('hidden');
-                depSec.classList.add('hidden');
-                window.loadDepositHistory(); 
-            }
-        };
-    </script>
-
-    <script>
-        function openBonusModal() {
-            document.getElementById('bonusModal').classList.remove('hidden');
-        }
-        function closeBonusModal() {
-            document.getElementById('bonusModal').classList.add('hidden');
-        }
-        function copyAdminInfo() {
-            const text = document.getElementById('adminNumber').innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('تم نسخ الرقم بنجاح! 📋');
-            });
-        }
-        function goBack() {
-            window.location.href = "ar.html";
-        }
     </script>
 </body>
 </html>
