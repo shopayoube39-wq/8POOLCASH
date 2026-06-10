@@ -315,7 +315,6 @@
           if (globalUserBalance < amount) {
              document.getElementById('deposit-required-modal').classList.remove('hidden');
           } else {
-              // تخزين المبلغ في الـ LocalStorage ليتم الخصم منه لاحقاً داخل صفحة اللعبة
               localStorage.setItem('pendingBet', amount);
               window.location.href = 'games.html';
           }
@@ -330,8 +329,9 @@
                   document.getElementById('winsDisplay').innerText = (data.wins || 0).toLocaleString();
                   document.getElementById('matchesDisplay').innerText = (data.matches || 0).toLocaleString();
                   
-                  // الحساب: إجمالي الأرباح لكل فوز
-                  const totalProfit = (data.wins || 0) * (data.avgWinAmount || 0);
+                  // الحساب المحدث: (إجمالي الرهانات الفائزة * نسبة الربح) - إجمالي الرهانات الخاسرة
+                  // يتم جلب totalWonAmount و totalLossAmount من قاعدة البيانات
+                  const totalProfit = (data.totalWonAmount || 0) - (data.totalLossAmount || 0);
                   document.getElementById('profitDisplay').innerText = totalProfit.toLocaleString();
               }
           });
