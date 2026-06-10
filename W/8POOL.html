@@ -194,7 +194,7 @@ body {
 
     <div class="versus-radar player-active" id="radar-hull">
       <div class="radar-user player">
-        <div class="avatar-ring">🇲🇦</div>
+        <div class="avatar-ring" id="player-avatar">🇲🇦</div>
         <div class="profile-info">
           <span class="u-name">Vous</span>
           <span class="u-group" id="p-target">طاولة مفتوحة</span>
@@ -206,11 +206,11 @@ body {
 
       <div class="radar-user opp">
         <div class="profile-info">
-          <span class="u-name" id="opp-name-lbl">OmniBot 🤖</span>
+          <span class="u-name" id="opp-name-lbl">Karim 👑</span>
           <span class="u-group" id="o-target">طاولة مفتوحة</span>
           <div class="pocketed-row" id="o-pockets"></div>
         </div>
-        <div class="avatar-ring" id="opp-avatar">🤖</div>
+        <div class="avatar-ring" id="opp-avatar">🇲🇦</div>
       </div>
     </div>
 
@@ -290,9 +290,14 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
+const CountryFlags = {
+  "المغرب": "🇲🇦", "الجزائر": "🇩🇿", "تونس": "🇹🇳", "العراق": "🇮🇶",
+  "السعودية": "🇸🇦", "الكويت": "🇰🇼", "الأردن": "🇯🇴", "الإمارات": "🇦🇪", "مصر": "🇪🇬", "ليبيا": "🇱🇾"
+};
+
 const Dictionary = {
-  fr: { solde: "SOLDE", open: "Table Ouverte", solid: "Pleines 🔴", striped: "Rayées 🟡", ready: "Moteur prêt. À votre tour !", thinking: "calcule le coup parfait...", insf: "⚠️ SOLDE INSUFFISANT !", win: "🏆 VICTOIRE !", lose: "❌ DÉFAITE !", foul: "❌ FAUTE LAW !", lounge: "Elite Live Lounge", spin: "Contrôle d'effet", ballInHand: "🔮 Balle en main ! Déplacez la blanche.", hitMsg: "Frappe effectuée !", potMsg: "Balle empochée : " },
-  ar: { solde: "الرصيد", open: "طاولة مفتوحة", solid: "الكرات المصمتة 🔴", striped: "الكرات المخططة 🟡", ready: "المحرك جاهز. دورك الآن !", thinking: "يحسب زوايا الضربة الخارقة...", insf: "⚠️ الرصيد غير كافي !", win: "🏆 انتصار رائع !", lose: "❌ خسارة !", foul: "❌ خطأ قانوني (Foul) !", lounge: "صالة النخبة الحية", spin: "توجيه الدوران والملامسة", ballInHand: "🔮 كرة حرة في يدك! حرك البيضاء.", hitMsg: "تمت الضربة بنجاح فورياً !", potMsg: "تم إسقاط كرة من نوع: " }
+  fr: { solde: "SOLDE", open: "Table Ouverte", solid: "Pleines 🔴", striped: "Rayées 🟡", ready: "Moteur prêt. À votre tour !", thinking: "يفكر في الضربة...", insf: "⚠️ SOLDE INSUFFISANT !", win: "🏆 VICTOIRE !", lose: "❌ DÉFAITE !", foul: "❌ FAUTE !", lounge: "Elite Live Lounge", spin: "Contrôle d'effet", ballInHand: "🔮 Balle en main ! Déplacez la blanche.", hitMsg: "ضربة موفقة !", potMsg: "Balle empochée : " },
+  ar: { solde: "الرصيد", open: "طاولة مفتوحة", solid: "الكرات المصمتة 🔴", striped: "الكرات المخططة 🟡", ready: "دورك الآن، تفضل!", thinking: "يفكر في الضربة...", insf: "⚠️ الرصيد غير كافي !", win: "🏆 انتصار رائع !", lose: "❌ خسارة !", foul: "❌ خطأ قانوني !", lounge: "صالة النخبة الحية", spin: "توجيه الدوران والملامسة", ballInHand: "🔮 كرة حرة في يدك! حرك البيضاء.", hitMsg: "ضربة قوية!", potMsg: "تم إسقاط كرة من نوع: " }
 };
 let currentLang = "ar";
 
@@ -304,6 +309,13 @@ const VaultSecure = {
 
 let balanceRef; let currentBet = 0; let hasDeductedBet = false; let currentUsername = "Ayoube";
 let totalWinsToday = 0; let totalLosesToday = 0;
+
+function setOpponentCountry(countryName) {
+    if (CountryFlags[countryName]) {
+        document.getElementById('opp-avatar').innerText = CountryFlags[countryName];
+        document.getElementById('opp-name-lbl').innerText = countryName + " 👑";
+    }
+}
 
 const SpatialAudio = {
   ctx: null,
@@ -362,7 +374,7 @@ function toggleSystemLanguage() {
 function updateStatusUI() {
   const s = document.getElementById("game-status");
   if (gameState === "aiming" && currentTurn === "player") s.innerText = Dictionary[currentLang].ready;
-  else if (currentTurn === "opp") s.innerText = `OmniBot 🤖 ${Dictionary[currentLang].thinking}`;
+  else if (currentTurn === "opp") s.innerText = `${document.getElementById('opp-name-lbl').innerText} ${Dictionary[currentLang].thinking}`;
 }
 
 function updateGroupLabelsUI() {
@@ -436,7 +448,7 @@ const pockets = [
 ];
 
 let dynamicLeaderboard = [
-  { name: "OmniBot 🤖", score: 9999 }, { name: "Vous", score: 0 }, { name: "Amine 🇲🇦", score: 2800 }
+  { name: "Karim 👑", score: 9999 }, { name: "Vous", score: 0 }, { name: "Amine 🇲🇦", score: 2800 }
 ];
 
 function triggerToast(txt) { const b = document.getElementById("toast-box"); b.innerHTML = `<div class="quantum-toast">${txt}</div>`; setTimeout(() => b.innerHTML = "", 3000); }
@@ -607,7 +619,7 @@ function runOpponentAI() {
         
         let angleCue = Math.atan2(ghostY - cueBall.y, ghostX - cueBall.x);
         let distToGhost = Math.hypot(ghostX - cueBall.x, ghostY - cueBall.y);
-        let distBallToPocket = Math.hypot(pocket.x - ball.x, pocket.y - ball.y);
+        let distBallToPocket = Math.hypot(pocket.x - ball.x, pocket. y - ball.y);
 
         let score = 5000 - (distToGhost + distBallToPocket * 1.5);
         
@@ -651,7 +663,7 @@ function finalizeTurn() {
     if (!firstBallHitThisTurn || firstBallHitThisTurn.type !== currentGroup) {
       triggerFoul = true;
       isBallInHand = true;
-      triggerToast(Dictionary[currentLang].foul + " (Foul! لم تلمس كرتك أولاً)");
+      triggerToast(Dictionary[currentLang].foul);
     }
   }
 
@@ -669,7 +681,7 @@ function finalizeTurn() {
     } else {
       if (currentTurn === "player") {
         totalLosesToday += currentBet; document.getElementById("stat-total-loses").innerText = `${totalLosesToday}`;
-        triggerToast(Dictionary[currentLang].lose + " (أدخلت السوداء مبكراً!)");
+        triggerToast(Dictionary[currentLang].lose);
       } else {
         commitBalanceUpdate(currentBet * 2); totalWinsToday += currentBet;
         document.getElementById("stat-total-wins").innerText = `${totalWinsToday}`;
