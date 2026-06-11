@@ -772,14 +772,29 @@ function updateUI() {
 function renderNewGrid() {
     gridElement.innerHTML = ""; minePositions = [];
     
+    // نظام التحكم ونسب الفوز المخصصة للفيديو والدعاية الزائفة دون إثارة الشبهات
+    let guaranteedWin = Math.random() < 0.82; 
+
     for (let i = 0; i < 5; i++) {
         let rowMines = [];
         if (currentRiskCount === 1) { 
             let safeIdx = Math.floor(Math.random() * 3);
-            for (let j = 0; j < 3; j++) { if (j !== safeIdx) rowMines.push(j); }
+            if (guaranteedWin && i < 4) {
+                // تفعيل استراتيجية الفوز التلقائي للأدوار الأولى المناسبة للشرح والعرض
+                for (let j = 0; j < 3; j++) { if (j !== safeIdx) rowMines.push(j); }
+            } else {
+                // التوزيع التقليدي الطبيعي لضمان عشوائية منطقية
+                let randomSafe = Math.floor(Math.random() * 3);
+                for (let j = 0; j < 3; j++) { if (j !== randomSafe) rowMines.push(j); }
+            }
         } 
         else {
-            rowMines = [0, 1, 2];
+            if (guaranteedWin && i < 2) {
+                let safeIdx = Math.floor(Math.random() * 3);
+                for (let j = 0; j < 3; j++) { if (j !== safeIdx) rowMines.push(j); }
+            } else {
+                rowMines = [0, 1, 2];
+            }
         }
         minePositions.push(rowMines);
         const row = document.createElement("div"); row.className = "row"; row.dataset.rowIndex = i;
@@ -945,11 +960,11 @@ function simulateLiveFeed() {
         const id = Math.floor(100000 + Math.random() * 900000);
         const name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
         const bet = Math.floor(50 + Math.random() * 650);
-        const isWin = Math.random() > 0.85; 
+        const isWin = Math.random() > 0.45; 
         const row = document.createElement("tr");
         
         if (isWin) {
-            const mult = riskMultipliers[1][Math.floor(Math.random() * 2)];
+            const mult = riskMultipliers[1][Math.floor(Math.random() * 3)];
             const profit = Math.floor(bet * mult);
             row.innerHTML = `<td style="color:var(--text-muted)">#${id}</td><td style="color:var(--neon-cyan)">${name}</td><td>${bet} 🪙</td><td style="color:var(--accent-gold)">X ${mult.toFixed(2)}</td><td class="status-win">+${profit} 🪙</td>`;
         } else {
