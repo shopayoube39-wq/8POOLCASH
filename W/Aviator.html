@@ -16,11 +16,12 @@
             padding: 0;
             overflow: hidden;
             touch-action: manipulation;
+            overscroll-behavior: none;
         }
         .viewport-container {
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            height: 100dvh;
             width: 100%;
             max-width: 440px;
             margin: 0 auto;
@@ -33,6 +34,7 @@
             position: relative;
             width: 100%;
             overflow: hidden;
+            touch-action: none;
         }
         .btn-state-drop {
             background: linear-gradient(135deg, #ff5f00 0%, #b30000 100%);
@@ -63,7 +65,7 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
     </style>
 </head>
-<body class="text-white min-h-screen flex justify-center items-center p-0 md:p-2 no-select">
+<body class="text-white min-h-[100dvh] flex justify-center items-center p-0 md:p-2 no-select">
 
     <div class="viewport-container shadow-2xl md:rounded-3xl overflow-hidden">
         
