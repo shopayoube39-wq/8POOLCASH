@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="fr" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tower Casino - Hardcore Edition</title>
+    <title>Tower Casino - Édition Hardcore</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
         body {
-            font-family: 'Tajawal', 'Space Grotesk', sans-serif;
+            font-family: 'Space Grotesk', 'Tajawal', sans-serif;
             background-color: #030109;
             margin: 0;
             padding: 0;
@@ -78,7 +78,7 @@
             <div class="flex justify-between items-center w-full">
                 <div class="flex items-center gap-2">
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500 font-black text-xs tracking-wider bg-white/5 px-2.5 py-1.5 rounded-xl border border-red-500/20">
-                        💀 نمط التحدي الصارم
+                        💀 Mode Hardcore
                     </span>
                     <button onclick="toggleAudioSystem()" id="btn-audio" class="bg-black/60 border border-white/10 text-white w-8 h-8 rounded-xl flex items-center justify-center text-xs">
                         <span id="audio-icon">🔇</span>
@@ -86,9 +86,9 @@
                 </div>
 
                 <div class="bg-black/80 px-3 py-1.5 rounded-xl border border-emerald-400/30 font-mono flex items-center gap-2 shadow-lg">
-                    <span class="text-[9px] text-emerald-400 font-black tracking-widest">الرصيد</span>
+                    <span class="text-[9px] text-emerald-400 font-black tracking-widest">SOLDE</span>
                     <span id="balance-display" class="text-emerald-300 font-black text-base">0.00</span>
-                    <span class="text-xs text-emerald-400 font-bold">$</span>
+                    <span class="text-xs text-emerald-400 font-bold"></span>
                 </div>
             </div>
 
@@ -103,13 +103,13 @@
         <div class="canvas-area">
             <div class="absolute left-2 top-4 w-[100px] bg-black/60 border border-white/5 rounded-xl p-1.5 z-20 font-mono text-[9px] flex flex-col gap-1 backdrop-blur-md h-[160px] overflow-hidden">
                 <div class="text-gray-400 font-black text-center border-b border-white/10 pb-1 mb-1 flex items-center justify-center gap-1">
-                    <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span> المباشر
+                    <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span> LIVE
                 </div>
                 <div id="live-players-list" class="flex flex-col gap-1.5 custom-scrollbar overflow-y-auto"></div>
             </div>
 
             <div class="absolute right-2 top-4 w-[100px] bg-black/60 border border-white/5 rounded-xl p-1.5 z-20 font-mono text-[9px] flex flex-col gap-1 backdrop-blur-md h-[160px] overflow-hidden">
-                <div class="text-amber-400 font-black text-center border-b border-white/10 pb-1 mb-1">📊 الجولات العامّة</div>
+                <div class="text-amber-400 font-black text-center border-b border-white/10 pb-1 mb-1">📊 STATS</div>
                 <div id="table-stats-list" class="flex flex-col gap-1 custom-scrollbar overflow-y-auto h-full"></div>
             </div>
 
@@ -128,7 +128,7 @@
             
             <div id="action-buttons-container">
                 <button id="main-game-btn" onclick="handleMainButtonAction()" class="w-full btn-state-drop text-white font-black text-base h-12 rounded-xl flex items-center justify-center gap-2 active:scale-[0.99] transition-all">
-                     🏗️ إسقاط الطابق وتشييد البرج / DROP FLOOR
+                     🏗️ DÉPOSER ÉTAGE / DROP
                 </button>
             </div>
 
@@ -139,7 +139,7 @@
                     <button class="w-8 h-8 bg-white/5 text-white rounded-lg font-black text-base flex items-center justify-center opacity-50 cursor-not-allowed">-</button>
                     <div class="text-center flex items-center justify-center gap-1 flex-grow">
                         <input id="bet-amount-field" type="number" readonly class="w-16 bg-transparent text-center text-white font-black text-base outline-none">
-                        <span class="text-amber-400 font-bold text-xs">دولار</span>
+                        <span class="text-amber-400 font-bold text-xs"></span>
                     </div>
                     <button class="w-8 h-8 bg-white/5 text-white rounded-lg font-black text-base flex items-center justify-center opacity-50 cursor-not-allowed">+</button>
                 </div>
@@ -231,7 +231,7 @@
         const initialWidth = 130;
         const floorHeight = 38; 
 
-        const fakeNames = ["أمين", "أنس", "عمر", "سيمو", "مهدي", "حمزة", "زهير", "رضا", "وليد", "سامي", "ياسين"];
+        const fakeNames = ["Player1", "User2", "ProGamer", "LuckyOne", "TowerKing", "MaxBet", "Speedy", "Elite", "Winner", "Alpha"];
         let livePlayersData = [];
 
         window.addEventListener('resize', resizeViewport);
@@ -262,7 +262,7 @@
                 const betAmount = gameConfig.currentBet;
 
                 if(betAmount <= 0 || betAmount > gameConfig.balance) {
-                    alert('الرصيد غير كافٍ للرهان!');
+                    alert('Solde insuffisant pour miser !');
                     return;
                 }
 
@@ -300,7 +300,7 @@
             const container = document.getElementById('action-buttons-container');
             
             if (gameConfig.gameState === 'idle' || gameConfig.gameState === 'dropping') {
-                container.innerHTML = `<button id="main-game-btn" onclick="handleMainButtonAction()" class="w-full btn-state-drop text-white font-black text-base h-12 rounded-xl flex items-center justify-center gap-2 active:scale-[0.99] transition-all">🏗️ إسقاط الطابق وتشييد البرج / DROP</button>`;
+                container.innerHTML = `<button id="main-game-btn" onclick="handleMainButtonAction()" class="w-full btn-state-drop text-white font-black text-base h-12 rounded-xl flex items-center justify-center gap-2 active:scale-[0.99] transition-all">🏗️ DÉPOSER ÉTAGE / DROP</button>`;
             } 
             else if (gameConfig.gameState === 'active_round') {
                 let currentWin = (gameConfig.currentBet * gameConfig.currentRunningMultiplier).toFixed(2);
@@ -308,13 +308,13 @@
                     <div class="grid grid-cols-4 gap-2">
                         <button onclick="triggerDropFloorLogic()" class="col-span-1 btn-state-drop text-white font-black rounded-xl flex flex-col items-center justify-center h-12 text-xl active:scale-[0.99] transition-all">
                             🏗️
-                            <span class="text-[8px] font-black">إسقاط</span>
+                            <span class="text-[8px] font-black">DROP</span>
                         </button>
                         <button onclick="handleCashout()" class="col-span-3 btn-state-cashout text-black font-black rounded-xl flex items-center justify-center gap-3 px-4 h-12 active:scale-[0.99] transition-all">
                             <svg class="w-7 h-7 svg-coin-rotate shrink-0" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="18" cy="18" r="16" fill="url(#goldGradient)" stroke="#fff" stroke-width="1.5"/>
                                 <circle cx="18" cy="18" r="12" fill="none" stroke="rgba(255,255,255,0.4)" stroke-dasharray="3 3" stroke-width="1"/>
-                                <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="monospace" font-weight="900" font-size="16" fill="#5c3a00">$</text>
+                                <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="monospace" font-weight="900" font-size="16" fill="#5c3a00"></text>
                                 <defs>
                                     <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" stop-color="#ffe066" />
@@ -324,8 +324,8 @@
                                 </defs>
                             </svg>
                             <div class="flex flex-col items-start leading-tight text-right">
-                                <span class="text-[9px] opacity-80 font-bold">جني الأرباح الفورية الآن</span>
-                                <span class="text-xs font-black tracking-tight">صرف الأرباح: $${currentWin} (x${gameConfig.currentRunningMultiplier.toFixed(2)})</span>
+                                <span class="text-[9px] opacity-80 font-bold">CASHOUT IMMÉDIAT</span>
+                                <span class="text-xs font-black tracking-tight">ENCAISSER : ${currentWin} (x${gameConfig.currentRunningMultiplier.toFixed(2)})</span>
                             </div>
                         </button>
                     </div>`;
@@ -342,7 +342,7 @@
             sfx.cashout();
             createExplosionParticles(viewWidth/2, viewHeight - 140, '#00ff87', 30);
             triggerResultPopup(true, gameConfig.currentRunningMultiplier, winAmount);
-            addTableStatsRecord("أنت", gameConfig.currentRunningMultiplier, winAmount, true);
+            addTableStatsRecord("VOUS", gameConfig.currentRunningMultiplier, winAmount, true);
             addQuickHistoryBadge(gameConfig.currentRunningMultiplier, '#00ff87');
 
             endActiveRoundSystem();
@@ -372,8 +372,8 @@
                 
                 container.innerHTML += `
                     <div class="flex flex-col bg-white/5 p-1 rounded-md text-[8px]" id="fake-p-${i}">
-                        <div class="flex justify-between font-bold text-gray-300"><span>👤 ${name}</span> <span class="text-amber-400">$${bet}</span></div>
-                        <div class="text-[8px] text-gray-400 font-mono" id="fake-p-status-${i}">جاري البناء...</div>
+                        <div class="flex justify-between font-bold text-gray-300"><span>👤 ${name}</span> <span class="text-amber-400">${bet}</span></div>
+                        <div class="text-[8px] text-gray-400 font-mono" id="fake-p-status-${i}">Construction...</div>
                     </div>`;
             }
         }
@@ -389,13 +389,13 @@
                     let finalMult = gameConfig.floorMultipliers[Math.floor(Math.random() * 3)];
                     let winAmt = p.bet * finalMult;
                     statusEl.className = "text-emerald-400 font-bold";
-                    statusEl.innerText = `💵 سحب مبكر x${finalMult.toFixed(2)} (+${winAmt.toFixed(0)}$)`;
+                    statusEl.innerText = `💵 Cashed x${finalMult.toFixed(2)} (+${winAmt.toFixed(0)})`;
                     
                     addTableStatsRecord(p.name, finalMult, winAmt, true);
                 } else if (Math.random() > 0.60 || p.status === 'cashout') {
                     if (p.status === 'playing') {
                         statusEl.className = "text-red-500 font-bold";
-                        statusEl.innerText = `💥 انهيار x0.00`;
+                        statusEl.innerText = `💥 Crash x0.00`;
                         addTableStatsRecord(p.name, 0, p.bet, false);
                     }
                     
@@ -406,8 +406,8 @@
                         let block = document.getElementById(`fake-p-${i}`);
                         if(block) {
                             block.innerHTML = `
-                                <div class="flex justify-between font-bold text-gray-300"><span>👤 ${p.name}</span> <span class="text-amber-400">$${p.bet}</span></div>
-                                <div class="text-[8px] text-gray-400 font-mono" id="fake-p-status-${i}">جاري البناء...</div>`;
+                                <div class="flex justify-between font-bold text-gray-300"><span>👤 ${p.name}</span> <span class="text-amber-400">${p.bet}</span></div>
+                                <div class="text-[8px] text-gray-400 font-mono" id="fake-p-status-${i}">Construction...</div>`;
                         }
                     }, 1200);
                 }
@@ -418,7 +418,7 @@
             const list = document.getElementById('table-stats-list');
             const row = document.createElement('div');
             row.className = `flex justify-between items-center p-1 rounded border border-white/5 text-[8px] ${isWin ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`;
-            row.innerHTML = `<span>${name}</span> <span class="font-bold">${isWin ? 'x' + mult.toFixed(2) : '-$' + amount}</span>`;
+            row.innerHTML = `<span>${name}</span> <span class="font-bold">${isWin ? 'x' + mult.toFixed(2) : '-' + amount}</span>`;
             list.insertBefore(row, list.firstChild);
             if(list.children.length > 8) list.removeChild(list.lastChild);
         }
@@ -493,7 +493,7 @@
                         screenShakeTime = 25;
                         sfx.lose();
                         createExplosionParticles(currentDropPiece.x, currentDropPiece.y, '#ff003c', 25);
-                        addTableStatsRecord("أنت", 0, gameConfig.currentBet, false);
+                        addTableStatsRecord("VOUS", 0, gameConfig.currentBet, false);
                         addQuickHistoryBadge(0, '#ff003c');
                         
                         let fallTicks = 0;
@@ -526,7 +526,7 @@
 
                         const badge = document.getElementById('current-multiplier-badge');
                         badge.classList.remove('hidden');
-                        badge.innerText = `المضاعف الحالي: x${floorMult.toFixed(2)} (${(gameConfig.currentBet * floorMult).toFixed(1)}$)`;
+                        badge.innerText = `Multiplicateur: x${floorMult.toFixed(2)} (${(gameConfig.currentBet * floorMult).toFixed(1)})`;
 
                         targetCameraYOffset = gameConfig.buildingFloors.length * floorHeight;
                         
@@ -624,19 +624,19 @@
             if (isSuccess) {
                 box.className = "bg-black/95 border border-emerald-500/40 px-6 py-4 rounded-2xl text-center shadow-2xl backdrop-blur-md min-w-[200px]";
                 status.className = "text-[#00ff87] text-[10px] font-black tracking-widest mb-0.5";
-                status.innerText = "جني أرباح ناجح 💰";
+                status.innerText = "VICTOIRE / CASHOUT 💰";
                 mText.className = "text-yellow-400 text-3xl font-black font-mono my-0.5";
                 mText.innerText = `x${mult.toFixed(2)}`;
                 aText.className = "text-[#00ff87] text-base font-black font-mono";
-                aText.innerText = `+${amt.toFixed(1)}$`;
+                aText.innerText = `+${amt.toFixed(1)}`;
             } else {
                 box.className = "bg-black/95 border border-red-500/40 px-6 py-4 rounded-2xl text-center shadow-2xl backdrop-blur-md min-w-[200px]";
                 status.className = "text-red-500 text-[10px] font-black tracking-widest mb-0.5";
-                status.innerText = "انهيار البرج / خسارة 💥";
+                status.innerText = "CRASH / DÉFAITE 💥";
                 mText.className = "text-red-500 text-3xl font-black font-mono my-0.5";
                 mText.innerText = "x0.00";
                 aText.className = "text-gray-400 text-[10px] font-bold";
-                aText.innerText = "سقط الطابق خارج التوازن!";
+                aText.innerText = "La tour s'est effondrée !";
             }
             
             popup.style.opacity = '1'; popup.style.transform = 'scale(1)';
