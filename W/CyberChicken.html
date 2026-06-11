@@ -435,7 +435,8 @@
                     }
                 }, 120);
 
-                let crashChance = 0.05;
+                // [تعديل النسبة]: تقليل احتمالية الخسارة لجعل الربح أكثر تكراراً
+                let crashChance = 0.15 + (this.currentStep * 0.05);
 
                 if (Math.random() < crashChance) {
                     cancelAnimationFrame(this.animationId);
@@ -538,7 +539,6 @@
             },
 
             updateUI() {
-                // [تعديل العرض هنا]: يعرض الآن 0.00x بدلاً من 1.00x في الواجهة عند البداية لمنع اللبس تماماً
                 let displayMult = this.currentMultiplier.toFixed(2);
                 document.getElementById('mult-view').innerText = displayMult + "x";
                 document.getElementById('live-profit-counter').innerText = "DH " + (this.activeBet * this.currentMultiplier).toFixed(2);
