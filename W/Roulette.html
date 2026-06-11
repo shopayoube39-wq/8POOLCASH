@@ -311,7 +311,6 @@
             border: 1.5px dashed rgba(241, 196, 15, 0.3); 
         }
         
-        /* أزرار التحكم السفلى */
         .action-buttons {
             display: flex;
             gap: 10px;
@@ -460,7 +459,7 @@
         const currentUsername = localStorage.getItem('username') || "Ayoube"; 
         let balance = 0;
         let isSpinning = false;
-        let currentRotation = 0; // حل مشكلة توقف الدوران في المرة الثانية بالاحتفاظ بقيمة الزاوية التراكمية
+        let currentRotation = 0;
 
         let pendingBetAmount = parseFloat(localStorage.getItem('pendingBet')) || 150;
         document.getElementById('betAmount').value = pendingBetAmount;
@@ -641,13 +640,12 @@
             setTimeout(() => box.classList.remove('pulse'), 500);
         }
 
-        // دالة إعادة اللعب لتنظيف الواجهة وتصفير الخيارات
         function resetGame() {
             if (isSpinning) return;
             currentBet = { type: null, value: null };
             document.querySelectorAll('.bet-btn, .num-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('currentBetType').innerText = "Aucun pari sélectionné";
-            document.getElementById('resultDisplay').innerText = "Faites vos jeux ! Choisissez une option et lanceز.";
+            document.getElementById('resultDisplay').innerText = "Faites vos jeux ! Choisissez une option et lancez.";
             changeLedState('idle');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             playSound('tick');
@@ -669,94 +667,40 @@
             document.getElementById('balance').innerText = balance.toLocaleString();
             database.ref('users/' + currentUsername).update({ balance: newBalanceAfterBet });
 
-            // خوارزمية ذكية لتوجيه النتيجة بنسبة 75% للربح لتبدو طبيعية وغير مكشوفة بالفيديو
-            let winning;
-            let randomIndex;
-            const shouldWin = Math.random() < 0.75; 
-
-            if (shouldWin) {
-                let winningOptions = [];
+            // [تعديل النسبة]: جعل فرص الفوز أعلى بشكل ملحوظ
+            const winningProbability = Math.random();
+            let winningIndex;
+            
+            if (winningProbability < 0.70) { // احتمال 70% للفوز
                 if (currentBet.type === 'number') {
-                    winningOptions = rouletteNumbers.filter(item => item.num === currentBet.value);
+                    winningIndex = rouletteNumbers.findIndex(n => n.num === currentBet.value);
                 } else if (currentBet.type === 'red') {
-                    winningOptions = rouletteNumbers.filter(item => item.color === 'red');
-                } else if (currentBet.type === 'black') {
-                    winningOptions = rouletteNumbers.filter(item => item.color === 'black');
-                }
-                
-                if (winningOptions.length > 0) {
-                    const matchItem = winningOptions[Math.floor(Math.random() * winningOptions.length)];
-                    randomIndex = rouletteNumbers.findIndex(item => item.num === matchItem.num);
+                    const reds = rouletteNumbers.filter(n => n.color === 'red');
+                    winningIndex = rouletteNumbers.findIndex(n => n.num === reds[Math.floor(Math.random() * reds.length)].num);
                 } else {
-                    randomIndex = Math.floor(Math.random() * rouletteNumbers.length);
+                    const blacks = rouletteNumbers.filter(n => n.color === 'black');
+                    winningIndex = rouletteNumbers.findIndex(n => n.num === blacks[Math.floor(Math.random() * blacks.length)].num);
                 }
             } else {
-                let losingOptions = [];
-                if (currentBet.type === 'number') {
-                    losingOptions = rouletteNumbers.filter(item => item.num !== currentBet.value);
-                } else if (currentBet.type === 'red') {
-                    losingOptions = rouletteNumbers.filter(item => item.color !== 'red');
-                } else if (currentBet.type === 'black') {
-                    losingOptions = rouletteNumbers.filter(item => item.color !== 'black');
-                }
-                
-                if (losingOptions.length > 0) {
-                    const nonMatchItem = losingOptions[Math.floor(Math.random() * losingOptions.length)];
-                    randomIndex = rouletteNumbers.findIndex(item => item.num === nonMatchItem.num);
-                } else {
-                    randomIndex = Math.floor(Math.random() * rouletteNumbers.length);
-                }
+                winningIndex = Math.floor(Math.random() * rouletteNumbers.length);
             }
 
-            winning = rouletteNumbers[randomIndex];
+            const winning = rouletteNumbers[winningIndex];
             const spinDuration = 5000; 
 
-            // حساب الزاوية بشكل تراكمي صحيح لحل مشكلة عدم الدوران في المرة الثانية
             const extraRotations = 8 * 360; 
-            const sectorAngle = (360 - (randomIndex * degreesPerSector)) % 360;
-            
-            // إضافة التدوير الجديد فوق التدوير القديم لضمان استمرارية الحركة في كل المرات
+            const sectorAngle = (360 - (winningIndex * degreesPerSector)) % 360;
             currentRotation = currentRotation + extraRotations + (sectorAngle - (currentRotation % 360));
             
             wheel.style.transition = `transform ${spinDuration}ms cubic-bezier(0.1, 0.8, 0.1, 1)`;
             wheel.style.transform = `rotate(${currentRotation}deg)`;
-
-            let startTimestamp = null;
-            let lastTickAngle = 0;
             
-            function step(timestamp) {
-                if (!startTimestamp) startTimestamp = timestamp;
-                let progress = timestamp - startTimestamp;
-                
-                if (progress < spinDuration) {
-                    let t = progress / spinDuration;
-                    let easeOut = 1 - Math.pow(1 - t, 3); 
-                    let currentAngle = easeOut * currentRotation;
-                    
-                    if (currentAngle - lastTickAngle >= degreesPerSector) {
-                        playSound('tick');
-                        lastTickAngle = currentAngle;
-                    }
-                    requestAnimationFrame(step);
-                }
-            }
-            requestAnimationFrame(step);
-
             setTimeout(() => {
                 let won = false; 
                 let prize = 0;
-                
-                // تطبيق قانون الربح والخسارة بشكل دقيق 
-                if (currentBet.type === 'number' && currentBet.value === winning.num) { 
-                    won = true; 
-                    prize = betAmount * 35; 
-                } else if (currentBet.type === 'red' && winning.color === 'red') { 
-                    won = true; 
-                    prize = betAmount * 2; 
-                } else if (currentBet.type === 'black' && winning.color === 'black') { 
-                    won = true; 
-                    prize = betAmount * 2; 
-                }
+                if (currentBet.type === 'number' && currentBet.value === winning.num) { won = true; prize = betAmount * 35; }
+                else if (currentBet.type === 'red' && winning.color === 'red') { won = true; prize = betAmount * 2; }
+                else if (currentBet.type === 'black' && winning.color === 'black') { won = true; prize = betAmount * 2; }
 
                 const colorText = winning.color === 'red' ? 'Rouge' : winning.color === 'black' ? 'Noir' : 'Zéro';
                 document.getElementById('resultDisplay').innerHTML = `Gagnant : <span style="color:var(--gold); font-size:18px; margin:0 5px;">★ ${winning.num} ★</span> (${colorText})`;
@@ -767,25 +711,18 @@
                     balance = finalBalance;
                     document.getElementById('balance').innerText = balance.toLocaleString();
                     database.ref('users/' + currentUsername).update({ balance: finalBalance });
-                    
                     changeLedState('win');
                     playSound('win');
                     triggerWinAnimation();
-                    setTimeout(() => alert(`🎉 Incroyable ! Vous avez gagné ${prize} DH`), 150);
                 } else {
                     changeLedState('lose');
                     playSound('lose');
-                    setTimeout(() => alert(`❌ Désolé, vous avez perdu. Try again!`), 150);
                 }
                 
                 isSpinning = false;
                 document.getElementById('spinBtn').disabled = false;
                 document.getElementById('resetBtn').disabled = false;
-                
-                setTimeout(() => { 
-                    if(!isSpinning) { changeLedState('idle'); }
-                }, 1200);
-
+                setTimeout(() => { if(!isSpinning) { changeLedState('idle'); } }, 1200);
             }, spinDuration);
         }
     </script>
