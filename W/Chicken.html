@@ -526,7 +526,7 @@ let totalProfitStat = 0;
 let maxMultiStat = 0;
 let historyChartData = []; 
 
-const multipliers = [0.5, 1.5, 2, 2.55, 3.50];
+const multipliers = [1.8, 3.2, 5.5, 9.0, 16.0];
 
 const riskMultipliers = {
     1: multipliers, 
@@ -712,7 +712,7 @@ function setRisk(count) {
     document.getElementById("risk-2").classList.toggle("active", count === 2);
     document.getElementById("risk-2").classList.toggle("danger-mode", count === 2);
     
-    let basePercent = count === 1 ? 25 : 4;
+    let basePercent = count === 1 ? 65 : 4;
     document.getElementById("ai-percentage").innerText = `${basePercent + Math.floor(Math.random() * 8)}%`;
 
     renderLadder(); updateUI();
@@ -775,8 +775,8 @@ function renderNewGrid() {
     for (let i = 0; i < 5; i++) {
         let rowMines = [];
         if (currentRiskCount === 1) { 
-            let safeIdx = Math.floor(Math.random() * 3);
-            for (let j = 0; j < 3; j++) { if (j !== safeIdx) rowMines.push(j); }
+            let mineIdx = Math.random() > 0.85 ? Math.floor(Math.random() * 3) : -1;
+            if(mineIdx !== -1) rowMines.push(mineIdx);
         } 
         else {
             rowMines = [0, 1, 2];
@@ -833,10 +833,10 @@ function processStep(cellIndex, cellElement) {
     } else {
         playSynthSound(550 + (currentLevel * 90), "sine", 0.14, 0.2);
         
-        let isMystery = Math.random() < 0.05; 
+        let isMystery = Math.random() < 0.25; 
         if(isMystery) {
             cellElement.classList.add("revealed-mystery"); cellElement.innerHTML = "🎁";
-            let bonusCash = Math.floor(betAmount * 0.1); 
+            let bonusCash = Math.floor(betAmount * 0.15); 
             if(isDemoMode) { demoBalance += bonusCash; } else { globalUserBalance += bonusCash; updateFirebaseBalance(globalUserBalance); }
             showToast(`🎁 Bonus mystère trouvé: +${bonusCash} 🪙`, "success");
             createParticles(cellElement, "👑");
@@ -847,7 +847,7 @@ function processStep(cellIndex, cellElement) {
 
         currentLevel++; comboCount++; streakCount++; addXP(15);
         
-        let nextPrediction = Math.max(3, 29 - (currentLevel * 6));
+        let nextPrediction = Math.max(3, 85 - (currentLevel * 6));
         document.getElementById("ai-percentage").innerText = `${nextPrediction}%`;
 
         if (streakCount === 3) {
@@ -945,11 +945,11 @@ function simulateLiveFeed() {
         const id = Math.floor(100000 + Math.random() * 900000);
         const name = fakeNames[Math.floor(Math.random() * fakeNames.length)];
         const bet = Math.floor(50 + Math.random() * 650);
-        const isWin = Math.random() > 0.85; 
+        const isWin = Math.random() > 0.40; 
         const row = document.createElement("tr");
         
         if (isWin) {
-            const mult = riskMultipliers[1][Math.floor(Math.random() * 2)];
+            const mult = riskMultipliers[1][Math.floor(Math.random() * 3)];
             const profit = Math.floor(bet * mult);
             row.innerHTML = `<td style="color:var(--text-muted)">#${id}</td><td style="color:var(--neon-cyan)">${name}</td><td>${bet} 🪙</td><td style="color:var(--accent-gold)">X ${mult.toFixed(2)}</td><td class="status-win">+${profit} 🪙</td>`;
         } else {
