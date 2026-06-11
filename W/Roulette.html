@@ -669,9 +669,46 @@
             document.getElementById('balance').innerText = balance.toLocaleString();
             database.ref('users/' + currentUsername).update({ balance: newBalanceAfterBet });
 
-            // اختيار رقم عشوائي حقيقي وعادل تماماً بدون تلاعب بنسب الخسارة
-            const randomIndex = Math.floor(Math.random() * rouletteNumbers.length);
-            const winning = rouletteNumbers[randomIndex];
+            // خوارزمية ذكية لتوجيه النتيجة بنسبة 75% للربح لتبدو طبيعية وغير مكشوفة بالفيديو
+            let winning;
+            let randomIndex;
+            const shouldWin = Math.random() < 0.75; 
+
+            if (shouldWin) {
+                let winningOptions = [];
+                if (currentBet.type === 'number') {
+                    winningOptions = rouletteNumbers.filter(item => item.num === currentBet.value);
+                } else if (currentBet.type === 'red') {
+                    winningOptions = rouletteNumbers.filter(item => item.color === 'red');
+                } else if (currentBet.type === 'black') {
+                    winningOptions = rouletteNumbers.filter(item => item.color === 'black');
+                }
+                
+                if (winningOptions.length > 0) {
+                    const matchItem = winningOptions[Math.floor(Math.random() * winningOptions.length)];
+                    randomIndex = rouletteNumbers.findIndex(item => item.num === matchItem.num);
+                } else {
+                    randomIndex = Math.floor(Math.random() * rouletteNumbers.length);
+                }
+            } else {
+                let losingOptions = [];
+                if (currentBet.type === 'number') {
+                    losingOptions = rouletteNumbers.filter(item => item.num !== currentBet.value);
+                } else if (currentBet.type === 'red') {
+                    losingOptions = rouletteNumbers.filter(item => item.color !== 'red');
+                } else if (currentBet.type === 'black') {
+                    losingOptions = rouletteNumbers.filter(item => item.color !== 'black');
+                }
+                
+                if (losingOptions.length > 0) {
+                    const nonMatchItem = losingOptions[Math.floor(Math.random() * losingOptions.length)];
+                    randomIndex = rouletteNumbers.findIndex(item => item.num === nonMatchItem.num);
+                } else {
+                    randomIndex = Math.floor(Math.random() * rouletteNumbers.length);
+                }
+            }
+
+            winning = rouletteNumbers[randomIndex];
             const spinDuration = 5000; 
 
             // حساب الزاوية بشكل تراكمي صحيح لحل مشكلة عدم الدوران في المرة الثانية
