@@ -307,7 +307,7 @@
         
         <div class="games-grid">
 
-            <div class="game-card card-chicken" onclick="playClickSound(); playGame('chicken')">
+            <div class="game-card card-chicken" onclick="playGame('chicken')">
                 <div class="game-preview">
                     <svg viewBox="0 0 64 64">
                         <circle cx="32" cy="32" r="28" fill="#141414" stroke="#3b82f6" stroke-width="2"/>
@@ -325,7 +325,7 @@
                 </div>
             </div>
 
-            <div class="game-card card-cyber-chicken" onclick="playClickSound(); playGame('cyber_chicken')">
+            <div class="game-card card-cyber-chicken" onclick="playGame('cyber_chicken')">
                 <div class="game-preview">
                     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                         <rect width="100" height="100" fill="#05080e" rx="14"/>
@@ -344,7 +344,7 @@
                 </div>
             </div>
 
-            <div class="game-card card-billiards" onclick="playClickSound(); playGame('billiards')">
+            <div class="game-card card-billiards" onclick="playGame('billiards')">
                 <div class="game-preview">
                     <svg viewBox="0 0 100 100">
                         <rect x="10" y="25" width="80" height="50" rx="4" fill="#1a1a1a" stroke="#222" stroke-width="2"/>
@@ -361,7 +361,7 @@
                 </div>
             </div>
 
-            <div class="game-card card-roulette" onclick="playClickSound(); playGame('roulette')">
+            <div class="game-card card-roulette" onclick="playGame('roulette')">
                 <div class="game-preview">
                     <svg viewBox="0 0 100 100">
                         <circle cx="50" cy="50" r="40" fill="none" stroke="#3b82f6" stroke-width="4"/>
@@ -380,7 +380,7 @@
                 </div>
             </div>
             
-            <div class="game-card card-plinko" onclick="playClickSound(); playGame('plinko')">
+            <div class="game-card card-plinko" onclick="playGame('plinko')">
                 <div class="game-preview">
                     <svg viewBox="0 0 100 100">
                         <circle cx="50" cy="20" r="8" fill="#ff007f"/>
@@ -398,7 +398,7 @@
                 </div>
             </div>
 
-            <div class="game-card card-aviator" onclick="playClickSound(); playGame('aviator')">
+            <div class="game-card card-aviator" onclick="playGame('aviator')">
                 <div class="game-preview">
                     <svg viewBox="0 0 100 100">
                         <path d="M10 80 Q 50 10, 90 40" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="6 6"/>
@@ -589,6 +589,7 @@
         }
 
         function playGame(game) {
+            playClickSound();
             localStorage.setItem('username', currentUsername);
             setTimeout(() => {
                 if (game === 'chicken') {
