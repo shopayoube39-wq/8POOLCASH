@@ -784,6 +784,11 @@ function fireCueBall() {
   if (aimPower < 5) return;
   if (isBallInHand) { isBallInHand = false; return; }
   
+  if (VaultSecure.unlock() <= 0) {
+      triggerToast("⚠️ الرصيد صفر! لا يمكنك اللعب.");
+      return;
+  }
+  
   hasDeductedBet = true; 
   SpatialAudio.ballHit(cueBall.x, aimPower / 10); 
   
