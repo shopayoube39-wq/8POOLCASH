@@ -3,7 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MYWINGIMS | العب بارتشيسي</title>
+    
+    <!-- SEO & Page Title -->
+    <title>MYWINGIMS | العب بارتشيسي وتحدى أصدقاءك</title>
+    <meta name="description" content="منصة MYWINGIMS للعب بارتشيسي، استمتع بمباريات سريعة، بطولات وجوائز، وتحدى لاعبين حقيقيين في بيئة آمنة وممتعة.">
+    <meta name="keywords" content="بارتشيسي, MYWINGIMS, العاب اونلاين, لودو, تحدي أصدقاء, بطولات بارتشيسي">
+    <meta name="author" content="MYWINGIMS">
+
+    <!-- Open Graph / Facebook / WhatsApp Preview Meta Tags (تظهر عند المشاركة والصورة في البحث) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourwebsite.com/"> <!-- ضع رابط موقعك هنا -->
+    <meta property="og:title" content="MYWINGIMS | العب بارتشيسي وتحدى أصدقاءك">
+    <meta property="og:description" content="انضم إلى منصة MYWINGIMS واستمتع بأفضل تجربة لعب بارتشيسي مع لاعبين حقيقيين وبطولات ممتعة.">
+    <meta property="og:image" content="https://i.ibb.co/LzLbjLnH/B0410-A8-F-6-C73-41-F6-8-AD1-1-BAF34-CF19-D1.png">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MYWINGIMS | العب بارتشيسي وتحدى أصدقاءك">
+    <meta name="twitter:description" content="انضم إلى منصة MYWINGIMS واستمتع بأفضل تجربة لعب بارتشيسي مع لاعبين حقيقيين وبطولات ممتعة.">
+    <meta name="twitter:image" content="https://i.ibb.co/LzLbjLnH/B0410-A8-F-6-C73-41-F6-8-AD1-1-BAF34-CF19-D1.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
@@ -22,7 +41,6 @@
         }
         .glass-card { background: rgba(18, 15, 25, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(212, 175, 55, 0.3); }
         
-        /* بطاقات استعراضية ثابتة للزينة فقط بدون تفاعل */
         .game-card-display { 
             background: rgba(19, 17, 28, 0.9); 
             backdrop-filter: blur(15px); 
@@ -94,7 +112,7 @@
             </div>
         </div>
 
-        <!-- Updated CTA Button matching your reference image -->
+        <!-- CTA Button -->
         <div>
             <button onclick="location.href='W/auth.html#signup'" class="w-full main-action-btn p-2 pr-6 rounded-full flex items-center justify-between shadow-[0_4px_25px_rgba(212,175,55,0.4)] group">
                 <span class="flex-1 text-center font-black text-lg text-[#1a1505] tracking-wide">ابدأ الآن</span>
@@ -104,9 +122,8 @@
             </button>
         </div>
 
-        <!-- Static Display Cards Grid (Pure Visual Decorative Section) -->
+        <!-- Static Display Cards Grid -->
         <div class="grid grid-cols-3 gap-3 pt-2">
-            <!-- البطاقة 1: لعب سريع (على اليمين - ثابتة) -->
             <div class="game-card-display rounded-2xl p-3 flex flex-col items-center justify-between min-h-[220px]">
                 <div class="w-full h-24 mb-2 overflow-hidden rounded-xl">
                     <img src="https://i.ibb.co/bMm3SSNS/IMG-2953.webp" alt="لعب سريع" class="w-full h-full object-cover">
@@ -118,7 +135,6 @@
                 <div class="w-12 h-1 card-line-purple rounded-full mt-2"></div>
             </div>
 
-            <!-- البطاقة 2: بطولات وجوائز (في الوسط - ثابتة) -->
             <div class="game-card-display rounded-2xl p-3 flex flex-col items-center justify-between min-h-[220px]">
                 <div class="w-full h-24 mb-2 overflow-hidden rounded-xl">
                     <img src="https://i.ibb.co/ZR5LyDLw/IMG-2954.webp" alt="بطولات وجوائز" class="w-full h-full object-cover">
@@ -130,7 +146,6 @@
                 <div class="w-12 h-1 card-line-gold rounded-full mt-2"></div>
             </div>
 
-            <!-- البطاقة 3: لعب مع الأصدقاء (على اليسار - ثابتة) -->
             <div class="game-card-display rounded-2xl p-3 flex flex-col items-center justify-between min-h-[220px]">
                 <div class="w-full h-24 mb-2 overflow-hidden rounded-xl">
                     <img src="https://i.ibb.co/sdBtMsZ0/IMG-2955.webp" alt="لعب مع الأصدقاء" class="w-full h-full object-cover">
@@ -163,7 +178,7 @@
             </div>
         </div>
 
-        <!-- Phone Mockup Section Full Width Edge-to-Edge Container -->
+        <!-- Phone Mockup Section -->
         <div class="py-6 space-y-4">
             <div class="w-full -mx-4 px-4">
                 <div class="w-full rounded-3xl overflow-hidden shadow-2xl border border-yellow-500/30 p-1 bg-gradient-to-b from-yellow-500/20 to-transparent">
@@ -198,7 +213,7 @@
             </div>
         </div>
 
-        <!-- Footer Links -->
+        <!-- Footer -->
         <footer class="pt-8 pb-4 text-[11px] text-gray-400 space-y-4 border-t border-yellow-500/10 mt-8">
             <div class="flex flex-wrap justify-center gap-x-4 gap-y-2">
                 <a href="#" class="hover:text-yellow-400">سياسة الخصوصية</a>
@@ -209,7 +224,7 @@
                 <a href="#" class="hover:text-yellow-400">برنامج وكلاء الشحن</a>
                 <a href="#" class="hover:text-yellow-400">برنامج الشركاء</a>
             </div>
-            <div class="text-gray-500 font-medium">
+            <div class="text-500 font-medium text-gray-500">
                 © MYWINGIMS 2026 — جميع الحقوق محفوظة
             </div>
             <div class="text-yellow-500/80 font-bold tracking-wider">
