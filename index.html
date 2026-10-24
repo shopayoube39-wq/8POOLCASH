@@ -10,9 +10,9 @@
     <meta name="keywords" content="بارتشيسي, MYWINGIMS, العاب اونلاين, لودو, تحدي أصدقاء, بطولات بارتشيسي">
     <meta name="author" content="MYWINGIMS">
 
-    <!-- Open Graph / Facebook / WhatsApp Preview Meta Tags (تظهر عند المشاركة والصورة في البحث) -->
+    <!-- Open Graph / Facebook / WhatsApp Preview Meta Tags -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yourwebsite.com/"> <!-- ضع رابط موقعك هنا -->
+    <meta property="og:url" content="https://yourwebsite.com/">
     <meta property="og:title" content="MYWINGIMS | العب بارتشيسي وتحدى أصدقاءك">
     <meta property="og:description" content="انضم إلى منصة MYWINGIMS واستمتع بأفضل تجربة لعب بارتشيسي مع لاعبين حقيقيين وبطولات ممتعة.">
     <meta property="og:image" content="https://i.ibb.co/LzLbjLnH/B0410-A8-F-6-C73-41-F6-8-AD1-1-BAF34-CF19-D1.png">
@@ -47,13 +47,18 @@
             border: 1px solid rgba(212, 175, 55, 0.2); 
             position: relative; 
             overflow: hidden; 
-            cursor: default; 
+            cursor: pointer; 
             text-align: center; 
             user-select: none;
+            transition: transform 0.2s ease;
+        }
+        .game-card-display:active {
+            transform: scale(0.97);
         }
         
         .main-action-btn { background: linear-gradient(90deg, #f3e5ab 0%, #d4af37 50%, #aa771c 100%); color: #1a1505; transition: all 0.3s ease; }
         .main-action-btn:hover { filter: brightness(1.1); transform: scale(1.01); }
+        .main-action-btn:active { transform: scale(0.97); }
         .gold-text { background: linear-gradient(90deg, #f3e5ab 0%, #d4af37 50%, #aa771c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
         .card-line-purple { background: #a855f7; box-shadow: 0 0 10px #a855f7; }
@@ -71,7 +76,7 @@
             </div>
         </div>
         <div>
-            <button onclick="location.href='W/auth.html'" class="glass-card px-4 py-2 rounded-full text-yellow-400 font-bold hover:bg-yellow-500/10 transition-all text-xs flex items-center gap-2 border border-yellow-500/30">
+            <button onclick="playBtnSound(); location.href='W/auth.html'" class="glass-card px-4 py-2 rounded-full text-yellow-400 font-bold hover:bg-yellow-500/10 transition-all text-xs flex items-center gap-2 border border-yellow-500/30">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
                 تسجيل الدخول
             </button>
@@ -114,7 +119,7 @@
 
         <!-- CTA Button -->
         <div>
-            <button onclick="location.href='W/auth.html#signup'" class="w-full main-action-btn p-2 pr-6 rounded-full flex items-center justify-between shadow-[0_4px_25px_rgba(212,175,55,0.4)] group">
+            <button onclick="playBtnSound(); location.href='W/auth.html#signup'" class="w-full main-action-btn p-2 pr-6 rounded-full flex items-center justify-between shadow-[0_4px_25px_rgba(212,175,55,0.4)] group">
                 <span class="flex-1 text-center font-black text-lg text-[#1a1505] tracking-wide">ابدأ الآن</span>
                 <div class="w-12 h-12 rounded-full bg-[#13111c] flex items-center justify-center text-yellow-400 shadow-md group-hover:scale-105 transition-transform">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
@@ -124,7 +129,7 @@
 
         <!-- Static Display Cards Grid -->
         <div class="grid grid-cols-3 gap-3 pt-2">
-            <div class="game-card-display rounded-2xl p-3 flex flex-col items-center justify-between min-h-[220px]">
+            <div onclick="playBtnSound()" class="game-card-display rounded-2xl p-3 flex flex-col items-center justify-between min-h-[220px]">
                 <div class="w-full h-24 mb-2 overflow-hidden rounded-xl">
                     <img src="https://i.ibb.co/bMm3SSNS/IMG-2953.webp" alt="لعب سريع" class="w-full h-full object-cover">
                 </div>
@@ -135,7 +140,7 @@
                 <div class="w-12 h-1 card-line-purple rounded-full mt-2"></div>
             </div>
 
-            <div class="game-card-display rounded-2xl p-3 flex flex-col items-center justify-between min-h-[220px]">
+            <div onclick="playBtnSound()" class="game-card-display rounded-2xl p-3 flex flex-col items-center justify-between min-h-[220px]">
                 <div class="w-full h-24 mb-2 overflow-hidden rounded-xl">
                     <img src="https://i.ibb.co/ZR5LyDLw/IMG-2954.webp" alt="بطولات وجوائز" class="w-full h-full object-cover">
                 </div>
@@ -146,7 +151,7 @@
                 <div class="w-12 h-1 card-line-gold rounded-full mt-2"></div>
             </div>
 
-            <div class="game-card-display rounded-2xl p-3 flex flex-col items-center justify-between min-h-[220px]">
+            <div onclick="playBtnSound()" class="game-card-display rounded-2xl p-3 flex flex-col items-center justify-between min-h-[220px]">
                 <div class="w-full h-24 mb-2 overflow-hidden rounded-xl">
                     <img src="https://i.ibb.co/sdBtMsZ0/IMG-2955.webp" alt="لعب مع الأصدقاء" class="w-full h-full object-cover">
                 </div>
@@ -216,15 +221,15 @@
         <!-- Footer -->
         <footer class="pt-8 pb-4 text-[11px] text-gray-400 space-y-4 border-t border-yellow-500/10 mt-8">
             <div class="flex flex-wrap justify-center gap-x-4 gap-y-2">
-                <a href="#" class="hover:text-yellow-400">سياسة الخصوصية</a>
-                <a href="#" class="hover:text-yellow-400">الشروط والأحكام</a>
-                <a href="#" class="hover:text-yellow-400">اللعب المسؤول</a>
-                <a href="#" class="hover:text-yellow-400">ملفات تعريف الارتباط</a>
-                <a href="#" class="hover:text-yellow-400">الدعم</a>
-                <a href="#" class="hover:text-yellow-400">برنامج وكلاء الشحن</a>
-                <a href="#" class="hover:text-yellow-400">برنامج الشركاء</a>
+                <a href="#" onclick="playBtnSound()" class="hover:text-yellow-400">سياسة الخصوصية</a>
+                <a href="#" onclick="playBtnSound()" class="hover:text-yellow-400">الشروط والأحكام</a>
+                <a href="#" onclick="playBtnSound()" class="hover:text-yellow-400">اللعب المسؤول</a>
+                <a href="#" onclick="playBtnSound()" class="hover:text-yellow-400">ملفات تعريف الارتباط</a>
+                <a href="#" onclick="playBtnSound()" class="hover:text-yellow-400">الدعم</a>
+                <a href="#" onclick="playBtnSound()" class="hover:text-yellow-400">برنامج وكلاء الشحن</a>
+                <a href="#" onclick="playBtnSound()" class="hover:text-yellow-400">برنامج الشركاء</a>
             </div>
-            <div class="text-500 font-medium text-gray-500">
+            <div class="text-gray-500 font-medium">
                 © MYWINGIMS 2026 — جميع الحقوق محفوظة
             </div>
             <div class="text-yellow-500/80 font-bold tracking-wider">
@@ -234,5 +239,30 @@
 
     </main>
 
+    <!-- Script الصوت والتفاعل -->
+    <script>
+        function playBtnSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.08);
+                
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.08);
+            } catch (e) {
+                // تجاهل إذا منع المتصفح الصوت التلقائي
+            }
+        }
+    </script>
 </body>
 </html>
